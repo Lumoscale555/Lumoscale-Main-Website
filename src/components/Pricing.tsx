@@ -1,118 +1,209 @@
-import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { CheckCircle, ArrowRight, ShieldCheck, Globe, Mail, Instagram, Facebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const included = [
-  "Multi-channel AI automation",
-  "Unlimited lead qualification",
-  "Smart booking system",
-  "24/6/1 hour reminder sequence",
-  "Pre-call brief generation",
-  "Slack integration & alerts",
-  "Live conversation dashboard",
-  "Tone training on your brand",
-  "Priority support"
-];
+export default function Pricing() {
+  const [currency, setCurrency] = useState("USD");
+  const [plan, setPlan] = useState("monthly");
+  const [timeLeft, setTimeLeft] = useState(5 * 60 * 60);
 
-const Pricing = () => {
+  useEffect(() => {
+    const t = setInterval(() => setTimeLeft(v => (v > 0 ? v - 1 : 0)), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const format = s => {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${h}h ${m}m ${sec}s`;
+  };
+
+  const pricing = {
+    USD: {
+      p1: { old: 349, m: 249, q: 699 },
+      p2: { old: 799, m: 499, q: 1399 },
+    },
+    INR: {
+      p1: { old: 29000, m: 19999, q: 54999 },
+      p2: { old: 66000, m: 39999, q: 99999 },
+    },
+  };
+
+  const symbol = currency === "USD" ? "$" : "₹";
+
   return (
-    <section className="py-32 relative overflow-hidden">
-      <div className="container mx-auto px-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Heading */}
-          <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-6xl font-bold gradient-text shimmer mb-6">
-              Beta Launch Pricing
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Lock in exclusive early access rates
-            </p>
-          </div>
-          
-          {/* Pricing Card */}
-          <div
-            className="relative p-12 rounded-3xl border-2 border-primary/40 bg-gradient-to-br from-primary/5 to-secondary/5 shadow-[0_0_80px_hsl(var(--primary)/0.4)]"
-            style={{ 
-              animation: "scale-in 0.6s ease-out forwards",
-              animationDelay: "0.2s",
-              opacity: 0
-            }}
-          >
-            {/* Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl blur-xl opacity-50" />
-            
-            <div className="relative z-10 space-y-8">
-              {/* Beta Badge */}
-              <div className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-primary to-secondary text-black font-bold text-sm">
-                BETA OFFER
-              </div>
-              
-              {/* Pricing */}
-              <div className="space-y-4">
-                <div className="flex items-baseline gap-3">
-                  <span className="text-6xl md:text-7xl font-bold gradient-text">$497</span>
-                  <span className="text-2xl text-muted-foreground">setup</span>
-                </div>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-5xl md:text-6xl font-bold gradient-text">$197</span>
-                  <span className="text-2xl text-muted-foreground">/month</span>
-                  <span className="text-lg text-secondary font-semibold">(locked forever)</span>
-                </div>
-              </div>
-              
-              {/* Included Features */}
-              <div className="space-y-4 pt-8 border-t border-primary/20">
-                <h4 className="text-xl font-bold text-foreground mb-6">Everything included:</h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {included.map((feature, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-3"
-                      style={{ 
-                        animation: "fade-up 0.4s ease-out forwards",
-                        animationDelay: `${0.4 + i * 0.05}s`,
-                        opacity: 0
-                      }}
-                    >
-                      <Check className="w-5 h-5 text-secondary mt-0.5 flex-shrink-0" />
-                      <p className="text-foreground/90">{feature}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* ROI Calculator */}
-              <div className="p-6 rounded-2xl bg-secondary/10 border border-secondary/30">
-                <h4 className="text-lg font-bold text-foreground mb-4">Your ROI:</h4>
-                <div className="grid grid-cols-2 gap-6 text-center">
-                  <div>
-                    <p className="text-4xl font-bold gradient-text">20+</p>
-                    <p className="text-sm text-muted-foreground mt-2">Hours saved weekly</p>
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold gradient-text">2-5x</p>
-                    <p className="text-sm text-muted-foreground mt-2">More qualified calls</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* CTA */}
-              <Button 
-                size="lg" 
-                className="w-full text-xl py-8 bg-gradient-to-r from-primary to-secondary text-black font-bold hover:shadow-[0_0_60px_hsl(var(--primary)/0.8)] transition-all duration-500 hover:scale-105"
-              >
-                Claim Your Beta Spot
-              </Button>
-              
-              {/* Urgency */}
-              <p className="text-center text-sm text-destructive font-semibold">
-                ⚡ Only 7 beta spots remaining
-              </p>
-            </div>
+    <section id="pricing" className="py-24 bg-background">
+      <div className="container mx-auto px-4">
+
+        {/* Title */}
+        <div className="text-center max-w-lg mx-auto mb-8">
+          <h2 className="text-4xl font-bold mb-2">
+            Launch <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">Pricing</span>
+          </h2>
+          <p className="text-muted-foreground">Special pricing for first 5 clients</p>
+        </div>
+
+        {/* Countdown */}
+        <div className="text-center text-primary font-semibold mb-5">
+          Offer ends in {format(timeLeft)}
+        </div>
+
+        {/* Currency */}
+        <div className="flex justify-center mb-3">
+          <div className="flex border rounded-md overflow-hidden">
+            <button onClick={() => setCurrency("USD")} className={`px-5 py-2 text-sm ${currency === "USD" ? "bg-primary text-black" : ""}`}>USD</button>
+            <button onClick={() => setCurrency("INR")} className={`px-5 py-2 text-sm ${currency === "INR" ? "bg-primary text-black" : ""}`}>INR</button>
           </div>
         </div>
+
+        {/* Duration */}
+        <div className="flex justify-center mb-10">
+          <div className="flex border rounded-md overflow-hidden">
+            <button onClick={() => setPlan("monthly")} className={`px-5 py-2 text-sm ${plan === "monthly" ? "bg-secondary text-black" : ""}`}>1 Month</button>
+            <button onClick={() => setPlan("quarter")} className={`px-5 py-2 text-sm ${plan === "quarter" ? "bg-secondary text-black" : ""}`}>3 Months</button>
+          </div>
+        </div>
+
+        {/* Cards */}
+        <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+
+          <PricingCard
+            title="NEVER MISS A HOT LEAD"
+            desc="Website and email to booked calls automatically"
+            prices={pricing[currency].p1}
+            symbol={symbol}
+            plan={plan}
+            features={[
+              "Instant replies",
+              "Hot lead detection",
+              "Auto booking link",
+              "Smart reminders",
+              "Pre call brief",
+              "Basic dashboard",
+            ]}
+            channels={[
+              { icon: <Globe size={14} />, label: "Website" },
+              { icon: <Mail size={14} />, label: "Email" },
+            ]}
+            outcome="More booked calls and zero missed leads."
+            primary
+            cta="Activate System"
+          />
+
+          <PricingCard
+            title="FILL YOUR CALENDAR WITH SHOW UPS"
+            desc="All DMs to booked calls that show up"
+            prices={pricing[currency].p2}
+            symbol={symbol}
+            plan={plan}
+            features={[
+              "Instant replies",
+              "Hot lead detection",
+              "Auto booking link",
+              "Multichannel reminders",
+              "Pre call brief",
+              "Full dashboard",
+              "Instagram and Facebook automation",
+            ]}
+            channels={[
+              { icon: <Globe size={14} />, label: "Website" },
+              { icon: <Mail size={14} />, label: "Email" },
+              { icon: <Instagram size={14} />, label: "Instagram" },
+              { icon: <Facebook size={14} />, label: "Facebook" },
+            ]}
+            outcome="More booked calls and higher show up rates."
+            highlight
+            cta="Scale My Calendar"
+          />
+
+        </div>
+
+        {/* Guarantee */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="mt-16 max-w-3xl mx-auto text-center border rounded-xl p-6 bg-primary/5"
+        >
+          <ShieldCheck className="mx-auto mb-3 text-primary" size={36} />
+          <p className="font-semibold">30 Day Results Guarantee</p>
+          <p className="text-muted-foreground text-sm mt-1">
+            If calls do not increase, we work free until they do.
+          </p>
+        </motion.div>
+
       </div>
     </section>
   );
-};
+}
 
-export default Pricing;
+function PricingCard({ title, desc, prices, symbol, plan, features, channels, outcome, primary, highlight, cta }) {
+  const value = plan === "monthly" ? prices.m : prices.q;
+  const label = plan === "monthly" ? "per month" : "for 3 months";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.02 }}
+      className={`relative flex flex-col rounded-2xl border p-6 transition ${
+        highlight ? "border-secondary shadow-md" : "border-primary/30"
+      }`}
+    >
+
+      {highlight && (
+        <div className="absolute -top-3 left-1/2 translate-x-[-50%] text-xs bg-secondary text-black px-3 py-1 rounded-full">
+          Most Popular
+        </div>
+      )}
+
+      <h3 className="text-lg font-bold mb-1">{title}</h3>
+      <p className="text-muted-foreground text-sm mb-4">{desc}</p>
+
+      <ul className="space-y-2 text-sm mb-4">
+        {features.map(f => (
+          <li key={f} className="flex gap-2 items-center">
+            <CheckCircle className={`${primary ? "text-primary" : "text-secondary"} w-4 h-4`} />
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      <div className="mb-4">
+        <p className="text-xs font-semibold mb-2">Channels</p>
+        <div className="flex flex-wrap gap-2">
+          {channels.map(c => (
+            <div key={c.label} className="flex items-center gap-2 border rounded-full px-3 py-1 text-xs">
+              {c.icon}
+              {c.label}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className={`p-3 text-xs border rounded-md mb-4 ${primary ? "bg-primary/10 border-primary/30" : "bg-secondary/10 border-secondary/30"}`}>
+        <strong>Outcome:</strong> {outcome}
+      </div>
+
+      {/* Price */}
+      <div className="mt-auto border-t pt-4 text-center">
+        <div className="flex justify-center items-center gap-3">
+          <span className="line-through text-sm text-muted-foreground">
+            {symbol}{prices.old}
+          </span>
+          <span className="text-xl font-bold">
+            {symbol}{value}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">{label}</p>
+      </div>
+
+      <Button className={`mt-4 py-4 text-sm bg-gradient-to-r ${primary ? "from-primary to-secondary" : "from-secondary to-primary"} text-black font-semibold`}>
+        {cta} <ArrowRight className="ml-2 w-4 h-4" />
+      </Button>
+
+    </motion.div>
+  );
+}
