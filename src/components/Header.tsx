@@ -10,7 +10,7 @@ const Header = () => {
         {/* Logo */}
         <div className="flex items-center gap-3">
           <img src={logo} alt="Lumoscale AI" className="h-12 w-auto object-contain" />
-          <span className="text-xl font-bold tracking-tight gradient-text">Lumoscale AI</span>
+          <span className="text-xl font-bold tracking-tight gradient-text">LUMOSCALE</span>
         </div>
 
         {/* Right navigation */}
