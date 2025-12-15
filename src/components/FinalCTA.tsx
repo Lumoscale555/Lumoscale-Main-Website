@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 
 const steps = [
   { icon: Calendar, title: "Book a demo", desc: "15-minute strategy call" },
-  { icon: Settings, title: "We set it up", desc: "In 7 days or less" },
+  { icon: Settings, title: "We set it up", desc: "In 3 days or less" },
   { icon: Rocket, title: "You go live", desc: "Start qualifying leads" }
 ];
 

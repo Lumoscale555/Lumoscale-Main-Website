@@ -27,7 +27,7 @@ const features = [
   },
   {
     icon: Bell,
-    title: "Sends 4 Reminders Automatically",
+    title: "Sends 3  Reminders Automatically",
     description:
       "Reduces no shows from 40 percent to 5 percent. WhatsApp plus Email reminders keep your calendar full.",
     metric: "60 to 80 percent fewer no shows"

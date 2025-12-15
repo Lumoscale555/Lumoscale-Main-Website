@@ -34,7 +34,7 @@ const Footer: React.FC = () => {
                 { label: "Home", href: "#hero" },
                 { label: "Solution", href: "#solution" },
                 { label: "Pain Points", href: "#painpoints" },
-                { label: "Before vs After", href: "#before-after" }
+                { label: "Before vs After", href: "#beforeafter" }
               ].map((item) => (
                 <li key={item.label}>
                   <a
@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3 text-sm">
               {[
                 { label: "Pricing", href: "#pricing" },
-                { label: "DM Demo", href: "#dm-demo" },
+                { label: "DM Demo", href: "#demo" },
                 { label: "Get Started", href: "#finalcta" }
               ].map((item) => (
                 <li key={item.label}>
@@ -79,11 +79,14 @@ const Footer: React.FC = () => {
             <ul className="space-y-3 text-sm">
               <li>
                 <a
-                  href="mailto:hello@lumoscale.com"
+                  href="mailto:contact@lumoscale.com"
                   className="text-cyan-400 hover:text-green-400 transition-colors"
                 >
-                  hello@lumoscale.com
+                  contact@lumoscale.com
                 </a>
+              </li>
+              <li>
+                <a href="tel:+918919053970" className="text-slate-400 hover:text-green-400 transition-colors">+91 89190 53970</a>
               </li>
               <li className="text-slate-500 text-xs">
                 © {new Date().getFullYear()} Lumoscale. All rights reserved.

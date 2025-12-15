@@ -197,7 +197,7 @@ export default function PricingToggle() {
                                         <span className="text-green-400 font-bold">$749</span>
                                     </div>
                                     <p className="text-[10px] text-slate-500">
-                                        *50% OFF Setup applied automatically
+                                        *50% OFF applied
                                     </p>
                                 </div>
                             </motion.div>
@@ -211,10 +211,6 @@ export default function PricingToggle() {
                         </span>
                         <div className="absolute inset-0 bg-white/20 group-hover:bg-white/30 transition-colors" />
                     </button>
-
-                    <p className="text-center text-xs text-slate-500 mt-6">
-                        No credit card required. Strategy session first.
-                    </p>
                 </div>
 
             </div>
