@@ -16,7 +16,7 @@ const FEATURES = [
 const ADDONS = [
   {
     title: "Omni-Channel Expansion",
-    desc: "Unifies Facebook, LinkedIn, Email & Website chat into one single AI stream.",
+    desc: "Facebook, LinkedIn, Email & Website chat into one single AI stream.",
     icon: MessageSquare,
     color: "text-cyan-400",
     bg: "bg-cyan-500/10",
@@ -37,14 +37,6 @@ const ADDONS = [
     color: "text-teal-400",
     bg: "bg-teal-500/10",
     border: "border-teal-500/20"
-  },
-  {
-    title: "Enterprise CRM Bridge",
-    desc: "Deep 2-way sync with HubSpot, Salesforce, or Zoho to keep data pristine.",
-    icon: Database,
-    color: "text-lime-400",
-    bg: "bg-lime-500/10",
-    border: "border-lime-500/20"
   }
 ];
 
@@ -175,7 +167,7 @@ export default function PricingToggle() {
                                 
                                 <div className="flex items-baseline gap-2 mb-3">
                                     <span className="text-lg text-slate-500 line-through decoration-red-500/50 decoration-2">
-                                        {billing === "monthly" ? "$797" : "$2,397"}
+                                        {billing === "monthly" ? "$799" : "$2397"}
                                     </span>
                                     <span className="text-6xl font-bold text-white tracking-tight">
                                         {billing === "monthly" ? "$399" : "$999"}
@@ -194,7 +186,6 @@ export default function PricingToggle() {
                                     <div className="flex items-center gap-2 text-sm text-slate-400">
                                         <span>Retainer:</span>
                                         <span className="line-through decoration-slate-600 text-slate-600">$1,497</span>
-                                        <span className="text-green-400 font-bold">$749</span>
                                     </div>
                                     <p className="text-[10px] text-slate-500">
                                         *50% OFF applied
