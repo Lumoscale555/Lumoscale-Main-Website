@@ -28,7 +28,7 @@ const FEATURES = [
 const ADDONS = [
   {
     title: "Custom AI Agents",
-    desc: "Dedicated AI agents built for your exact business logic, sales flow, and decision making.",
+    desc: "Dedicated AI agents designed around your business logic, sales process, and decision making workflows.",
     icon: Sparkles,
     color: "text-purple-400",
     bg: "bg-purple-500/10",
@@ -36,7 +36,7 @@ const ADDONS = [
   },
   {
     title: "Voice Agent Automation",
-    desc: "AI voice agents that answer inbound calls, qualify leads, and book meetings automatically.",
+    desc: "AI voice agents for both inbound and outbound calls that qualify leads, follow up, and book meetings automatically.",
     icon: Phone,
     color: "text-teal-400",
     bg: "bg-teal-500/10",
@@ -44,21 +44,22 @@ const ADDONS = [
   },
   {
     title: "No Code Automation Workflows",
-    desc: "Custom no code workflows that connect your tools, automate tasks, and remove manual operations.",
+    desc: "Custom no code workflows that automate operations, connect tools, and remove repetitive manual tasks.",
     icon: Zap,
     color: "text-yellow-400",
     bg: "bg-yellow-500/10",
     border: "border-yellow-500/20",
   },
   {
-    title: "Channel Expansion On Demand",
-    desc: "Additional channels activated only when needed based on your audience and growth stage.",
+    title: "Multi Channel Expansion",
+    desc: "WhatsApp, Facebook, Gmail, website chat, and Meta ads connected into one intelligent automation system.",
     icon: MessageSquare,
     color: "text-cyan-400",
     bg: "bg-cyan-500/10",
     border: "border-cyan-500/20",
   },
 ];
+
 
 export default function PricingToggle() {
   return (
