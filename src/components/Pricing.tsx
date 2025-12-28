@@ -21,7 +21,7 @@ const FEATURES = [
   "Smart lead qualification and filtering",
   "Automated follow up triggers based on user intent",
   "Calendar based booking system",
-  "Multi channel meeting reminders via WhatsApp and Email",
+  "Multi channel meeting reminders",
   "Pre call intelligence brief before every meeting",
   "Post call summary and lead insights",
   "Live dashboard to track leads and conversions",
