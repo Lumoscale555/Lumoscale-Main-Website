@@ -44,6 +44,8 @@ const Header = () => {
           <NavItem href="#demo" label="Demo" />
           <NavItem href="#beforeafter" label="Results" />
           <NavItem href="#pricing" label="Pricing" />
+          <NavItem href="#testimonials" label="Testimonials" />
+          <NavItem href="#case-study" label="Case Study" />
 
           <Button
             className="
@@ -101,6 +103,8 @@ const Header = () => {
               <li><a href="#demo" onClick={() => setOpen(false)} className="block text-lg font-medium">Demo</a></li>
               <li><a href="#beforeafter" onClick={() => setOpen(false)} className="block text-lg font-medium">Results</a></li>
               <li><a href="#pricing" onClick={() => setOpen(false)} className="block text-lg font-medium">Pricing</a></li>
+              <li><a href="#testimonials" onClick={() => setOpen(false)} className="block text-lg font-medium">Testimonials</a></li>
+              <li><a href="#case-study" onClick={() => setOpen(false)} className="block text-lg font-medium">Case Study</a></li>
 
               <li className="pt-2">
                 <Button

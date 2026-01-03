@@ -1,111 +1,147 @@
 import React from "react";
+import { motion } from "framer-motion";
 import logo from "@/assets/lumoscale-logo.jpg";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0 }
+};
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black border-t border-white/10">
-      <div className="container mx-auto px-6 py-12">
+    <footer className="relative overflow-hidden bg-black border-t border-white/10">
 
-        {/* Top section */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10">
+      {/* Animated Background Orbs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <motion.div
+          className="absolute top-[-120px] left-[-120px] w-[300px] h-[300px] bg-indigo-500/20 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity }}
+        />
+        <motion.div
+          className="absolute bottom-[-120px] right-[-120px] w-[300px] h-[300px] bg-purple-500/20 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.3, 0.2] }}
+          transition={{ duration: 12, repeat: Infinity }}
+        />
+      </div>
+
+      <div className="relative container mx-auto px-6 py-20">
+
+        {/* Top */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-14">
 
           {/* Brand */}
-          <div className="max-w-sm">
-            <div className="flex items-center gap-3 mb-4">
-              <img
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
+            <motion.div
+              className="flex items-center gap-3 mb-4"
+              whileHover={{ scale: 1.03 }}
+            >
+              <motion.img
                 src={logo}
                 alt="Lumoscale"
-                className="h-9 w-auto object-contain"
+                className="h-10 w-auto"
+                animate={{ opacity: [0.9, 1, 0.9] }}
+                transition={{ duration: 3, repeat: Infinity }}
               />
-              <span className="text-lg font-bold tracking-tight text-white">
+              <span className="text-xl font-bold text-white">
                 Lumoscale
               </span>
-            </div>
+            </motion.div>
 
-            <p className="text-sm text-slate-400 leading-relaxed">
-              We turn DMs into booked consultations automatically,
-              without missed leads or manual follow ups.
+            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
+              Lumoscale builds AI systems that reply instantly, qualify leads,
+              and turn conversations into booked consultations automatically.
             </p>
-          </div>
+          </motion.div>
 
-          {/* Links */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 text-sm">
-
-            {/* Product */}
-            <div>
-              <p className="mb-4 font-semibold text-white">Product</p>
-              <ul className="space-y-3">
-                <li>
-                  <a href="#solution" className="text-slate-400 hover:text-white transition-colors">
-                    Solution
-                  </a>
-                </li>
-                <li>
-                  <a href="#demo" className="text-slate-400 hover:text-white transition-colors">
-                    Demo
-                  </a>
-                </li>
-                <li>
-                  <a href="#pricing" className="text-slate-400 hover:text-white transition-colors">
-                    Pricing
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <p className="mb-4 font-semibold text-white">Company</p>
-              <ul className="space-y-3">
-                <li>
-                  <a href="#painpoints" className="text-slate-400 hover:text-white transition-colors">
-                    Problems
-                  </a>
-                </li>
-                <li>
-                  <a href="#beforeafter" className="text-slate-400 hover:text-white transition-colors">
-                    Results
-                  </a>
-                </li>
-                <li>
-                  <a href="#hero" className="text-slate-400 hover:text-white transition-colors">
-                    Overview
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <p className="mb-4 font-semibold text-white">Contact</p>
-              <ul className="space-y-3">
-                <li>
-                  <a
-                    href="mailto:contact@lumoscale.com"
-                    className="text-slate-400 hover:text-white transition-colors"
+          {/* Navigation */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            transition={{ delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            <p className="mb-4 font-semibold text-white">Explore</p>
+            <ul className="space-y-3 text-sm">
+              {[
+                { label: "Solution", href: "#solution" },
+                { label: "Demo", href: "#demo" },
+                { label: "Pricing", href: "#pricing" },
+                { label: "Results", href: "#beforeafter" },
+                { label: "Testimonials", href: "#testimonials" },
+                { label: "Case Study", href: "#case-study" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <motion.a
+                    href={item.href}
+                    className="text-slate-400 inline-block"
+                    whileHover={{ x: 6, color: "#ffffff" }}
+                    transition={{ type: "spring", stiffness: 300 }}
                   >
-                    contact@lumoscale.com
-                  </a>
+                    {item.label}
+                  </motion.a>
                 </li>
-                <li>
-                  <a
-                    href="tel:+918919053970"
-                    className="text-slate-400 hover:text-white transition-colors"
-                  >
-                    +91 89190 53970
-                  </a>
-                </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
+          </motion.div>
 
-          </div>
+          {/* Contact */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            transition={{ delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <p className="mb-4 font-semibold text-white">Contact</p>
+            <ul className="space-y-3 text-sm">
+              <motion.li whileHover={{ x: 6 }}>
+                <a
+                  href="mailto:contact@lumoscale.com"
+                  className="text-slate-400 hover:text-white transition"
+                >
+                  contact@lumoscale.com
+                </a>
+              </motion.li>
+              <motion.li whileHover={{ x: 6 }}>
+                <a
+                  href="tel:+918919053970"
+                  className="text-slate-400 hover:text-white transition"
+                >
+                  +91 89190 53970
+                </a>
+              </motion.li>
+            </ul>
+          </motion.div>
+
         </div>
+
+        {/* Animated Divider */}
+        <motion.div
+          className="mt-16 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
+        />
 
         {/* Bottom */}
-        <div className="mt-12 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <motion.div
+          className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
           <span>© {new Date().getFullYear()} Lumoscale. All rights reserved.</span>
-          <span>Built for founders who value speed and automation.</span>
-        </div>
+          <span>Built for founders who value speed, systems, and leverage.</span>
+        </motion.div>
 
       </div>
     </footer>
