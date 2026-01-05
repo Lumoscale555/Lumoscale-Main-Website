@@ -1,149 +1,151 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import logo from "@/assets/lumoscale-logo.jpg";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 const Footer: React.FC = () => {
   return (
-    <footer className="relative overflow-hidden bg-black border-t border-white/10">
+    <footer className="bg-black text-white border-t border-white/10">
 
-      {/* Animated Background Orbs */}
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div
-          className="absolute top-[-120px] left-[-120px] w-[300px] h-[300px] bg-indigo-500/20 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-        <motion.div
-          className="absolute bottom-[-120px] right-[-120px] w-[300px] h-[300px] bg-purple-500/20 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.3, 0.2] }}
-          transition={{ duration: 12, repeat: Infinity }}
-        />
-      </div>
+      <div className="container mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-20">
 
-      <div className="relative container mx-auto px-6 py-20">
-
-        {/* Top */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-14">
-
-          {/* Brand */}
+          {/* BRAND */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
           >
-            <motion.div
-              className="flex items-center gap-3 mb-4"
-              whileHover={{ scale: 1.03 }}
-            >
-              <motion.img
-                src={logo}
-                alt="Lumoscale"
-                className="h-10 w-auto"
-                animate={{ opacity: [0.9, 1, 0.9] }}
-                transition={{ duration: 3, repeat: Infinity }}
-              />
-              <span className="text-xl font-bold text-white">
-                Lumoscale
-              </span>
-            </motion.div>
+            <div className="flex items-center gap-3 mb-6">
+              <img src={logo} alt="Lumoscale" className="h-10 w-auto" />
+              <span className="text-xl font-semibold">Lumoscale</span>
+            </div>
 
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
-              Lumoscale builds AI systems that reply instantly, qualify leads,
-              and turn conversations into booked consultations automatically.
+              Lumoscale designs AI automation systems that turn inbound
+              conversations into qualified bookings.
             </p>
           </motion.div>
 
-          {/* Navigation */}
+          {/* EXPLORE */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
-            transition={{ delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <p className="mb-4 font-semibold text-white">Explore</p>
-            <ul className="space-y-3 text-sm">
-              {[
-                { label: "Solution", href: "#solution" },
-                { label: "Demo", href: "#demo" },
-                { label: "Pricing", href: "#pricing" },
-                { label: "Results", href: "#beforeafter" },
-                { label: "Testimonials", href: "#testimonials" },
-                { label: "Case Study", href: "#case-study" },
-              ].map((item) => (
-                <li key={item.label}>
-                  <motion.a
-                    href={item.href}
-                    className="text-slate-400 inline-block"
-                    whileHover={{ x: 6, color: "#ffffff" }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    {item.label}
-                  </motion.a>
-                </li>
-              ))}
+            <p className="mb-5 text-sm font-semibold tracking-wide">
+              EXPLORE
+            </p>
+            <ul className="space-y-3 text-sm text-slate-400">
+              <li><a href="#solution" className="hover:text-white">Solution</a></li>
+              <li><a href="#demo" className="hover:text-white">Demo</a></li>
+              <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
+              <li><a href="#beforeafter" className="hover:text-white">Results</a></li>
+              <li><a href="#case-study" className="hover:text-white">Case Studies</a></li>
             </ul>
           </motion.div>
 
-          {/* Contact */}
+          {/* CONTACT */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
-            transition={{ delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <p className="mb-4 font-semibold text-white">Contact</p>
-            <ul className="space-y-3 text-sm">
-              <motion.li whileHover={{ x: 6 }}>
-                <a
-                  href="mailto:contact@lumoscale.com"
-                  className="text-slate-400 hover:text-white transition"
-                >
+            <p className="mb-5 text-sm font-semibold tracking-wide">
+              CONTACT
+            </p>
+
+            <div className="space-y-4 text-sm text-slate-400">
+              <div>
+                <p className="text-white">Email</p>
+                <a href="mailto:contact@lumoscale.com" className="hover:text-white">
                   contact@lumoscale.com
                 </a>
-              </motion.li>
-              <motion.li whileHover={{ x: 6 }}>
+              </div>
+
+              <div>
+                <p className="text-white">Phone</p>
+                <p>+91 89190 53970</p>
+                <p>+91 80743 28526</p>
+              </div>
+
+              <div>
+                <p className="text-white">Location</p>
+                <p>Bengaluru, Karnataka, India</p>
+              </div>
+
+              {/* SOCIAL ICONS */}
+              <div className="flex gap-4 pt-2">
                 <a
-                  href="tel:+918919053970"
-                  className="text-slate-400 hover:text-white transition"
+                  href="https://www.linkedin.com/company/lumoscale/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 border border-white/20 rounded hover:bg-white hover:text-black transition"
                 >
-                  +91 89190 53970
+                  <FaLinkedinIn size={16} />
                 </a>
-              </motion.li>
-            </ul>
+                <a
+                  href="https://www.instagram.com/lumoscale.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 border border-white/20 rounded hover:bg-white hover:text-black transition"
+                >
+                  <FaInstagram size={16} />
+                </a>
+                <a
+                  href="https://www.facebook.com/p/Lumoscale-61562068393631/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 border border-white/20 rounded hover:bg-white hover:text-black transition"
+                >
+                  <FaFacebookF size={16} />
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* FROM LINKEDIN */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
+            <p className="mb-5 text-sm font-semibold tracking-wide">
+              FROM LINKEDIN
+            </p>
+
+            <div className="rounded-lg overflow-hidden border border-white/10">
+              <iframe
+                src="https://www.linkedin.com/embed/feed/update/urn:li:share:7407429716019896320"
+                height="380"
+                width="100%"
+                frameBorder="0"
+                allowFullScreen
+                title="Lumoscale LinkedIn Post"
+              ></iframe>
+            </div>
           </motion.div>
 
         </div>
-
-        {/* Animated Divider */}
-        <motion.div
-          className="mt-16 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1 }}
-        />
-
-        {/* Bottom */}
-        <motion.div
-          className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-        >
-          <span>© {new Date().getFullYear()} Lumoscale. All rights reserved.</span>
-          <span>Built for founders who value speed, systems, and leverage.</span>
-        </motion.div>
-
       </div>
+
+      {/* BOTTOM BAR */}
+      <div className="border-t border-white/10">
+        <div className="container mx-auto px-6 py-6 text-xs text-slate-500 flex flex-col md:flex-row justify-between gap-3">
+          <span>© {new Date().getFullYear()} Lumoscale. All rights reserved.</span>
+          <span>Built with a systems first mindset.</span>
+        </div>
+      </div>
+
     </footer>
   );
 };
