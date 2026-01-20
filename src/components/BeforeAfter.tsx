@@ -1,197 +1,173 @@
-import { X, Check, Zap, ArrowRight, ArrowDown } from "lucide-react";
 import { motion } from "framer-motion";
-
-const before = [
-  "20+ hours wasted weekly on DMs",
-  "Missing hot leads in spam folders",
-  "Talking to unqualified tire-kickers",
-  "High no-show rate on calls",
-  "Going into sales calls blind"
-];
-
-const after = [
-  "AI handles conversations 24/7",
-  "Instant engagement (Speed to Lead)",
-  "Only qualified bookings appear",
-  "Automated multi-channel reminders",
-  "Full pre-call intelligence briefs"
-];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, x: -10 },
-  visible: { opacity: 1, x: 0 }
-};
+import { ArrowRight, TrendingDown, TrendingUp } from "lucide-react";
 
 const BeforeAfter = () => {
   return (
-    <section id="beforeafter" className="py-24 md:py-32 relative overflow-hidden bg-background">
-      {/* Ambient Background Lights */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[600px] h-[600px] bg-red-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[600px] h-[600px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none" />
+    <section id="beforeafter" className="py-28 relative overflow-hidden">
+      {/* Premium Background */}
+      <div className="absolute inset-0 bg-[#09090b]" />
+      <div className="absolute inset-0">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-gradient-to-r from-cyan-500/10 via-purple-500/5 to-emerald-500/10 blur-[100px] rounded-full" />
+      </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          
-          {/* Section Heading */}
-          <div className="text-center mb-20">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6"
-            >
-              <Zap className="w-4 h-4" />
-              <span>The Shift</span>
-            </motion.div>
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-5xl md:text-6xl font-bold mb-6"
-            >
-              The Transformation
-            </motion.h2>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-xl text-muted-foreground"
-            >
-              Stop grinding manually. Start scaling automatically.
-            </motion.p>
+      <div className="max-w-6xl mx-auto px-6 relative">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6">
+            <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+            <span className="text-xs font-medium text-white/60 uppercase tracking-wider">
+              From Revenue Leak to Revenue Machine
+            </span>
           </div>
-          
-          <div className="relative grid lg:grid-cols-2 gap-8 lg:gap-24 items-center">
-            
-            {/* CENTRAL CONNECTOR ARROW (Desktop & Mobile) */}
-            <motion.div 
-                initial={{ scale: 0, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.5, type: "spring" }}
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden lg:flex flex-col items-center justify-center"
-            >
-                <div className="w-16 h-16 rounded-full bg-background border border-border flex items-center justify-center shadow-2xl">
-                    <ArrowRight className="w-6 h-6 text-muted-foreground" />
-                </div>
-            </motion.div>
 
-             {/* MOBILE CONNECTOR ARROW */}
-             <motion.div 
-                className="lg:hidden flex justify-center py-4"
-                initial={{ opacity: 0, y: -10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-            >
-                <ArrowDown className="w-8 h-8 text-muted-foreground opacity-50" />
-            </motion.div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium text-white leading-tight max-w-3xl mx-auto">
+            Here's exactly what changes when your inbox becomes a system
+          </h2>
+        </motion.div>
 
-            {/* ---------------- BEFORE CARD ---------------- */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative group h-full"
-            >
-              {/* Card Decoration */}
-              <div className="absolute inset-0 bg-destructive/5 rounded-[2.5rem] transform rotate-[-2deg] group-hover:rotate-[-1deg] transition-transform duration-500 ease-out" />
-              
-              <div className="h-full p-8 md:p-10 rounded-[2.5rem] border border-destructive/20 bg-card/80 backdrop-blur-sm relative shadow-xl">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-destructive/10 flex items-center justify-center border border-destructive/20">
-                    <X className="w-6 h-6 text-destructive" />
+        {/* Glass Cards Container */}
+        <div className="grid lg:grid-cols-2 gap-6">
+
+          {/* BEFORE Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="group"
+          >
+            <div className="relative h-full rounded-3xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/[0.08] backdrop-blur-xl p-8 overflow-hidden">
+              {/* Gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* Header */}
+              <div className="relative flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                    <TrendingDown className="w-5 h-5 text-red-400" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-foreground">The Old Way</h3>
-                    <p className="text-muted-foreground text-sm">Manual & Exhausting</p>
+                    <h3 className="text-lg font-semibold text-white">Before</h3>
+                    <p className="text-xs text-white/40">Manual chaos</p>
                   </div>
                 </div>
-                
-                <motion.div 
-                  variants={containerVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  className="space-y-4"
-                >
-                  {before.map((item, i) => (
-                    <motion.div
-                      key={i}
-                      variants={itemVariants}
-                      className="flex items-start gap-4 p-4 rounded-xl bg-destructive/5 border border-transparent transition-colors"
-                    >
-                      <div className="w-5 h-5 rounded-full bg-destructive/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <X className="w-3 h-3 text-destructive" />
-                      </div>
-                      <p className="text-base text-muted-foreground/90 font-medium leading-tight">{item}</p>
-                    </motion.div>
-                  ))}
-                </motion.div>
+                <div className="px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20">
+                  <span className="text-xs font-medium text-red-400">Current State</span>
+                </div>
               </div>
-            </motion.div>
-            
-            {/* ---------------- AFTER CARD ---------------- */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative group h-full"
-            >
-              {/* Glowing Pulse Background */}
-              <div className="absolute inset-0 bg-green-500/10 rounded-[2.5rem] blur-xl opacity-40 group-hover:opacity-60 transition-opacity duration-500" />
-              <div className="absolute inset-0 bg-green-500/5 rounded-[2.5rem] transform rotate-[2deg] group-hover:rotate-[1deg] transition-transform duration-500 ease-out" />
 
-              <div className="h-full p-8 md:p-10 rounded-[2.5rem] border border-green-500/30 bg-[#0a0a0a] relative shadow-2xl shadow-green-500/5 overflow-hidden">
-                
-                <div className="flex items-center gap-4 mb-8 relative z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/20">
-                    <Check className="w-6 h-6 text-white" />
+              {/* Metrics List */}
+              <div className="relative space-y-4">
+                {[
+                  { value: "60-80", unit: "hrs/mo", label: "Manual DM work" },
+                  { value: "Minutes to", unit: "hours", label: "Response time" },
+                  { value: "40%+", unit: "", label: "No-show rate" },
+                  { value: "Zero", unit: "", label: "Performance visibility" },
+                  { value: "🔥 VA", unit: "", label: "Struggles with volume, misses leads, no analytics" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0">
+                    <span className="text-sm text-white/50">{item.label}</span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-xl font-semibold text-white">{item.value}</span>
+                      <span className="text-sm text-white/40">{item.unit}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div className="relative mt-8 p-4 rounded-2xl bg-red-500/5 border border-red-500/10">
+                <p className="text-sm text-white/60">
+                  <span className="text-red-400 font-medium">Reality Check:</span> You're working IN the DMs, not ON the business.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* AFTER Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="group"
+          >
+            <div className="relative h-full rounded-3xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/[0.08] backdrop-blur-xl p-8 overflow-hidden">
+              {/* Gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* Glow effect */}
+              <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/20 blur-[80px] rounded-full" />
+
+              {/* Header */}
+              <div className="relative flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-white">The AI System</h3>
-                    <p className="text-green-400/80 text-sm font-medium">Automated & Scalable</p>
+                    <h3 className="text-lg font-semibold text-white">After</h3>
+                    <p className="text-xs text-white/40">System control</p>
                   </div>
                 </div>
-                
-                <motion.div 
-                  variants={containerVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  className="space-y-4 relative z-10"
-                >
-                  {after.map((item, i) => (
-                    <motion.div
-                      key={i}
-                      variants={itemVariants}
-                      whileHover={{ x: 5 }}
-                      className="flex items-start gap-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20 transition-all duration-300"
-                    >
-                      <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
-                        <Check className="w-3 h-3 text-black font-bold" />
-                      </div>
-                      <p className="text-base text-white/90 font-medium leading-tight">{item}</p>
-                    </motion.div>
-                  ))}
-                </motion.div>
+                <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                  <span className="text-xs font-medium text-emerald-400">With System</span>
+                </div>
               </div>
-            </motion.div>
 
-          </div>
+              {/* Metrics List */}
+              <div className="relative space-y-4">
+                {[
+                  { value: "0", unit: "hours", label: "Manual DM work" },
+                  { value: "<60", unit: "sec", label: "Response time" },
+                  { value: "<5%", unit: "", label: "No-show rate" },
+                  { value: "Full", unit: "", label: "Performance visibility" },
+                  { value: "System", unit: "", label: "Unlimited capacity + intent detection + conversion intelligence" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0">
+                    <span className="text-sm text-white/50">{item.label}</span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-xl font-semibold text-white">{item.value}</span>
+                      <span className="text-sm text-white/40">{item.unit}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div className="relative mt-8 p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10">
+                <p className="text-sm text-white/60">
+                  <span className="text-emerald-400 font-medium">Reality Check:</span> DMs become a predictable revenue system you control.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
         </div>
+
+        {/* Bottom CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="flex justify-center mt-12"
+        >
+          <button
+            onClick={() => document.getElementById("finalcta")?.scrollIntoView({ behavior: "smooth" })}
+            className="group inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-medium text-sm hover:bg-white/90 transition-colors"
+          >
+            See how this works for you
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </motion.div>
+
       </div>
     </section>
   );

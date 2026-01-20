@@ -1,130 +1,163 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "@/assets/lumoscale-logo.jpg";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
 import FloatingContact from "./FloatingContact";
+import { motion, AnimatePresence } from "framer-motion";
 
 /* ---------- Nav Item ---------- */
 const NavItem = ({ href, label }: { href: string; label: string }) => (
   <a
     href={href}
-    className="
-      px-4 py-2 text-sm font-medium rounded-lg
-      text-muted-foreground transition-all
-      hover:text-black hover:bg-white hover:shadow-md
-    "
+    className="relative px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:text-white group"
   >
     {label}
+    <span className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-cyan-500/0 via-cyan-500/70 to-cyan-500/0 opacity-0 transition-opacity group-hover:opacity-100" />
   </a>
 );
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToCTA = () => {
+    document.getElementById("finalcta")?.scrollIntoView({ behavior: "smooth" });
+    setOpen(false);
+  };
 
   return (
     <>
-      <header className="w-full fixed top-0 left-0 z-50 bg-background/60 backdrop-blur-xl border-b border-primary/10">
-      <div className="container mx-auto flex items-center justify-between px-6 py-4">
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
+        className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
+      >
+        <div
+          className={`
+            pointer-events-auto
+            flex items-center justify-between p-2 pl-6 pr-2 gap-8
+            rounded-full border border-white/10
+            backdrop-blur-xl bg-black/50 shadow-2xl shadow-black/50
+            transition-all duration-500
+            ${scrolled ? "w-full max-w-5xl scale-95 md:scale-100" : "w-full max-w-6xl"}
+          `}
+        >
+          {/* Logo */}
+          <div className="flex items-center gap-3 select-none">
+            <img
+              src={logo}
+              alt="Lumoscale AI"
+              className="h-8 w-auto object-contain rounded-full"
+            />
+            <span className="text-lg font-bold tracking-tight text-white hidden sm:block">
+              LUMOSCALE
+            </span>
+          </div>
 
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <img
-            src={logo}
-            alt="Lumoscale AI"
-            className="h-12 w-auto object-contain"
-          />
-          <span className="text-xl font-bold tracking-tight gradient-text">
-            LUMOSCALE
-          </span>
-        </div>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1">
+            <NavItem href="#hero" label="Home" />
+            <NavItem href="#painpoints" label="Challenges" />
+            <NavItem href="#solution" label="How It Works" />
+            <NavItem href="#demo" label="Demo" />
+            <NavItem href="#beforeafter" label="Results" />
+            <NavItem href="#pricing" label="Pricing" />
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-2">
-          <NavItem href="#hero" label="Home" />
-          <NavItem href="#painpoints" label="Challenges" />
-          <NavItem href="#solution" label="How It Works" />
-          <NavItem href="#demo" label="Demo" />
-          <NavItem href="#beforeafter" label="Results" />
-          <NavItem href="#pricing" label="Pricing" />
+            <div className="w-px h-4 bg-white/10 mx-2" />
 
-          <Button
-            className="
-              ml-3 px-6 py-3 text-sm font-semibold rounded-xl
-              bg-gradient-to-r from-primary to-secondary text-black
-              hover:scale-105 transition
-            "
-            onClick={() =>
-              window.open("https://cal.com/lumoscale/30min", "_blank")
-            }
-          >
-            Free System Audit
-          </Button>
-        </nav>
+            <button
+              onClick={scrollToCTA}
+              className="group relative inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black rounded-full font-bold text-xs uppercase tracking-wide hover:bg-zinc-200 transition-all active:scale-95"
+            >
+              <span>Get Audit</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center">
-          <button
-            aria-label="Open menu"
-            onClick={() => setOpen(true)}
-            className="p-2 rounded-md bg-card/60 hover:bg-card/80"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {open && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-start p-6">
-          <div className="w-full max-w-md bg-card rounded-2xl p-6 shadow-2xl">
-
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <img
-                  src={logo}
-                  alt="Lumoscale"
-                  className="h-10 w-auto object-contain"
-                />
-                <span className="font-bold">LUMOSCALE</span>
+              {/* Shine effect */}
+              <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
+                <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -skew-x-12 -translate-x-full group-hover:animate-shine" />
               </div>
-              <button
-                aria-label="Close menu"
-                onClick={() => setOpen(false)}
-                className="p-2 rounded-md hover:bg-muted"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            </button>
+          </nav>
 
-            <ul className="space-y-4">
-              <li><a href="#hero" onClick={() => setOpen(false)} className="block text-lg font-medium">Home</a></li>
-              <li><a href="#painpoints" onClick={() => setOpen(false)} className="block text-lg font-medium">Challenges</a></li>
-              <li><a href="#solution" onClick={() => setOpen(false)} className="block text-lg font-medium">How It Works</a></li>
-              <li><a href="#demo" onClick={() => setOpen(false)} className="block text-lg font-medium">Demo</a></li>
-              <li><a href="#beforeafter" onClick={() => setOpen(false)} className="block text-lg font-medium">Results</a></li>
-              <li><a href="#pricing" onClick={() => setOpen(false)} className="block text-lg font-medium">Pricing</a></li>
-              <li><a href="#testimonials" onClick={() => setOpen(false)} className="block text-lg font-medium">Testimonials</a></li>
-              <li><a href="#case-study" onClick={() => setOpen(false)} className="block text-lg font-medium">Case Study</a></li>
-
-              <li className="pt-2">
-                <Button
-                  className="
-                    w-full py-3 text-black font-semibold rounded-xl
-                    bg-gradient-to-r from-primary to-secondary
-                  "
-                  onClick={() => {
-                    setOpen(false);
-                    window.open("https://cal.com/lumoscale/30min", "_blank");
-                  }}
-                >
-                  Free System Audit
-                </Button>
-              </li>
-            </ul>
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setOpen(true)}
+              className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-white transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
           </div>
         </div>
-      )}
-      </header>
+      </motion.header>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md p-4 flex items-start justify-center pt-24"
+            onClick={() => setOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: -20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: -20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm bg-[#0b0b0b] border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <span className="text-xl font-bold text-white">Menu</span>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {[
+                  { label: "Home", href: "#hero" },
+                  { label: "Challenges", href: "#painpoints" },
+                  { label: "How It Works", href: "#solution" },
+                  { label: "Live Demo", href: "#demo" },
+                  { label: "Results", href: "#beforeafter" },
+                  { label: "Pricing", href: "#pricing" },
+                ].map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all text-lg font-medium"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-white/10">
+                <button
+                  onClick={scrollToCTA}
+                  className="w-full py-4 bg-white text-black rounded-xl font-bold uppercase tracking-wide hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2"
+                >
+                  <span>Get Free Audit</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <FloatingContact />
     </>
   );

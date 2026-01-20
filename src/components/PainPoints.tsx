@@ -1,10 +1,10 @@
 import { AlertCircle, Clock, DollarSign, MessageSquare } from "lucide-react";
 
 const painPoints = [
-  { icon: Clock, text: "You respond 3 hours later. They've already booked with someone else." },
-  { icon: MessageSquare, text: "You get 50 DMs/week. Only 3 turn into bookings (6% conversion)." },
-  { icon: AlertCircle, text: "You spend 15 hours/week on DMs. Still lose 80% of leads." },
-  { icon: DollarSign, text: "40% of bookings don't show up. No reminder system." }
+  { icon: Clock, text: "Leads get lost when you're busy or offline - messages during calls, nights, weekends get missed." },
+  { icon: MessageSquare, text: "Too much time on repetitive replies = 2-4 hours daily answering 'what's your price?' questions." },
+  { icon: AlertCircle, text: "No structured flow = qualified leads drop off while unqualified ones book calls and waste your time." },
+  { icon: DollarSign, text: "Zero visibility on what converts = you don't know which messages work or why people stop replying." }
 ];
 
 const PainPoints = () => {
@@ -25,22 +25,28 @@ const PainPoints = () => {
               </span>
             </div>
 
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold gradient-text shimmer leading-tight">
-              Why You're Losing 80% of Your Leads
+            <h2
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.2]"
+              style={{ fontFamily: "'Outfit', sans-serif", paddingBottom: '0.15em' }}
+            >
+              Where You're <br className="hidden md:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">
+                Losing Money Right Now
+              </span>
             </h2>
 
             {/* MOVED: Sound familiar line */}
             <p className="text-lg text-muted-foreground leading-relaxed mt-4">
-              Sound familiar? <span className="text-primary font-semibold">You're not alone.</span> This is the #1 reason service businesses fail to scale—and it's 100% fixable.
+              Every founder faces this. <span className="text-primary font-semibold">The difference?</span> Some fix it, others keep bleeding revenue.
             </p>
           </div>
 
           {/* RIGHT SIDE */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             {painPoints.map((point, index) => (
               <div
                 key={index}
-                className="group relative flex items-start gap-6 p-6 rounded-2xl border border-destructive/30 bg-destructive/5 hover:bg-destructive/10 transition-all duration-500 hover:shadow-[0_0_30px_hsl(var(--destructive)/0.3)] hover:-translate-y-1 cursor-default"
+                className="group relative flex items-start gap-4 p-4 rounded-xl border border-destructive/30 bg-destructive/5 hover:bg-destructive/10 transition-all duration-500 hover:shadow-[0_0_30px_hsl(var(--destructive)/0.3)] hover:-translate-y-1 cursor-default"
                 style={{
                   animation: "fade-up 0.6s ease-out forwards",
                   animationDelay: `${index * 0.15}s`,
@@ -49,16 +55,16 @@ const PainPoints = () => {
               >
                 <div className="flex-shrink-0 relative">
                   <div className="absolute inset-0 bg-destructive/20 blur-xl rounded-full group-hover:bg-destructive/40 transition-all" />
-                  <point.icon className="w-8 h-8 text-destructive relative z-10" />
+                  <point.icon className="w-6 h-6 text-destructive relative z-10" />
                 </div>
 
-                <div className="space-y-2">
-                  <p className="text-lg md:text-xl text-foreground font-semibold leading-relaxed">{point.text}</p>
-                  <p className="text-sm text-muted-foreground opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 transition-all duration-300">
-                    {index === 0 && "Speed wins. Every hour you wait = 20% lower conversion rate."}
-                    {index === 1 && "Low conversion = you're not qualifying leads properly."}
-                    {index === 2 && "Time is money. 15 hours = $1,500+ in opportunity cost."}
-                    {index === 3 && "No-shows = wasted calendar slots = lost revenue."}
+                <div className="space-y-1">
+                  <p className="text-base md:text-lg text-foreground font-semibold leading-snug">{point.text}</p>
+                  <p className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                    {index === 0 && "- 69% expect replies within 24 hours. Late replies = competitors steal your revenue (lakhs of rupees monthly lost)."}
+                    {index === 1 && "- Time is money. 80 hours monthly = lakhs of opportunity cost wasted on low-leverage work."}
+                    {index === 2 && "- No filtering system = wasted energy on basics instead of closing high-ticket deals"}
+                    {index === 3 && "- No visibility = no optimization. Flying blind means leaving money on the table every launch."}
                   </p>
                 </div>
               </div>
