@@ -46,7 +46,7 @@ const FAQS = [
     },
     {
         question: "Do I need to manage or monitor the system daily?",
-        answer: "No. This is completely hands-off—we handle replies, qualification, follow-ups, and optimization. You just review the dashboard when convenient and take qualified calls. Zero daily management required.",
+        answer: "No. This is completely hands-off, we handle replies, qualification, follow-ups, and optimization. You just review the dashboard when convenient and take qualified calls. Zero daily management required.",
         icon: EyeOff
     },
 
