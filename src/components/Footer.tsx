@@ -13,15 +13,10 @@ const Footer = () => {
   return (
     <footer className="relative py-20 overflow-hidden">
       {/* Background Ambience */}
-      <div className="absolute inset-0 bg-[#020202]" />
-      <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute inset-0 bg-black" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-7xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-[3rem] p-8 md:p-12 md:pb-8 overflow-hidden relative">
-
-          {/* Shine Effect on Card */}
-          <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-white/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+        <div className="max-w-7xl mx-auto p-8 md:p-12 md:pb-8 overflow-hidden relative">
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
 
@@ -59,13 +54,13 @@ const Footer = () => {
               <h4 className="text-white font-bold mb-6">Explore</h4>
               <ul className="space-y-4">
                 {[
-                  { label: "Home", href: "#hero" },
-                  { label: "Pain Points", href: "#painpoints" },
-                  { label: "How It Works", href: "#solution" },
-                  { label: "Live Demo", href: "#demo" },
-                  { label: "Comparisons", href: "#beforeafter" },
-                  { label: "Pricing", href: "#pricing" },
-                  { label: "Questions", href: "#faq" }
+                  { label: "Home", href: "/#hero" },
+                  { label: "Why Lumoscale", href: "/#beforeafter" },
+                  { label: "Live Demo", href: "/#demo" },
+                  { label: "Features", href: "/#solution" },
+                  { label: "Blogs", href: "/blog" },
+                  { label: "Pricing", href: "/#pricing" },
+                  { label: "FAQ", href: "/#faq" }
                 ].map((link) => (
                   <li key={link.label}>
                     <a
@@ -142,7 +137,7 @@ const Footer = () => {
               © {new Date().getFullYear()} Lumoscale. All rights reserved.
             </p>
             <button
-              onClick={scrollToCTA}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="text-white/40 hover:text-white text-sm transition-colors"
             >
               Back to Top
