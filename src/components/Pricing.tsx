@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import {
   Check,
@@ -14,34 +14,33 @@ import { useIsMobile } from "../hooks/use-mobile";
 
 /* ---------- TEXT AGENT FEATURES ---------- */
 const TEXT_FEATURES = [
-  "Social Media DM Automation",
-  "Website Chatbot",
-  "WhatsApp Business API",
-  "Instant 24/7 Responses",
-  "Lead Qualification",
+  "Instagram, WhatsApp & Website automation",
+  "Instant responses (<60 sec)",
+  "Auto-qualify leads",
+  "Smart follow-ups",
+  "Performance dashboard",
 ];
 
 /* ---------- VOICE AGENT FEATURES ---------- */
 const VOICE_FEATURES = [
-  "Inbound & Outbound Calling",
-  "Human-like Voice Clones",
-  "Appointment Setting",
-  "Live Call Transfers",
-  "Call Transcripts & CRM Sync",
+  "Your voice, perfectly cloned",
+  "Inbound & outbound calling",
+  "Auto-book appointments",
+  "Live human transfer",
+  "Call analytics & CRM sync",
 ];
 
 /* ---------- CUSTOM / ENTERPRISE FEATURES ---------- */
 const CUSTOM_FEATURES = [
-  "Full Text + Voice Suite",
-  "Custom AI Model Training",
-  "Dedicated Server Infrastructure",
-  "White-Label Dashboard",
-  "Priority 24/7 Support",
-  "Custom CRM Integrations",
+  "Everything above, integrated",
+  "Custom AI training",
+  "Dedicated infrastructure",
+  "White-label dashboard",
+  "Priority support",
 ];
 
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 1 },
   visible: {
     opacity: 1,
     transition: {
@@ -51,21 +50,18 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0.01, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15
+      duration: 0.5,
+      ease: "easeOut" as const
     }
   }
 };
 
 export default function Pricing() {
-
-
   return (
     <section id="pricing" className="relative w-full bg-black py-24 px-6 overflow-hidden">
       {/* Background Gradients/Grid */}
@@ -96,7 +92,7 @@ export default function Pricing() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight"
           >
-            Simple Plans. <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">Serious Growth.</span>
+            Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">Growth System</span>
           </motion.h2>
 
           <motion.p
@@ -108,8 +104,6 @@ export default function Pricing() {
           >
             Select the perfect engine for your business. No hidden fees. No surprises.
           </motion.p>
-
-
         </div>
 
         {/* PRICING GRID */}
@@ -117,42 +111,45 @@ export default function Pricing() {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10"
         >
 
           <PricingCard
-            title="Text Agent"
-            subtitle="Chat Automation"
-            price="Book a Call"
+            title="Text Agent Suite"
+            subtitle="Stop Missing DMs"
+            description="Turn every inquiry into revenue opportunities."
+            price=""
             features={TEXT_FEATURES}
             icon={MessageSquare}
             gradient="from-blue-500 to-cyan-500"
             glowColor="rgba(59, 130, 246, 0.4)"
-            borderGradient="from-blue-500 via-cyan-400 to-blue-600"
+            ctaText="Contact for Pricing"
           />
 
           <PricingCard
-            title="Voice Agent"
-            subtitle="Call Handling"
-            price="Book a Call"
+            title="Voice Agent Suite"
+            subtitle="Never Miss Another Call"
+            description="Your calendar fills while you focus on closing."
+            price=""
             features={VOICE_FEATURES}
             icon={Phone}
+            isPopular={true}
             gradient="from-emerald-500 to-green-500"
             glowColor="rgba(34, 197, 94, 0.4)"
-            borderGradient="from-emerald-500 via-green-400 to-emerald-600"
+            ctaText="Contact for Pricing"
           />
 
           <PricingCard
-            title="Custom Build"
-            subtitle="Enterprise Scale"
-            price="Contact Us"
+            title="Custom Pricing"
+            subtitle="Total Lead Domination"
+            description="Scale without hiring. Dominate without limits."
+            price=""
             features={CUSTOM_FEATURES}
             icon={Building2}
-            isPopular={true}
             gradient="from-purple-500 to-pink-500"
             glowColor="rgba(168, 85, 247, 0.4)"
-            borderGradient="from-purple-500 via-pink-400 to-purple-600"
+            ctaText="Talk to Growth Team"
           />
 
         </motion.div>
@@ -162,10 +159,7 @@ export default function Pricing() {
   );
 }
 
-
-
-
-function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular = false, gradient, glowColor, borderGradient }: any) {
+function PricingCard({ title, subtitle, description, price, features, icon: Icon, isPopular = false, gradient, glowColor, ctaText }: any) {
   const { openModal } = useAuditModal();
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -174,7 +168,6 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
   const isMobile = useIsMobile();
-  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isMobile) return;
@@ -184,9 +177,6 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
-      // Simulate mouse movement in a figure-8 or circle
-      // Center is roughly 200, 200 depending on card size.
-      // Let's assume a generic center.
       const cx = 150;
       const cy = 200;
 
@@ -215,10 +205,9 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
     mouseX.set(x);
     mouseY.set(y);
 
-    // Subtle Tilt
     const centerX = width / 2;
     const centerY = height / 2;
-    const rotateXValue = ((y - centerY) / centerY) * -2.5; // Reduced from 5
+    const rotateXValue = ((y - centerY) / centerY) * -2.5;
     const rotateYValue = ((x - centerX) / centerX) * 2.5;
 
     rotateX.set(rotateXValue);
@@ -254,7 +243,7 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
           <div className={`absolute -inset-[50%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] opacity-20`} />
         </div>
 
-        {/* Inner Dark Background to sit on top of rotating border */}
+        {/* Inner Dark Background */}
         <div className="absolute inset-[1px] bg-[#0A0A0A] rounded-[31px] z-0" />
 
         {/* SPOTLIGHT EFFECT */}
@@ -273,19 +262,10 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
 
         {/* GLOWING TOP GRADIENT (Popular Only) */}
         {isPopular && (
-          <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-100 z-20" />
+          <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-100 z-20" />
         )}
 
-        {/* Popular Badge */}
-        {isPopular && (
-          <div className="absolute top-6 right-6 z-20 transform translate-z-20" style={{ transform: "translateZ(20px)" }}>
-            <span className="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 shadow-[0_0_15px_rgba(168,85,247,0.4)]">
-              <Sparkles className="w-3 h-3" /> Popular
-            </span>
-          </div>
-        )}
-
-        {/* Header - Raised Z-Index */}
+        {/* Header */}
         <div className="relative z-20 mb-8 transform transition-transform duration-300" style={{ transform: "translateZ(30px)" }}>
           <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-gradient-to-br ${gradient} bg-opacity-20 shadow-[0_0_20px_rgba(0,0,0,0.5)] ring-1 ring-white/10`}>
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -293,15 +273,18 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
           </div>
 
           <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">{title}</h3>
-          <p className="text-sm text-zinc-400 font-medium group-hover:text-zinc-300 transition-colors">{subtitle}</p>
+          <p className="text-sm font-bold text-emerald-400 mb-2">{subtitle}</p>
+          <p className="text-xs text-zinc-400 leading-relaxed">{description}</p>
         </div>
 
         {/* Price */}
-        <div className="relative z-20 mb-8 pb-8 border-b border-white/5" style={{ transform: "translateZ(20px)" }}>
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-bold text-white tracking-tight">{price}</span>
+        {price && price.trim() !== "" && (
+          <div className="relative z-20 mb-8 pb-8 border-b border-white/5" style={{ transform: "translateZ(20px)" }}>
+            <div className="flex items-baseline gap-1">
+              <span className="text-3xl font-bold text-white tracking-tight">{price}</span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Features */}
         <div className="relative z-20 flex-1 space-y-5 mb-10" style={{ transform: "translateZ(10px)" }}>
@@ -324,10 +307,10 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
             }`}
           style={{ transform: "translateZ(30px)" }}
         >
-          Contact for Pricing <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          {ctaText} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
 
       </motion.div>
     </motion.div>
-  )
+  );
 }

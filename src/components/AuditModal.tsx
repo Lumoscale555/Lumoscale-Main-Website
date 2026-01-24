@@ -148,9 +148,15 @@ export default function AuditModal() {
             case "text-pain": return form.textPainPoints.length > 0;
 
             // Common
-            case "business-info": return !!form.businessSetup && !!form.revenueRange;
+            case "business-info":
+                if (form.serviceType === "text") {
+                    return !!form.businessSetup && !!form.revenueRange;
+                }
+                return !!form.revenueRange;
             case "primary-goal": return !!form.primaryGoal;
-            case "contact": return !!form.name && !!form.email && !!form.whatsapp;
+            case "contact":
+                const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+                return !!form.name && isEmailValid && !!form.whatsapp;
             default: return false;
         }
     };
@@ -374,17 +380,21 @@ export default function AuditModal() {
                                             <div className="space-y-6">
                                                 <div>
                                                     <h4 className="text-base font-bold text-white mb-3">Tell us about your business</h4>
-                                                    <label className="text-xs font-bold text-zinc-500 uppercase block mb-2">What best describes your current setup?</label>
-                                                    <div className="grid grid-cols-2 gap-3">
-                                                        {SETUP_OPTIONS.map(v => (
-                                                            <button key={v} onClick={() => setForm({ ...form, businessSetup: v })}
-                                                                className={`p-3 rounded-xl border text-left text-xs font-medium transition-all ${form.businessSetup === v ? "border-purple-500 bg-purple-500/10 text-white" : "border-white/5 bg-white/5 text-zinc-400 hover:border-white/20"}`}>
-                                                                {v}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <div>
+
+                                                    {form.serviceType === "text" && (
+                                                        <div className="mb-6">
+                                                            <label className="text-xs font-bold text-zinc-500 uppercase block mb-2">What best describes your current setup?</label>
+                                                            <div className="grid grid-cols-2 gap-3">
+                                                                {SETUP_OPTIONS.map(v => (
+                                                                    <button key={v} onClick={() => setForm({ ...form, businessSetup: v })}
+                                                                        className={`p-3 rounded-xl border text-left text-xs font-medium transition-all ${form.businessSetup === v ? "border-purple-500 bg-purple-500/10 text-white" : "border-white/5 bg-white/5 text-zinc-400 hover:border-white/20"}`}>
+                                                                        {v}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
                                                     <label className="text-xs font-bold text-zinc-500 uppercase block mb-2">Current Monthly Revenue Range:</label>
                                                     <div className="grid grid-cols-2 gap-3">
                                                         {REVENUE_RANGES.map(v => (
@@ -432,9 +442,16 @@ export default function AuditModal() {
                                                                 className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-cyan-500 outline-none" />
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <label className="text-[10px] font-bold text-zinc-500 uppercase ml-1">Email</label>
+                                                            <div className="flex justify-between items-end ml-1">
+                                                                <label className="text-[10px] font-bold text-zinc-500 uppercase">Email</label>
+                                                                {form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) && (
+                                                                    <span className="text-[10px] text-red-500 font-bold animate-pulse">
+                                                                        Please type your email (e.g. name@gmail.com)
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                             <input type="email" placeholder="john@company.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                                                                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white focus:border-cyan-500 outline-none" />
+                                                                className={`w-full rounded-xl bg-white/5 border px-4 py-3 text-white outline-none transition-colors ${form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-cyan-500'}`} />
                                                         </div>
                                                     </div>
                                                     <div className="space-y-2">
