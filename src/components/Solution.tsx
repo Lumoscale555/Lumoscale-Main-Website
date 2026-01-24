@@ -104,14 +104,41 @@ function FeatureCard({ feature, index, isMobile }: { feature: any, index: number
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
 
+  useEffect(() => {
+    if (!isMobile) return;
+
+    // Auto-fadeIn opacity once
+    setOpacity(1);
+
+    let animationFrameId: number;
+    let startTime = Date.now();
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      // Circle movement
+      const x = 150 + Math.sin(elapsed * 0.001) * 100;
+      const y = 100 + Math.cos(elapsed * 0.001) * 80;
+      setPosition({ x, y });
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isMobile]);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return;
     if (!divRef.current) return;
     const rect = divRef.current.getBoundingClientRect();
     setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
-  const handleMouseEnter = () => setOpacity(1);
-  const handleMouseLeave = () => setOpacity(0);
+  const handleMouseEnter = () => {
+    if (!isMobile) setOpacity(1);
+  };
+  const handleMouseLeave = () => {
+    if (!isMobile) setOpacity(0);
+  };
 
   return (
     <motion.div

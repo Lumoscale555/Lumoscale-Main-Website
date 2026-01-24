@@ -5,6 +5,7 @@ import { BlogPost } from '@/types/blog';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowRight, Clock, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useIsMobile } from "../hooks/use-mobile";
 
 // Static fallback posts when Supabase table doesn't exist
 const FALLBACK_POSTS: BlogPost[] = [
@@ -47,6 +48,18 @@ const BlogPreview = () => {
     const [posts, setPosts] = useState<BlogPost[]>([]);
     const [loading, setLoading] = useState(true);
     const [useFallback, setUseFallback] = useState(false);
+
+    // Mobile automation
+    const isMobile = useIsMobile();
+    const [activePostIndex, setActivePostIndex] = useState(0);
+
+    useEffect(() => {
+        if (!isMobile) return;
+        const interval = setInterval(() => {
+            setActivePostIndex(prev => (posts.length > 0 ? (prev + 1) % posts.length : (prev + 1) % FALLBACK_POSTS.length));
+        }, 3000);
+        return () => clearInterval(interval);
+    }, [isMobile, posts.length]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -123,12 +136,13 @@ const BlogPreview = () => {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 className="group relative"
+                                data-active={isMobile && index === activePostIndex ? "true" : undefined}
                             >
-                                <div className="h-full bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all">
+                                <div className="h-full bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all group-data-[active=true]:border-white/20">
                                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-green-500/20 flex items-center justify-center mb-4">
                                         <FileText className="w-6 h-6 text-emerald-400" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-400 group-data-[active=true]:text-emerald-400 transition-colors">
                                         {post.title}
                                     </h3>
                                     <p className="text-sm text-white/50 mb-4">
@@ -172,7 +186,7 @@ const BlogPreview = () => {
                         transition={{ duration: 0.6, delay: 0.1 }}
                         className="text-zinc-400 max-w-2xl mx-auto"
                     >
-                        Strategies, guides, and technical deep-dives on scaling your agency with AI.
+                        Strategies, guides, and technical deep-dives on scaling your business with AI agents
                     </motion.p>
                 </div>
 
@@ -192,10 +206,11 @@ const BlogPreview = () => {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 className="group relative flex flex-col h-full"
+                                data-active={isMobile && index === activePostIndex ? "true" : undefined}
                             >
                                 <Link to={`/blog/${post.slug}`} className="absolute inset-0 z-20" />
 
-                                <div className="relative h-full flex flex-col bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 group-hover:border-green-500/50 group-hover:shadow-[0_0_50px_-15px_rgba(34,197,94,0.2)]">
+                                <div className="relative h-full flex flex-col bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 group-hover:border-green-500/50 group-hover:shadow-[0_0_50px_-15px_rgba(34,197,94,0.2)] group-data-[active=true]:border-green-500/50 group-data-[active=true]:shadow-[0_0_50px_-15px_rgba(34,197,94,0.2)]">
                                     {/* Image Container */}
                                     <div className="relative h-56 overflow-hidden">
                                         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent z-10 opacity-60" />
@@ -203,7 +218,7 @@ const BlogPreview = () => {
                                             <img
                                                 src={post.image_url}
                                                 alt={post.title}
-                                                className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                                                className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105 group-data-[active=true]:scale-105"
                                             />
                                         ) : (
                                             <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
@@ -212,7 +227,7 @@ const BlogPreview = () => {
                                         )}
 
                                         <div className="absolute top-4 left-4 z-20">
-                                            <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-xs font-medium text-white group-hover:bg-green-500/10 group-hover:border-green-500/30 group-hover:text-green-400 transition-colors">
+                                            <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-xs font-medium text-white group-hover:bg-green-500/10 group-hover:border-green-500/30 group-hover:text-green-400 group-data-[active=true]:bg-green-500/10 group-data-[active=true]:border-green-500/30 group-data-[active=true]:text-green-400 transition-colors">
                                                 Article
                                             </span>
                                         </div>
@@ -220,7 +235,7 @@ const BlogPreview = () => {
 
                                     {/* Content */}
                                     <div className="flex flex-col flex-grow p-6">
-                                        <div className="flex items-center gap-4 text-xs text-zinc-400 mb-4 group-hover:text-zinc-300 transition-colors">
+                                        <div className="flex items-center gap-4 text-xs text-zinc-400 mb-4 group-hover:text-zinc-300 group-data-[active=true]:text-zinc-300 transition-colors">
                                             <div className="flex items-center gap-1.5">
                                                 <Calendar className="w-3.5 h-3.5" />
                                                 {new Date(post.created_at).toLocaleDateString()}
@@ -231,7 +246,7 @@ const BlogPreview = () => {
                                             </div>
                                         </div>
 
-                                        <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-green-400 transition-colors">
+                                        <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-green-400 group-data-[active=true]:text-green-400 transition-colors">
                                             {post.title}
                                         </h3>
 
@@ -239,9 +254,9 @@ const BlogPreview = () => {
                                             {post.excerpt}
                                         </p>
 
-                                        <div className="flex items-center text-sm font-medium text-white group-hover:text-green-400 transition-colors mt-auto">
+                                        <div className="flex items-center text-sm font-medium text-white group-hover:text-green-400 group-data-[active=true]:text-green-400 transition-colors mt-auto">
                                             Read Article
-                                            <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                                            <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 group-data-[active=true]:translate-x-1 transition-transform" />
                                         </div>
                                     </div>
                                 </div>

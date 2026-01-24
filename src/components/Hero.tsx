@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { useIsMobile } from "../hooks/use-mobile";
+
 // Roles to cycle through for Niche
 const ROLES = [
   { text: "Every Patient,", color: "#60a5fa" }, // Blue-400
@@ -21,6 +23,7 @@ const ROLES = [
 const Hero = () => {
   const deviceRef = useRef<HTMLDivElement | null>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const isMobile = useIsMobile();
 
   // Voice Agent State
   const [voiceActive, setVoiceActive] = useState(true);
@@ -44,8 +47,21 @@ const Hero = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Mouse tracking for 3D tilt
+  // Mouse tracking for 3D tilt or Auto-tilt on mobile
   useEffect(() => {
+    let animationFrameId: number;
+    let startTime = Date.now();
+
+    const animateMobile = () => {
+      const elapsed = Date.now() - startTime;
+      // Gentle sway
+      setTilt({
+        x: Math.sin(elapsed * 0.001) * 5, // Sway vertically
+        y: Math.cos(elapsed * 0.001) * 5, // Sway horizontally
+      });
+      animationFrameId = requestAnimationFrame(animateMobile);
+    };
+
     const handleMouseMove = (e: MouseEvent) => {
       if (!deviceRef.current) return;
       const windowWidth = window.innerWidth;
@@ -58,9 +74,21 @@ const Hero = () => {
         y: -mouseX * 10,
       });
     };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+
+    if (isMobile) {
+      animateMobile();
+    } else {
+      window.addEventListener("mousemove", handleMouseMove);
+    }
+
+    return () => {
+      if (isMobile) {
+        cancelAnimationFrame(animationFrameId);
+      } else {
+        window.removeEventListener("mousemove", handleMouseMove);
+      }
+    };
+  }, [isMobile]);
 
   const scrollToDemo = () => {
     const demoSection = document.getElementById('demo');
@@ -73,7 +101,7 @@ const Hero = () => {
     <>
       <section
         id="hero"
-        className="relative min-h-[100vh] flex items-center justify-center overflow-hidden px-6 pt-32 pb-20 bg-black"
+        className="relative min-h-[100vh] flex items-center justify-center overflow-hidden px-6 pt-32 pb-12 md:pb-20 bg-black"
       >
         <div className="container mx-auto grid lg:grid-cols-2 gap-16 relative z-10 items-center">
           {/* LEFT CONTENT */}
@@ -90,7 +118,7 @@ const Hero = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
               </span>
-              <span className="text-xs font-bold tracking-widest text-blue-200 uppercase">
+              <span className="text-xs font-bold tracking-widest text-blue-200 uppercase whitespace-nowrap">
                 AI for Healthcare & Real Estate
               </span>
             </motion.div>
@@ -98,29 +126,49 @@ const Hero = () => {
             <div className="space-y-6">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.05]" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 <span className="block text-white drop-shadow-2xl overflow-hidden pb-2">
-                  {"Never Miss Another".split("").map((char, index) => (
-                    <motion.span
-                      key={index}
-                      initial={{ opacity: 0, y: 40 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.03, ease: [0.33, 1, 0.68, 1] }}
-                      className="inline-block"
-                    >
-                      {char === " " ? "\u00A0" : char}
-                    </motion.span>
+                  {"Never Miss Another".split(" ").map((word, wordIndex) => (
+                    <React.Fragment key={wordIndex}>
+                      <span className="inline-block whitespace-nowrap">
+                        {word.split("").map((char, charIndex) => {
+                          const globalIndex = "Never Miss Another".slice(0, "Never Miss Another".indexOf(word)).length + charIndex;
+                          return (
+                            <motion.span
+                              key={charIndex}
+                              initial={{ opacity: 0, y: 40 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.5, delay: globalIndex * 0.03, ease: [0.33, 1, 0.68, 1] }}
+                              className="inline-block"
+                            >
+                              {char}
+                            </motion.span>
+                          );
+                        })}
+                      </span>
+                      {" "}
+                    </React.Fragment>
                   ))}
                 </span>
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600 drop-shadow-lg pb-2 overflow-hidden">
-                  {"Patient or Buyer".split("").map((char, index) => (
-                    <motion.span
-                      key={index}
-                      initial={{ opacity: 0, y: 40 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.5 + (index * 0.03), ease: [0.33, 1, 0.68, 1] }}
-                      className="inline-block"
-                    >
-                      {char === " " ? "\u00A0" : char}
-                    </motion.span>
+                  {"Patient or Buyer".split(" ").map((word, wordIndex) => (
+                    <React.Fragment key={wordIndex}>
+                      <span className="inline-block whitespace-nowrap">
+                        {word.split("").map((char, charIndex) => {
+                          const globalIndex = "Patient or Buyer".slice(0, "Patient or Buyer".indexOf(word)).length + charIndex;
+                          return (
+                            <motion.span
+                              key={charIndex}
+                              initial={{ opacity: 0, y: 40 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.5, delay: 0.5 + (globalIndex * 0.03), ease: [0.33, 1, 0.68, 1] }}
+                              className="inline-block"
+                            >
+                              {char}
+                            </motion.span>
+                          );
+                        })}
+                      </span>
+                      {" "}
+                    </React.Fragment>
                   ))}
                 </span>
               </h1>
@@ -177,7 +225,7 @@ const Hero = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="relative flex items-center justify-center min-w-0 perspective-1000 h-[600px] lg:h-[700px]"
+            className="relative flex items-center justify-center min-w-0 perspective-1000 h-[640px] lg:h-[700px]"
           >
             {/* Dynamic Glow Behind Graphic */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none mix-blend-screen" />
@@ -201,7 +249,7 @@ const Hero = () => {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="absolute left-0 lg:left-8 top-20 w-[320px] bg-[#0A0A0A]/90 backdrop-blur-xl rounded-[32px] p-6 shadow-2xl z-10 border border-blue-500/20"
+                className="absolute left-0 right-0 mx-auto lg:mx-0 lg:left-8 lg:right-auto top-4 lg:top-20 w-[320px] bg-[#0A0A0A]/90 backdrop-blur-xl rounded-[32px] p-6 shadow-2xl z-10 border border-blue-500/20"
                 style={{
                   transform: 'translateZ(-40px) translateX(-20px)',
                   boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.1)'
@@ -271,7 +319,7 @@ const Hero = () => {
                   ease: "easeInOut",
                   delay: 0.5
                 }}
-                className="absolute right-0 lg:right-8 bottom-32 w-[300px] bg-[#0A0A0A] rounded-[32px] p-8 z-20 border border-purple-500/20"
+                className="absolute left-0 right-0 mx-auto lg:mx-0 lg:left-auto lg:right-8 bottom-4 lg:bottom-32 w-[300px] bg-[#0A0A0A] rounded-[32px] p-8 z-20 border border-purple-500/20"
                 style={{
                   transform: 'translateZ(60px) translateX(20px)',
                   boxShadow: '0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 50px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255,255,255,0.1)'
