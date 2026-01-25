@@ -26,7 +26,7 @@ export const ProtectedRoute = () => {
     }
 
     if (!session) {
-        return <Navigate to="/admin/login" replace />;
+        return <Navigate to="/login" replace />;
     }
 
     return <Outlet />;

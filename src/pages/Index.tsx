@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 
 import Solution from "@/components/Solution";
 
+
 import DMDemo from "@/components/DMDemo";
 import BeforeAfter from "@/components/BeforeAfter";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -41,7 +42,10 @@ const Index = () => {
       <DMDemo />
 
 
+
       <Solution />
+
+
       <BlogPreview />
       <Pricing />
 

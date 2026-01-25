@@ -143,7 +143,7 @@ const Editor = () => {
         <div className="min-h-screen bg-black text-white pb-20">
             {/* Top Bar */}
             <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10 px-6 py-4 flex items-center justify-between">
-                <Button variant="ghost" asChild className="text-zinc-400 hover:text-white">
+                <Button variant="ghost" asChild className="text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
                     <Link to="/admin">
                         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
                     </Link>
@@ -159,7 +159,7 @@ const Editor = () => {
                             onCheckedChange={(checked) => setFormData({ ...formData, published: checked })}
                         />
                     </div>
-                    <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-500 rounded-full px-6">
+                    <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-emerald-600 rounded-full px-6 transition-colors">
                         {loading ? 'Saving...' : (
                             <>
                                 <Save className="mr-2 h-4 w-4" /> Save Post

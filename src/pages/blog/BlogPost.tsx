@@ -122,11 +122,7 @@ const BlogPostPage = () => {
                             {post.title}
                         </h1>
 
-                        {post.excerpt && (
-                            <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed max-w-3xl mb-10">
-                                {post.excerpt}
-                            </p>
-                        )}
+
                     </motion.div>
                 </div>
             </div>
@@ -155,9 +151,19 @@ const BlogPostPage = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="premium-blog-content"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                />
+                    transition={{ delay: 0.3 }}
+                >
+                    {post.excerpt && (
+                        <p className="text-xl md:text-2xl text-zinc-200 leading-relaxed font-medium mb-10 pb-10 border-b border-white/10">
+                            {post.excerpt}
+                        </p>
+                    )}
+
+                    <div
+                        className="premium-blog-content"
+                        dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
+                </motion.div>
 
                 {/* Tags */}
                 {post.tags && post.tags.length > 0 && (
