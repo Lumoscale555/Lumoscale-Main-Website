@@ -1,7 +1,103 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Wifi, Battery, Video, CheckCircle2, Bell } from "lucide-react";
+import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Wifi, Battery, Video, CheckCircle2, Bell, X } from "lucide-react";
 import { useIsMobile } from "../hooks/use-mobile";
+import {
+    LiveKitRoom,
+    RoomAudioRenderer,
+    useLocalParticipant,
+    useVoiceAssistant,
+    BarVisualizer,
+    useDataChannel,
+} from "@livekit/components-react";
+
+const ActiveCallInterface = ({ onDisconnect }: { onDisconnect: () => void }) => {
+    const { state, audioTrack } = useVoiceAssistant();
+    const [messages, setMessages] = useState<any[]>([]);
+
+    useDataChannel((msg) => {
+        if (msg.topic === "transcription") {
+            const payload = JSON.parse(new TextDecoder().decode(msg.payload));
+            setMessages(prev => [...prev, payload]);
+        }
+    });
+
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    return (
+        <div className="w-full h-full flex flex-col pt-20 pb-8 px-6 relative z-10">
+            {/* Active Call Header */}
+            <div className="text-center mb-6 shrink-0">
+                <motion.div
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="inline-block relative mb-4"
+                >
+                    <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/10 ring-4 ring-emerald-500/20 shadow-2xl">
+                        <img
+                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            alt="Sarah"
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                </motion.div>
+
+                <h3 className="text-xl font-bold text-white mb-1">Sarah (AI)</h3>
+                <div className="flex items-center justify-center gap-2 text-emerald-400 text-[10px] font-bold uppercase tracking-widest bg-emerald-500/10 py-1 px-2 rounded-full inline-flex border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Live
+                </div>
+            </div>
+
+            {/* Visualizer */}
+            <div className="flex items-center justify-center mb-4 shrink-0 h-12">
+                <BarVisualizer
+                    state={state}
+                    barCount={5}
+                    trackRef={audioTrack}
+                    className="flex gap-2 h-8 items-center justify-center"
+                    style={{ height: "40px" }}
+                />
+            </div>
+
+            {/* Transcript Area */}
+            <div className="flex-1 overflow-y-auto w-full mb-4 px-2 no-scrollbar mask-image-b">
+                <div className="flex flex-col gap-3">
+                    {messages.map((msg, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                        >
+                            <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${msg.role === 'user'
+                                ? 'bg-emerald-500/20 text-emerald-100 rounded-br-none border border-emerald-500/20'
+                                : 'bg-white/10 text-white/90 rounded-bl-none border border-white/5'
+                                }`}>
+                                {msg.content}
+                            </div>
+                        </motion.div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                </div>
+            </div>
+
+            {/* End Call Button */}
+            <div className="w-full flex justify-center pb-4 shrink-0">
+                <button
+                    onClick={onDisconnect}
+                    className="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center shadow-lg shadow-red-500/30 transition-all hover:scale-110 active:scale-95"
+                >
+                    <Phone className="w-6 h-6 text-white rotate-[135deg]" />
+                </button>
+            </div>
+
+        </div>
+    );
+}
 
 // Premium Phone Mockup Component with 3D Tilt and Glass Reflections
 const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { children: React.ReactNode, time?: string, accentColor?: "emerald" | "blue" | "purple" }) => {
@@ -591,30 +687,29 @@ const VoiceWave = () => {
     );
 };
 
+
+
 const VoiceAgentDemo = () => {
     const [isCallActive, setIsCallActive] = useState(false);
-    const [convoStep, setConvoStep] = useState(0);
+    const [token, setToken] = useState("");
+    const [url, setUrl] = useState("");
 
-    // Active conversation steps
-    const conversation = [
-        { speaker: "Sarah", text: "Hi! This is Sarah from Lumoscale. How can I help you today?", delay: 1000 },
-        { speaker: "User", text: "I'm looking to automate my lead follow-ups.", delay: 3500 },
-        { speaker: "Sarah", text: "Great! Our AI can handle that 24/7. Would you like to see a demo?", delay: 6000 },
-        { speaker: "User", text: "Yes, that would be perfect.", delay: 9000 }
-    ];
-
-    useEffect(() => {
-        if (!isCallActive) {
-            setConvoStep(0);
-            return;
+    const handleAnswerCall = async () => {
+        try {
+            const resp = await fetch("/api/token");
+            const data = await resp.json();
+            setToken(data.accessToken);
+            setUrl(data.url);
+            setIsCallActive(true);
+        } catch (e) {
+            console.error(e);
         }
+    };
 
-        const timers = conversation.map((_, i) =>
-            setTimeout(() => setConvoStep(i + 1), conversation[i].delay)
-        );
-
-        return () => timers.forEach(clearTimeout);
-    }, [isCallActive]);
+    const onDisconnect = () => {
+        setIsCallActive(false);
+        setToken("");
+    }
 
     return (
         <PhoneMockup time="10:25" accentColor="emerald">
@@ -680,7 +775,7 @@ const VoiceAgentDemo = () => {
                             {/* Action Button */}
                             <div className="w-full pb-6">
                                 <motion.button
-                                    onClick={() => setIsCallActive(true)}
+                                    onClick={handleAnswerCall}
                                     animate={{
                                         scale: [1, 1.05, 1],
                                         boxShadow: [
@@ -722,102 +817,20 @@ const VoiceAgentDemo = () => {
                             </div>
                         </motion.div>
                     ) : (
-                        <motion.div
-                            key="active"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="w-full h-full flex flex-col pt-20 pb-8 px-6 relative z-10"
-                        >
-                            {/* Active Call Header */}
-                            <div className="text-center mb-12">
-                                <motion.div
-                                    initial={{ scale: 0.5, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    className="inline-block relative mb-4"
-                                >
-                                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/10 ring-4 ring-emerald-500/20 shadow-2xl">
-                                        <img
-                                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                            alt="Sarah"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-1.5 border-4 border-zinc-950">
-                                        <Mic className="w-3 h-3 text-black fill-current" />
-                                    </div>
-                                </motion.div>
-
-                                <h3 className="text-2xl font-bold text-white mb-2">Sarah (AI)</h3>
-                                <div className="flex items-center justify-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-widest bg-emerald-500/10 py-1.5 px-3 rounded-full inline-flex border border-emerald-500/20">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    00:{convoStep < 4 ? '12' : '24'}
-                                </div>
-                            </div>
-
-                            {/* Dynamic Voice Visualization */}
-                            <div className="flex-1 flex items-center justify-center mb-8">
-                                <div className="flex items-center gap-1.5 h-16">
-                                    {[...Array(7)].map((_, i) => (
-                                        <motion.div
-                                            key={i}
-                                            animate={{
-                                                scaleY: [0.3, 1, 0.3],
-                                                opacity: [0.3, 1, 0.3]
-                                            }}
-                                            transition={{
-                                                duration: 0.5,
-                                                repeat: Infinity,
-                                                repeatType: "reverse",
-                                                delay: i * 0.1,
-                                            }}
-                                            className="w-2 bg-gradient-to-t from-emerald-600 to-emerald-300 rounded-full origin-center"
-                                            style={{ height: '60px' }}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-
-
-                            {/* Floating Captions */}
-                            <div className="h-[140px] relative mb-8">
-                                <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950 z-10 pointer-events-none" />
-                                <AnimatePresence mode="popLayout">
-                                    {conversation.slice(0, convoStep).slice(-1).map((msg, i) => (
-                                        <motion.div
-                                            key={convoStep + i}
-                                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                            className="absolute bottom-0 inset-x-0 text-center"
-                                        >
-                                            <p className="text-lg font-medium text-white/90 leading-relaxed px-4 drop-shadow-md">
-                                                "{msg.text}"
-                                            </p>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* Glass Controls */}
-                            <div className="grid grid-cols-4 gap-4 px-2">
-                                <button className="aspect-square rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/5">
-                                    <Mic className="w-6 h-6" />
-                                </button>
-                                <button className="aspect-square rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/5">
-                                    <Video className="w-6 h-6" />
-                                </button>
-                                <button className="aspect-square rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/5">
-                                    <User className="w-6 h-6" />
-                                </button>
-                                <button
-                                    onClick={() => setIsCallActive(false)}
-                                    className="aspect-square rounded-2xl bg-red-500/90 hover:bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-500/30 transition-all hover:scale-105"
-                                >
-                                    <Phone className="w-7 h-7 fill-current rotate-[135deg]" />
-                                </button>
-                            </div>
-                        </motion.div>
+                        token && url && (
+                            <LiveKitRoom
+                                serverUrl={url}
+                                token={token}
+                                connect={true}
+                                audio={true}
+                                video={false}
+                                onDisconnected={onDisconnect}
+                                className="w-full h-full"
+                            >
+                                <ActiveCallInterface onDisconnect={onDisconnect} />
+                                <RoomAudioRenderer />
+                            </LiveKitRoom>
+                        )
                     )}
                 </AnimatePresence>
             </div>
