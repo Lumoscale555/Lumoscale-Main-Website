@@ -85,7 +85,7 @@ const Header = () => {
           `}
         >
           {/* Logo */}
-          <div className="flex items-center gap-3 select-none">
+          <a href="/" className="flex items-center gap-3 select-none hover:opacity-80 transition-opacity">
             <img
               src={logo}
               alt="Lumoscale AI"
@@ -94,7 +94,7 @@ const Header = () => {
             <span className="text-lg font-bold tracking-tight text-white hidden sm:block">
               LUMOSCALE
             </span>
-          </div>
+          </a>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
