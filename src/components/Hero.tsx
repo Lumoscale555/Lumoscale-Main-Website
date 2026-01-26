@@ -180,7 +180,7 @@ const Hero = () => {
                 className="text-2xl md:text-3xl font-light text-zinc-400"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
               >
-                AI agents answer<span className="text-white font-medium border-b border-blue-500/50 pb-0.5"> every call and text </span> 24/7.
+                AI Voice & Text Agents<span className="text-white font-medium border-b border-blue-500/50 pb-0.5"> answer every call </span> 24/7.
               </motion.p>
 
               <motion.p
@@ -200,13 +200,21 @@ const Hero = () => {
               className="flex flex-col sm:flex-row gap-5 pt-4"
             >
               {/* Premium Talk to Team Button */}
-              <Button
-                className="group h-auto px-8 py-5 text-lg bg-white text-black font-bold rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-[#10b981] hover:text-white hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] hover:scale-[1.02] transition-all duration-300 border border-transparent hover:border-emerald-400"
-                onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
-              >
-                Talk to our team
-                <Zap className="w-5 h-5 ml-2 fill-black group-hover:fill-white transition-colors" />
-              </Button>
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                <Button
+                  className="relative h-auto px-8 py-5 text-lg bg-white text-black font-bold rounded-2xl shadow-xl hover:scale-[1.02] transition-all duration-300 border border-white/50 overflow-hidden"
+                  onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
+                >
+                  <span className="relative z-10 flex items-center">
+                    Talk to our team
+                    <Zap className="w-5 h-5 ml-2 fill-blue-500 text-blue-500 group-hover:fill-emerald-600 group-hover:text-emerald-600 transition-colors duration-300" />
+                  </span>
+
+                  {/* Internal Shimmer */}
+                  <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-zinc-200/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                </Button>
+              </div>
 
               <button
                 onClick={scrollToDemo}
