@@ -14,6 +14,7 @@ class Settings:
     deepgram_api_key = os.getenv("DEEPGRAM_API_KEY")
     cartesia_api_key = os.getenv("CARTESIA_API_KEY")
     cartesia_voice_id = os.getenv("CARTESIA_VOICE_ID", "248be419-3632-4f4d-b671-2ab23ede5d4d") # Default ID if not set
+    sip_trunk_id = os.getenv("SIP_TRUNK_ID")
 
     # Redis
     redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
