@@ -8,32 +8,68 @@ import DMDemo from "@/components/DMDemo";
 import BeforeAfter from "@/components/BeforeAfter";
 import ScrollProgress from "@/components/ScrollProgress";
 import Pricing from "@/components/Pricing";
-
-// import ChatWidget from "@/components/ChatWidget";
 import FAQ from "@/components/FAQ";
+
 import Footer from "@/components/Footer";
 import BlogPreview from "@/components/BlogPreview";
-
-import { useEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const Index = () => {
-  const { hash } = useLocation();
+  const location = useLocation();
+  const scrollToTarget = location.state?.scrollTo;
+  const hash = location.hash;
+  
+  // Use state (priority) or hash (fallback) for determining if we should hide
+  const targetId = scrollToTarget || (hash ? hash.replace('#', '') : null);
+  const [isScrolled, setIsScrolled] = useState(!targetId);
 
-  useEffect(() => {
-    if (hash) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        const element = document.getElementById(hash.replace('#', ''));
-        if (element) {
-          element.scrollIntoView({ behavior: 'instant' });
-        }
-      }, 100);
+  useLayoutEffect(() => {
+    // Prevent browser from messing with scroll
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
     }
-  }, [hash]);
+
+    const scrollToSection = () => {
+      if (targetId) {
+        const element = document.getElementById(targetId);
+        if (element) {
+          const headerOffset = 100;
+          const y = element.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+          window.scrollTo(0, y);
+        }
+      } else {
+        window.scrollTo(0, 0);
+      }
+      // Reveal content after scroll is set
+      setIsScrolled(true);
+
+      // Clean URL hash after scroll
+      if (hash) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    };
+
+    // Run immediately
+    // Force instant scroll by temporarily disabling CSS smooth scroll
+    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    
+    scrollToSection();
+    
+    // Restore smooth scroll after a small tick
+    const timer = setTimeout(() => {
+        document.documentElement.style.scrollBehavior = originalScrollBehavior;
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [hash, scrollToTarget, targetId]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div 
+      className="min-h-screen bg-background text-foreground overflow-x-hidden"
+      style={{ opacity: isScrolled ? 1 : 0 }}
+    >
       <ScrollProgress />
       <Header />
       <Hero />

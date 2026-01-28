@@ -13,10 +13,11 @@ const NavItem = ({ href, label }: { href: string; label: string }) => {
       return;
     }
 
-    e.preventDefault();
     const targetId = href.replace('/#', '');
     const element = document.getElementById(targetId);
+    
     if (element) {
+      e.preventDefault();
       const headerOffset = 100; // Fixed header height + spacing
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -26,6 +27,7 @@ const NavItem = ({ href, label }: { href: string; label: string }) => {
         behavior: 'smooth'
       });
     }
+    // If element doesn't exist (e.g. on another page), let default navigation happen
   };
 
   return (
@@ -100,7 +102,7 @@ const Header = () => {
           <nav className="hidden md:flex items-center gap-1">
             <NavItem href="/#hero" label="Home" />
             <NavItem href="/#beforeafter" label="Why Lumoscale" />
-            <NavItem href="/#demo" label="Live Demo" />
+            <NavItem href="/#demo" label="Talk to AI" />
             <NavItem href="/#solution" label="Features" />
             <NavItem href="/blog" label="Blogs" />
             <NavItem href="/#pricing" label="Pricing" />
@@ -160,7 +162,7 @@ const Header = () => {
                 {[
                   { href: "/#hero", label: "Home" },
                   { href: "/#beforeafter", label: "Why Lumoscale" },
-                  { href: "/#demo", label: "Live Demo" },
+                  { href: "/#demo", label: "Talk to our AI" },
                   { href: "/#solution", label: "Features" },
                   { href: "/blog", label: "Blogs" },
                   { href: "/#pricing", label: "Pricing" },
@@ -176,10 +178,11 @@ const Header = () => {
                         return;
                       }
 
-                      e.preventDefault();
                       const targetId = item.href.replace('/#', '');
                       const element = document.getElementById(targetId);
+                      
                       if (element) {
+                        e.preventDefault();
                         const headerOffset = 100;
                         const elementPosition = element.getBoundingClientRect().top;
                         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -188,7 +191,9 @@ const Header = () => {
                           top: offsetPosition,
                           behavior: 'smooth'
                         });
+                        window.history.pushState(null, '', item.href);
                       }
+                      // If element doesn't exist, let default navigation happen
                       setOpen(false);
                     }}
                     className="block px-4 py-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all text-lg font-medium"

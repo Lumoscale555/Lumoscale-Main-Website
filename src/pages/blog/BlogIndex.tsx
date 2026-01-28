@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { BlogPost } from '@/types/blog';
 import { Button } from '@/components/ui/button';
@@ -12,13 +12,52 @@ const BlogIndex = () => {
     const [posts, setPosts] = useState<BlogPost[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchPosts();
-        if (window.location.hash) {
-            const elm = document.getElementById(window.location.hash.substring(1));
-            if (elm) elm.scrollIntoView({ behavior: 'smooth' });
+    const location = useLocation();
+    const navigate = useNavigate();
+    const isFromInsights = location.state?.from === 'insights';
+    // backLink logic moved to handleBackClick
+    const backText = isFromInsights ? 'Back to Insights' : 'Back to Home';
+
+
+    const handleBackClick = () => {
+        if (isFromInsights) {
+            navigate('/', { state: { scrollTo: 'blog-preview' } });
+        } else {
+            navigate('/');
         }
+    };
+
+    useEffect(() => {
+        // Always scroll to top first unless there's a specific hash to a section
+        if (!window.location.hash) {
+            window.scrollTo(0, 0);
+        }
+        
+        fetchPosts();
     }, []);
+
+    useEffect(() => {
+        if (window.location.hash) {
+            // Use a slight delay to allow layout to settle, but keep it minimal
+            const scrollToElement = () => {
+                const elm = document.getElementById(window.location.hash.substring(1));
+                if (elm) {
+                    elm.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+            
+            // Try immediately, then with a small delay if needed
+            scrollToElement();
+            setTimeout(scrollToElement, 100);
+        }
+    }, [window.location.hash, posts]);
+
+    useEffect(() => {
+        // Always scroll to top first unless there's a specific hash to a section
+        if (!window.location.hash) {
+            window.scrollTo(0, 0);
+        }
+    }, [location.pathname]);
 
     const fetchPosts = async () => {
         const { data, error } = await supabase
@@ -36,34 +75,33 @@ const BlogIndex = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white relative overflow-hidden">
-            <Helmet>
-                <title>Insights | Lumoscale - AI Automation Agency</title>
-                <meta name="description" content="Expert insights on AI automation, agency scaling, and operational efficiency." />
+        <section className="min-h-screen bg-black relative overflow-hidden">
+             <Helmet>
+                <title>Blog - Lumoscale | AI & Automation Insights</title>
+                <meta name="description" content="Explore the latest insights on AI automation, digital transformation, and business scalability strategies." />
             </Helmet>
 
-            {/* Back to Home Button */}
-            <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+            {/* Back Button */}
+            <div
                 className="fixed top-8 left-6 z-50 hidden lg:block"
             >
                 <Button
                     variant="ghost"
-                    asChild
+                    onClick={handleBackClick}
                     className="group text-zinc-400 hover:text-white hover:bg-white/5 rounded-full px-4"
                 >
-                    <Link to="/">
-                        <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
-                    </Link>
+                    <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" /> {backText}
                 </Button>
-            </motion.div>
+            </div>
 
             {/* Mobile Back Button */}
             <div className="lg:hidden absolute top-6 left-4 z-50">
-                <Link to="/" className="p-2 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center">
-                    <ArrowLeft className="h-5 w-5" />
-                </Link>
+                <button
+                    onClick={handleBackClick}
+                    className="px-4 py-2 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center gap-2 text-sm font-medium"
+                >
+                    <ArrowLeft className="h-4 w-4" /> {backText}
+                </button>
             </div>
 
             {/* Background Gradients */}
@@ -75,55 +113,41 @@ const BlogIndex = () => {
             <div className="container mx-auto px-4 py-24 relative z-10 max-w-7xl">
                 {/* Hero Section */}
                 <div className="text-center mb-20 space-y-6">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
+                    <div
                         className="inline-block px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-sm font-medium text-zinc-300"
                     >
                         Lumoscale Insights
-                    </motion.div>
+                    </div>
 
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.1 }}
+                    <h1
                         className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-blue-500 pb-2"
                     >
                         Latest Insights.
-                    </motion.h1>
+                    </h1>
 
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
+                    <p
                         className="text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed"
                     >
                         Strategies and technical deep-dives on how we help agencies scale with AI.
-                    </motion.p>
+                    </p>
                 </div>
 
-                {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-[400px] bg-white/5 rounded-3xl animate-pulse border border-white/5" />
-                        ))}
-                    </div>
-                ) : posts.length === 0 ? (
+                {loading ? null : posts.length === 0 ? (
                     <div className="text-center py-20 text-zinc-500 border border-white/5 rounded-3xl bg-white/[0.02]">
                         <p>No articles published yet. Check back soon!</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {posts.map((post, index) => (
-                            <motion.article
+                            <article
                                 key={post.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
                                 className="group relative flex flex-col h-full"
                             >
-                                <Link to={`/blog/${post.slug}`} className="absolute inset-0 z-20" />
+                                <Link
+                                    to={`/blog/${post.slug}`} 
+                                    className="absolute inset-0 z-20"
+                                    state={{ from: isFromInsights ? 'insights' : undefined }}
+                                />
 
                                 <div className="relative h-full flex flex-col bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 group-hover:border-green-500/50 group-hover:shadow-[0_0_50px_-15px_rgba(34,197,94,0.2)]">
                                     {/* Image Container */}
@@ -143,7 +167,7 @@ const BlogIndex = () => {
 
                                         <div className="absolute top-4 left-4 z-20">
                                             <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-xs font-medium text-white group-hover:bg-green-500/10 group-hover:border-green-500/30 group-hover:text-green-400 transition-colors">
-                                                Article
+                                                {post.tags?.[0] || 'Article'}
                                             </span>
                                         </div>
                                     </div>
@@ -175,12 +199,12 @@ const BlogIndex = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </motion.article>
+                            </article>
                         ))}
                     </div>
                 )}
             </div>
-        </div>
+        </section>
     );
 };
 
