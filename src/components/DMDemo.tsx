@@ -265,17 +265,20 @@ const TextAgentDemo = () => {
                                     <motion.div
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="flex gap-3 items-center"
+                                        className="flex gap-3 items-start"
                                     >
                                         <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-zinc-900 top-1 relative">
                                              <Bot className="w-4 h-4 text-blue-400" />
                                         </div>
-                                        <div className="bg-white/5 px-4 py-3 rounded-2xl rounded-tl-sm border border-white/5 backdrop-blur-sm">
-                                            <div className="flex gap-1.5 opacity-60">
-                                                <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" />
-                                                <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce delay-75" />
-                                                <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce delay-150" />
+                                        <div className="flex flex-col gap-1">
+                                            <div className="bg-white/5 px-4 py-3 rounded-2xl rounded-tl-sm border border-white/5 backdrop-blur-sm">
+                                                <div className="flex gap-1.5 opacity-60">
+                                                    <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" />
+                                                    <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce delay-75" />
+                                                    <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce delay-150" />
+                                                </div>
                                             </div>
+                                            <span className="text-[10px] text-zinc-500 px-1 italic">AI is typing...</span>
                                         </div>
                                     </motion.div>
                                 )}
