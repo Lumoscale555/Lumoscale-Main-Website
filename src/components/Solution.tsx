@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Zap, Mic, Target, Globe, Phone, BarChart3, Bell, Repeat, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
 import { useIsMobile } from "../hooks/use-mobile";
 
 const features = [
@@ -99,47 +99,49 @@ export default function Solution() {
   );
 }
 
+
+
 function FeatureCard({ feature, index, isMobile }: { feature: any, index: number, isMobile: boolean }) {
   const divRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
+  
+  // Scroll-driven animation for Mobile - Hooks must be called unconditionally
+  const { scrollYProgress } = useScroll({
+    target: divRef,
+    offset: ["start end", "end start"]
+  });
 
-  useEffect(() => {
-    if (!isMobile) return;
+  const x = useTransform(scrollYProgress, [0, 1], [-200, 600]);
+  const y = useTransform(scrollYProgress, [0, 1], [-200, 600]);
+  
+  const opacity = useTransform(scrollYProgress, [0.1, 0.5, 0.9], [0, 1, 0]);
+  
+  const spotlightBg = useMotionTemplate`radial-gradient(600px circle at ${x}px ${y}px, rgba(74, 222, 128, 0.15), transparent 40%)`;
+  const borderBg = useMotionTemplate`radial-gradient(600px circle at ${x}px ${y}px, rgba(74, 222, 128, 0.4), transparent 40%)`;
 
-    // Auto-fadeIn opacity once
-    setOpacity(1);
-
-    let animationFrameId: number;
-    let startTime = Date.now();
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      // Circle movement
-      const x = 150 + Math.sin(elapsed * 0.001) * 100;
-      const y = 100 + Math.cos(elapsed * 0.001) * 80;
-      setPosition({ x, y });
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isMobile]);
+  // Desktop Mouse Interaction
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isMobile) return;
     if (!divRef.current) return;
     const rect = divRef.current.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   const handleMouseEnter = () => {
-    if (!isMobile) setOpacity(1);
+    if (!isMobile) setIsHovered(true);
   };
   const handleMouseLeave = () => {
-    if (!isMobile) setOpacity(0);
+    if (!isMobile) setIsHovered(false);
   };
 
+  // Dynamic Background Template
+  // For mobile: uses scroll-driven x/y
+  // For desktop: uses mousePosition x/y
+  // We can't mix motion value strings easily with normal state numbers in one template without some care.
+  // BUT: The current implementation strictly separates them via isMobile check or just simple conditional styling.
+  
   return (
     <motion.div
       ref={divRef}
@@ -153,25 +155,58 @@ function FeatureCard({ feature, index, isMobile }: { feature: any, index: number
       className="group relative p-6 rounded-2xl bg-[#0a0a0a] border border-white/5 overflow-hidden flex flex-col justify-between h-full min-h-[220px]"
     >
       {/* Spotlight Effect */}
-      <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100"
-        style={{
-          opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(74, 222, 128, 0.1), transparent 40%)`,
-        }}
-      />
-      <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 rounded-2xl z-10"
-        style={{
-          opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(74, 222, 128, 0.4), transparent 40%)`,
-          maskImage: "linear-gradient(black, black) content-box, linear-gradient(black, black)",
-          WebkitMaskImage: "linear-gradient(black, black) content-box, linear-gradient(black, black)",
-          maskComposite: "exclude",
-          WebkitMaskComposite: "xor",
-          padding: "1px",
-        }}
-      />
+      {/* We render different spotlights for mobile vs desktop for cleaner logic */}
+      
+      {/* Mobile Scroll Spotlight */}
+      {isMobile && (
+        <motion.div
+            className="pointer-events-none absolute -inset-px transition duration-300"
+            style={{
+                opacity,
+                background: spotlightBg
+            }}
+        />
+      )}
+
+      {/* Desktop Mouse Spotlight */}
+      {!isMobile && (
+        <div
+            className="pointer-events-none absolute -inset-px transition duration-300"
+            style={{
+                opacity: isHovered ? 1 : 0,
+                background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(74, 222, 128, 0.1), transparent 40%)`
+            }}
+        />
+      )}
+      
+      {/* Border Highlight (Shared Logic) */}
+      {isMobile ? (
+          <motion.div
+            className="pointer-events-none absolute -inset-px rounded-2xl z-10"
+            style={{
+                opacity,
+                background: borderBg,
+                maskImage: "linear-gradient(black, black) content-box, linear-gradient(black, black)",
+                WebkitMaskImage: "linear-gradient(black, black) content-box, linear-gradient(black, black)",
+                maskComposite: "exclude",
+                WebkitMaskComposite: "xor",
+                padding: "1px",
+            }}
+          />
+      ) : (
+          <div
+            className="pointer-events-none absolute -inset-px rounded-2xl z-10 transition duration-300"
+            style={{
+                opacity: isHovered ? 1 : 0,
+                background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(74, 222, 128, 0.4), transparent 40%)`,
+                maskImage: "linear-gradient(black, black) content-box, linear-gradient(black, black)",
+                WebkitMaskImage: "linear-gradient(black, black) content-box, linear-gradient(black, black)",
+                maskComposite: "exclude",
+                WebkitMaskComposite: "xor",
+                padding: "1px",
+            }}
+          />
+      )}
 
       {/* Green Bottom Highlight (Static) */}
       <motion.div

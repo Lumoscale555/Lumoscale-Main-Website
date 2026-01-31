@@ -237,8 +237,10 @@ const TextAgentDemo = () => {
                                 {messages.map((msg, idx) => (
                                     <motion.div
                                         key={idx}
-                                        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                                        layout
+                                        initial={{ opacity: 0, y: 20, scale: 0.9 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                         className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}
                                     >
                                         {msg.sender === 'ai' && (
@@ -526,54 +528,156 @@ const VoiceAgentDemo = () => {
 
 const ToggleSwitch = ({ activeTab, onChange }: { activeTab: 'voice' | 'text', onChange: (tab: 'voice' | 'text') => void }) => {
     return (
-        <div className="flex bg-white/5 backdrop-blur-md p-1 rounded-full border border-white/10 relative">
-            {/* Sliding Background */}
-            <motion.div
-                className="absolute top-1 bottom-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full z-0"
-                initial={false}
-                animate={{
-                    x: activeTab === 'voice' ? 0 : '100%',
-                    width: '50%'
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                style={{ left: 4 }} // manual offset compensation 
-            />
-             {/* Actual sliding background implementation is tricky with simple percentage, let's use a simpler flex layout approach relative to the container */}
-             <div className="absolute inset-1 flex">
+        <div className="relative p-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl flex items-center gap-1 max-w-[95vw] md:max-w-none mx-auto">
+            {/* Active Tab Background */}
+            <div className="absolute inset-1.5 flex pointer-events-none">
                 <motion.div 
-                     className="w-1/2 h-full bg-zinc-800 rounded-full shadow-lg"
-                     layoutId="activeTabBg"
-                     initial={false}
-                     animate={{ x: activeTab === 'voice' ? 0 : '100%' }}
-                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                     style={{
+                    className="w-1/2 h-full rounded-full shadow-lg"
+                    layoutId="activeTabBg"
+                    initial={false}
+                    animate={{ x: activeTab === 'voice' ? 0 : '100%' }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    style={{
                         background: activeTab === 'voice' 
-                            ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' // Emerald
-                            : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' // Blue
-                     }}
+                            ? 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)' // Brand Green
+                            : 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)' // Brand Blue
+                    }}
                 />
-             </div>
+            </div>
 
+            {/* Voice Button */}
             <button
                 onClick={() => onChange('voice')}
-                className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-colors duration-200 flex items-center gap-2 ${activeTab === 'voice' ? 'text-white' : 'text-zinc-400 hover:text-white'}`}
+                className={`flex-1 relative z-10 px-3 md:px-6 py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
+                    activeTab === 'voice' 
+                        ? 'text-white' 
+                        : 'text-zinc-500 hover:text-white'
+                }`}
             >
-                <Mic className="w-4 h-4" />
-                Talk to AI
+                <div className={`p-1 rounded-full ${activeTab === 'voice' ? 'bg-white/20' : 'bg-transparent'}`}>
+                    <Mic className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform duration-300 ${activeTab === 'voice' ? 'scale-110' : 'scale-100'}`} />
+                </div>
+                <span className="tracking-wide whitespace-nowrap">Talk to AI</span>
             </button>
+
+            {/* Text Button */}
             <button
                 onClick={() => onChange('text')}
-                className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-colors duration-200 flex items-center gap-2 ${activeTab === 'text' ? 'text-white' : 'text-zinc-400 hover:text-white'}`}
+                className={`flex-1 relative z-10 px-3 md:px-6 py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 ${
+                    activeTab === 'text' 
+                        ? 'text-white' 
+                        : 'text-zinc-500 hover:text-white'
+                }`}
             >
-                <MessageSquare className="w-4 h-4" />
-                Chat with AI
+                <div className={`p-1 rounded-full ${activeTab === 'text' ? 'bg-white/20' : 'bg-transparent'}`}>
+                    <MessageSquare className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform duration-300 ${activeTab === 'text' ? 'scale-110' : 'scale-100'}`} />
+                </div>
+                <span className="tracking-wide whitespace-nowrap">Chat with AI</span>
             </button>
+
+            {/* Ambient Glow */}
+            <motion.div
+                className="absolute inset-0 rounded-full opacity-20 blur-2xl -z-10 transition-colors duration-500"
+                animate={{
+                    background: activeTab === 'voice'
+                        ? 'rgba(74, 222, 128, 0.5)'
+                        : 'rgba(59, 130, 246, 0.5)'
+                }}
+            />
         </div>
+    );
+};
+
+// Swipe Indicator Component
+const SwipeIndicator = ({ activeTab }: { activeTab: 'voice' | 'text' }) => {
+    const isMobile = useIsMobile();
+    
+    // if (!isMobile) return null; // Enabled for desktop as per request
+
+    const swipeText = activeTab === 'voice' ? 'Swipe to chat' : 'Swipe to voice';
+    const arrowDirection = activeTab === 'voice' ? '→' : '←';
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.4 }}
+            className="flex justify-center w-full mb-4"
+        >
+            <div className="flex items-center gap-1.5 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-md border border-white/20 rounded-full px-3 py-1.5 shadow-lg">
+                <motion.div
+                    animate={{ x: activeTab === 'voice' ? [0, 3, 0] : [0, -3, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="text-xs font-bold"
+                >
+                    {arrowDirection}
+                </motion.div>
+                <span className="text-white/90 text-[10px] font-semibold tracking-wide whitespace-nowrap">{swipeText}</span>
+            </div>
+        </motion.div>
     );
 };
 
 export default function DMDemo() {
     const [activeTab, setActiveTab] = useState<'voice' | 'text'>('voice');
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+    const isMobile = useIsMobile();
+
+    // Minimum swipe distance (in px)
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe && activeTab === 'voice') {
+            setActiveTab('text');
+        }
+        if (isRightSwipe && activeTab === 'text') {
+            setActiveTab('voice');
+        }
+    };
+
+    // Mouse Event Handlers for Desktop Swipe
+    const onMouseDown = (e: React.MouseEvent) => {
+        setTouchEnd(null);
+        setTouchStart(e.clientX);
+    };
+
+    const onMouseMove = (e: React.MouseEvent) => {
+        // Only track move if mouse is down (simulated by checking if touchStart is set)
+        if (touchStart !== null) {
+             setTouchEnd(e.clientX);
+        }
+    };
+
+    const onMouseUp = () => {
+        onTouchEnd(); // Reuse the same logic
+        setTouchStart(null); // Reset
+        setTouchEnd(null);
+    };
+
+    const onMouseLeave = () => {
+        setTouchStart(null);
+        setTouchEnd(null);
+    }
+
+    const handleTabChange = (tab: 'voice' | 'text') => {
+        setActiveTab(tab);
+    };
 
     return (
         <section id="demo" className="py-24 bg-black overflow-hidden relative">
@@ -594,13 +698,26 @@ export default function DMDemo() {
 
                     {/* Toggle Switcher */}
                     <div className="flex justify-center mb-12">
-                        <ToggleSwitch activeTab={activeTab} onChange={setActiveTab} />
+                        <ToggleSwitch activeTab={activeTab} onChange={handleTabChange} />
                     </div>
                 </div>
 
-                <div id="demo-interactive" className="flex flex-col items-center relative min-h-[800px]">
+                <div 
+                    id="demo-interactive" 
+                    className="flex flex-col items-center relative min-h-[800px]"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                    onMouseDown={onMouseDown}
+                    onMouseMove={onMouseMove}
+                    onMouseUp={onMouseUp}
+                    onMouseLeave={onMouseLeave}
+                >
+                    {/* Swipe Indicator */}
+                    <SwipeIndicator activeTab={activeTab} />
+
                     {/* Demos */}
-                    <div className="w-full max-w-[500px] mb-12">
+                    <div className="w-full max-w-[500px] mb-12 relative">
                         <AnimatePresence mode="wait">
                             {activeTab === 'voice' ? (
                                 <motion.div
