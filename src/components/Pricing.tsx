@@ -159,6 +159,24 @@ export default function Pricing() {
 
         </motion.div>
 
+        {/* NOTE SECTION */}
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-20 max-w-4xl mx-auto relative p-6 rounded-2xl border border-blue-500/20 bg-blue-500/5 backdrop-blur-sm"
+        >
+            <div className="text-center space-y-3">
+                <p className="text-zinc-300 text-sm leading-relaxed">
+                    <span className="font-semibold text-white">Note:</span> You still need your team. They handle showings, meetings, and in-person interactions. AI doesn't replace them. It picks up the calls and messages when everyone's busy or unavailable. It works around the clock so interested leads get instant responses instead of going to your competitors.
+                </p>
+                <p className="text-white font-medium text-base italic">
+                    "Your team isn't the problem. Missing leads while they're helping other clients is."
+                </p>
+            </div>
+        </motion.div>
+
         {/* ADD-ONS SECTION */}
         <div className="mt-32 relative">
             <motion.div
