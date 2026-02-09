@@ -680,7 +680,7 @@ export default function DMDemo() {
     };
 
     return (
-        <section id="demo" className="py-24 bg-black overflow-hidden relative">
+        <section id="demo" className="py-12 bg-black overflow-hidden relative">
             {/* Background glow for ambience - Dynamic Color */}
             <motion.div 
                 animate={{ background: activeTab === 'voice' ? 'rgba(16, 185, 129, 0.05)' : 'rgba(59, 130, 246, 0.05)' }}

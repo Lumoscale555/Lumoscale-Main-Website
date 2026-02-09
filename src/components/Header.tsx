@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/lumoscale-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ArrowRight } from "lucide-react";
@@ -103,10 +104,20 @@ const Header = () => {
             <NavItem href="/#hero" label="Home" />
             <NavItem href="/#beforeafter" label="Why Lumoscale" />
             <NavItem href="/#demo-interactive" label="Talk to AI" />
-            <NavItem href="/#solution" label="Features" />
-            <NavItem href="/blog" label="Blogs" />
+            <NavItem href="/#services" label="Services" />
+            <NavItem href="/#process" label="Process" />
             <NavItem href="/#pricing" label="Pricing" />
             <NavItem href="/#faq" label="FAQ" />
+            
+            {/* Blogs - Premium Styling */}
+            <Link
+              to="/blog"
+              className="group relative px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-300"
+            >
+              <span className="text-sm font-medium text-white/90 group-hover:text-white transition-colors flex items-center gap-2">
+                Insights
+              </span>
+            </Link>
 
             <div className="w-px h-4 bg-white/10 mx-2" />
 
@@ -189,7 +200,7 @@ const Header = () => {
                   { href: "/#hero", label: "Home" },
                   { href: "/#beforeafter", label: "Why Lumoscale" },
                   { href: "/#demo-interactive", label: "Talk to AI" },
-                  { href: "/#solution", label: "Features" },
+                  { href: "/#services", label: "Services" },
                   { href: "/blog", label: "Blogs" },
                   { href: "/#pricing", label: "Pricing" },
                   { href: "/#faq", label: "FAQ" },

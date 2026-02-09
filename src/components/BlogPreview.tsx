@@ -98,7 +98,7 @@ const BlogPreview = () => {
     // If we're using fallback, just show a nice section without database dependency
     if (useFallback) {
         return (
-            <section id="blog-preview" className="py-24 bg-black relative overflow-hidden">
+            <section id="blog-preview" className="py-16 mt-16 bg-zinc-950 border-t border-white/10 relative overflow-hidden">
                 {/* Background Gradients */}
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                     <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px]" />
@@ -161,7 +161,7 @@ const BlogPreview = () => {
     }
 
     return (
-        <section id="blog-preview" className="py-24 bg-black relative overflow-hidden">
+        <section id="blog-preview" className="py-16 mt-16 bg-zinc-950 border-t border-white/10 relative overflow-hidden">
             {/* Background Gradients */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px]" />

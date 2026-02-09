@@ -123,7 +123,7 @@ export default function FAQ() {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
 
     return (
-        <section id="faq" className="py-24 bg-black relative overflow-hidden">
+        <section id="faq" className="py-12 mt-16 bg-black relative overflow-hidden">
             {/* Background Mesh Gradients */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute top-[20%] left-[10%] w-[600px] h-[600px] bg-emerald-900/10 blur-[100px] rounded-full mix-blend-screen" />

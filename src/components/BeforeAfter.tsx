@@ -6,7 +6,7 @@ import { useIsMobile } from "../hooks/use-mobile";
 const BeforeAfter = () => {
 
   return (
-    <section id="beforeafter" className="py-12 md:py-24 relative bg-black">
+    <section id="beforeafter" className="py-4 relative bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
 
         {/* Compact Header - Blue Accents */}

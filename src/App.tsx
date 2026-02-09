@@ -21,7 +21,11 @@ import { AuditModalProvider } from "./context/AuditModalContext";
 import { HelmetProvider } from 'react-helmet-async';
 
 import PricingPage from "./pages/PricingPage";
+import AIReceptionist from "./pages/AIReceptionist";
+import AIVoiceSDR from "./pages/AIVoiceSDR";
+import AITextAgents from "./pages/AITextAgents";
 import ChatWidget from "./components/ChatWidget";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => (
   <HelmetProvider>
@@ -32,10 +36,14 @@ const App = () => (
           <Sonner />
           <ChatWidget />
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <ScrollToTop />
             <AuditModal />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/ai-receptionist" element={<AIReceptionist />} />
+              <Route path="/ai-voice-sdr" element={<AIVoiceSDR />} />
+              <Route path="/ai-text-agents" element={<AITextAgents />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin/login" element={<Navigate to="/login" replace />} />
               <Route path="/admin" element={<ProtectedRoute />}>
