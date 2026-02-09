@@ -147,7 +147,7 @@ export default function Pricing() {
             transition={{ delay: 0.2 }}
             className="text-zinc-400 text-lg max-w-2xl mx-auto mb-10"
           >
-            Select the perfect engine for your business. No hidden fees. No surprises.
+            Select the perfect AI team to handle every call and message, 24/7.
           </motion.p>
         </div>
 
