@@ -24,6 +24,7 @@ import PricingPage from "./pages/PricingPage";
 import AIReceptionist from "./pages/AIReceptionist";
 import AIVoiceSDR from "./pages/AIVoiceSDR";
 import AITextAgents from "./pages/AITextAgents";
+import Demo from "./pages/Demo";
 import ChatWidget from "./components/ChatWidget";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -44,6 +45,7 @@ const App = () => (
               <Route path="/ai-receptionist" element={<AIReceptionist />} />
               <Route path="/ai-voice-sdr" element={<AIVoiceSDR />} />
               <Route path="/ai-text-agents" element={<AITextAgents />} />
+              <Route path="/demo" element={<Demo />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin/login" element={<Navigate to="/login" replace />} />
               <Route path="/admin" element={<ProtectedRoute />}>

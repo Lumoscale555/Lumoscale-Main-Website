@@ -21,6 +21,31 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.lumoscale.com/pricing</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.lumoscale.com/ai-receptionist</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.lumoscale.com/ai-voice-sdr</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.lumoscale.com/ai-text-agents</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.lumoscale.com/demo</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.lumoscale.com/blog/voice-agents-or-text-chatbots-how-to-pick-the-right-ai-for-maximum-roi</loc>
     <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
