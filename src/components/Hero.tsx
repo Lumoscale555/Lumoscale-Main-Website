@@ -263,7 +263,7 @@ const Hero = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h1 className="text-6xl lg:text-[4.5rem] xl:text-[4.75rem] font-bold tracking-tight leading-[1.08]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+              <h1 className="text-4xl md:text-6xl lg:text-[4.5rem] xl:text-[4.75rem] font-bold tracking-tight leading-[1.08]" style={{ fontFamily: "'Outfit', sans-serif" }}>
                 <span className="text-white block mb-1">Every Missed Call, </span>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600 block">
                   Lost Revenue.
@@ -276,10 +276,10 @@ const Hero = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="text-xl md:text-2xl lg:text-[1.75rem] text-zinc-300 font-light max-w-3xl leading-snug mt-2"
+              className="text-lg md:text-2xl lg:text-[1.75rem] text-zinc-300 font-light max-w-3xl leading-snug mt-2"
               style={{ fontFamily: "'Outfit', sans-serif" }}
             >
-              <span className="whitespace-nowrap">
+              <span className="whitespace-normal sm:whitespace-nowrap">
                 <span className="text-white font-medium">We build it. We run it.</span>{" "}
                 You just take the{" "}
                 <span className="relative inline-block text-white font-semibold">
@@ -294,7 +294,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.85 }}
-              className="text-base md:text-[17px] text-zinc-400 max-w-2xl leading-relaxed border-l-2 border-zinc-800 pl-5 mt-4"
+              className="text-sm md:text-[17px] text-zinc-400 max-w-2xl leading-relaxed border-l-2 border-zinc-800 pl-5 mt-4"
             >
               Custom-built around your exact process - contacting every inbound lead within 60 seconds, 24/7, even after hours. Optimized weekly using real call data so your booked appointments grow month after month.
             </motion.p>
@@ -305,12 +305,12 @@ const Hero = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1 }}
-              className="flex items-center gap-10 pt-2"
+              className="grid grid-cols-2 sm:flex sm:items-center gap-6 sm:gap-10 pt-4"
             >
               <StatCard value={60} suffix="s" label="Response time" delay={0} inView={statsInView} />
-              <div className="w-px h-10 bg-white/10" />
+              <div className="hidden sm:block w-px h-10 bg-white/10" />
               <StatCard value={24} suffix="/7" label="Always on" delay={0.1} inView={statsInView} />
-              <div className="w-px h-10 bg-white/10" />
+              <div className="hidden sm:block w-px h-10 bg-white/10" />
               <StatCard value={30} suffix="%" label="More bookings guaranteed" delay={0.2} inView={statsInView} />
             </motion.div>
 
@@ -319,17 +319,17 @@ const Hero = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.1 }}
-              className="flex flex-col sm:flex-row gap-4 pt-1"
+              className="flex flex-col sm:flex-row gap-4 pt-4"
             >
-              <div className="relative group w-fit mt-4">
+              <div className="relative group w-full sm:w-fit mt-4">
                 <Button
-                  className="relative h-14 px-8 text-base font-bold rounded-full bg-white text-black hover:text-white shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-blue-500/25 transition-all duration-300 overflow-hidden"
+                  className="relative w-full sm:w-auto h-14 px-8 text-base font-bold rounded-full bg-white text-black hover:text-white shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-blue-500/25 transition-all duration-300 overflow-hidden"
                   onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
                 >
                   {/* Hover gradient background matching headline */}
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0" />
                   
-                  <span className="relative z-10 flex items-center gap-3">
+                  <span className="relative z-10 flex items-center justify-center sm:justify-start gap-3">
                     Book a Strategy Call
                     <User className="w-4 h-4 group-hover:text-white text-blue-600 transition-colors duration-300" />
                   </span>
@@ -340,10 +340,10 @@ const Hero = () => {
 
           {/* ── RIGHT ── */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden lg:flex items-center justify-center"
+            className="flex items-center justify-center mt-12 lg:mt-0"
           >
             <LiveCallCard />
           </motion.div>

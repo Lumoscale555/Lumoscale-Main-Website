@@ -347,6 +347,8 @@ const VoiceAgentDemo = () => {
     const [isInitializing, setIsInitializing] = useState(false);
     const [callDuration, setCallDuration] = useState(150); // 2:30 in seconds
     const [dailyCalls, setDailyCalls] = useState(0);
+    const [showMobileTranscript, setShowMobileTranscript] = useState(false);
+    const isMobile = useIsMobile();
     const MAX_DAILY_CALLS = 2;
 
     const callContainerRef = useRef<HTMLDivElement>(null);
@@ -726,36 +728,68 @@ const VoiceAgentDemo = () => {
                                 </motion.div>
                             )}
                         </AnimatePresence>
+
+                        {/* Mobile Transcript Toggle Button */}
+                        {isCallActive && isMobile && (
+                            <motion.button
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                onClick={() => setShowMobileTranscript(true)}
+                                className="mt-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-white/70 uppercase tracking-widest flex items-center gap-2"
+                            >
+                                <FileText className="w-3 h-3" />
+                                View Live Transcript
+                            </motion.button>
+                        )}
                     </div>
                 </div>
                 </div>
             </PhoneMockup>
 
-            {/* Out-of-screen Floating Transcript (Desktop Only) */}
+            {/* Responsive Transcript (Desktop: Side, Mobile: Overlay) */}
             <AnimatePresence>
                 {isCallActive && (
                     <motion.div 
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        className="hidden lg:flex absolute left-[calc(50%+220px)] top-[10%] bottom-[10%] w-[350px] flex-col justify-end pointer-events-none z-30 overflow-hidden"
+                        initial={{ opacity: 0, x: isMobile ? 0 : 20, y: isMobile ? 100 : 0 }}
+                        animate={{ 
+                            opacity: (isMobile && !showMobileTranscript) ? 0 : 1, 
+                            x: 0, 
+                            y: 0 
+                        }}
+                        exit={{ opacity: 0, x: isMobile ? 0 : 20, y: isMobile ? 100 : 0 }}
+                        className={`${
+                            isMobile 
+                            ? "fixed inset-0 z-[100] p-6 bg-black/95 backdrop-blur-xl flex flex-col pt-20" 
+                            : "hidden lg:flex absolute left-[calc(50%+220px)] top-[10%] bottom-[10%] w-[350px] flex-col justify-end pointer-events-none z-30"
+                        } overflow-hidden`}
                     >
-                        {/* Top fade out mask for smooth disappearance */}
-                        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10" />
+                        {isMobile && (
+                            <div className="flex items-center justify-between mb-8">
+                                <h3 className="text-white font-bold text-lg uppercase tracking-widest">Live Transcript</h3>
+                                <button 
+                                    onClick={() => setShowMobileTranscript(false)}
+                                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white"
+                                >
+                                    <Plus className="w-6 h-6 rotate-45" />
+                                </button>
+                            </div>
+                        )}
 
-                        <div className="flex flex-col justify-end gap-3 pb-4">
+                        {!isMobile && <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10" />}
+
+                        <div className={`flex flex-col justify-end gap-3 pb-4 ${isMobile ? 'overflow-y-auto no-scrollbar pb-20' : ''}`}>
                             <AnimatePresence initial={false}>
-                                {transcript.slice(-6).map((msg, idx, arr) => {
+                                {transcript.slice(isMobile ? -20 : -6).map((msg, idx, arr) => {
                                     const isSarah = msg.speaker !== 'User';
-                                    const dist = arr.length - 1 - idx; // 0=newest
+                                    const dist = arr.length - 1 - idx; 
                                     return (
                                         <motion.div
                                             key={msg.id}
                                             layout
                                             initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                                            animate={{ opacity: Math.max(0.1, 1 - dist * 0.25), y: 0, scale: 1 }}
+                                            animate={{ opacity: isMobile ? 1 : Math.max(0.1, 1 - dist * 0.25), y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: -40, scale: 0.95 }}
-                                            transition={{ duration: 0.3, ease: "easeOut" }} // Sped up from 0.5s to 0.3s
+                                            transition={{ duration: 0.3, ease: "easeOut" }}
                                             className={`flex w-full ${isSarah ? 'justify-start' : 'justify-end'}`}
                                         >
                                             <div className={`max-w-[85%] rounded-2xl px-4 py-3 backdrop-blur-md shadow-xl ${
@@ -766,14 +800,13 @@ const VoiceAgentDemo = () => {
                                                 <p className={`text-[11px] font-bold mb-1 tracking-wider uppercase ${isSarah ? 'text-emerald-400' : 'text-zinc-400'}`}>
                                                     {isSarah ? 'Sarah' : 'You'}
                                                 </p>
-                                                <p className="text-white text-sm leading-relaxed">{msg.text}</p>
+                                                <p className="text-sm leading-relaxed text-white">{msg.text}</p>
                                             </div>
                                         </motion.div>
                                     );
                                 })}
                             </AnimatePresence>
 
-                            {/* Typing dots — user is speaking */}
                             {isUserSpeaking && transcript.length > 0 && transcript[transcript.length - 1].speaker !== 'User' && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
