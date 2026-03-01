@@ -49,7 +49,7 @@ const services = [
   },
   {
     icon: MessageSquare,
-    title: "AI Text Agents",
+    title: "AI DM Agents",
     description: "Instant responses across Instagram, Facebook, and WhatsApp.",
     gradient: "from-emerald-500/20 to-emerald-600/5",
     border: "group-hover:border-emerald-500/30",
@@ -75,7 +75,7 @@ const Services = () => {
             className="inline-block"
           >
             <span className="py-2 px-4 rounded-full bg-white/5 border border-white/10 text-sm md:text-base text-zinc-400 font-medium tracking-wide">
-              Our Services
+              What We Build For You
             </span>
           </motion.div>
 
@@ -87,7 +87,7 @@ const Services = () => {
             className="mt-8 text-4xl md:text-6xl font-bold text-white tracking-tight"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">
-              Your AI Growth Partners
+              Three Systems. Zero Missed Opportunities.
             </span>
           </motion.h2>
 
@@ -98,7 +98,7 @@ const Services = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-6 text-xl text-zinc-400 leading-relaxed"
           >
-            Three powerful engines working together to capture every opportunity.
+            Every channel covered. Every lead captured. Every appointment booked - automatically.
           </motion.p>
         </div>
 

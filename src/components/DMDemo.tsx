@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Wifi, Battery, Video, CheckCircle2, Bell, Clock, Volume2, Plus, ArrowRight } from "lucide-react";
+import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Video, CheckCircle2, Bell, Clock, Volume2, Plus, ArrowRight } from "lucide-react";
 import { useIsMobile } from "../hooks/use-mobile";
+import { RetellWebClient } from "retell-client-js-sdk";
+
+const retellWebClient = new RetellWebClient();
 
 // Helper for Mouse-following spotlight effect
 const SpotlightCard = ({ color, title, subtitle }: { color: "emerald" | "blue", title: string, subtitle: string }) => {
@@ -58,26 +61,54 @@ const SpotlightCard = ({ color, title, subtitle }: { color: "emerald" | "blue", 
 };
 
 // Premium Phone Mockup Component with 3D Tilt and Glass Reflections
-const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { children: React.ReactNode, time?: string, accentColor?: "emerald" | "blue" | "purple" }) => {
+const PhoneMockup = ({ children, accentColor = "emerald", callDuration }: { children: React.ReactNode, accentColor?: "emerald" | "blue" | "purple", callDuration?: number }) => {
+    const formatCallTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
     return (
         <motion.div
             animate={{ rotateX: 0, rotateY: 0 }}
             style={{ perspective: 1000 }}
             className="relative mx-auto w-full max-w-[380px] h-[640px] bg-gradient-to-b from-zinc-900 via-black to-zinc-900 rounded-[3rem] border-[4px] border-zinc-800 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] overflow-hidden ring-2 ring-white/5 ml-0 lg:mx-auto group/phone"
         >
+            {/* iOS-style Green Call Timer Bar */}
+            <AnimatePresence>
+                {callDuration !== undefined && callDuration > 0 && (
+                    <motion.div
+                        initial={{ y: -40, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -40, opacity: 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                        className="absolute top-0 inset-x-0 h-10 z-[60] flex items-center justify-between px-7 bg-emerald-600"
+                    >
+                        <span className="text-white text-xs font-semibold tracking-wide">{formatCallTime(callDuration)}</span>
+                        <div className="flex items-center gap-1.5">
+                            <motion.div
+                                animate={{ opacity: [1, 0.3, 1] }}
+                                transition={{ duration: 1.5, repeat: Infinity }}
+                                className="w-1.5 h-1.5 rounded-full bg-white"
+                            />
+                            <span className="text-white text-xs font-medium">Lumoscale AI</span>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Dynamic Island / Notch Area */}
             <div className="absolute top-0 inset-x-0 h-14 z-50 px-7 flex items-end justify-between pb-2 text-white">
-                <span className="text-[14px] font-bold w-14">{time}</span>
+                <span className="text-[13px] font-semibold tabular-nums opacity-0 select-none">·</span>
 
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-[110px] h-[32px] bg-black rounded-full flex items-center justify-center z-50 ring-1 ring-white/10 shadow-inner">
                     <div className="w-2 h-2 rounded-full bg-zinc-950 absolute right-5 ring-1 ring-white/10" />
                 </div>
 
-                <div className="flex items-center gap-2 w-14 justify-end">
-                    <Signal className="w-4 h-4" />
-                    <Wifi className="w-4 h-4" />
-                    <Battery className="w-5 h-5 ml-0.5" />
+                {/* Premium Session Limit Indicator */}
+                <div className="flex items-center gap-1.5 opacity-80 backdrop-blur-md bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[10px] font-mono tracking-widest text-white uppercase select-none">2:30 Limit</span>
                 </div>
             </div>
 
@@ -180,7 +211,7 @@ const TextAgentDemo = () => {
     };
 
     return (
-        <PhoneMockup time="10:23" accentColor="blue">
+        <PhoneMockup accentColor="blue">
             {/* Header */}
             <div className="px-5 py-3.5 border-b border-zinc-900/50 flex justify-between items-center bg-black sticky top-0 z-20">
                 <div className="flex items-center gap-3">
@@ -243,11 +274,7 @@ const TextAgentDemo = () => {
                                         transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                         className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}
                                     >
-                                        {msg.sender === 'ai' && (
-                                            <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-zinc-900 shadow-sm relative top-1">
-                                                <Bot className="w-4 h-4 text-blue-400" />
-                                            </div>
-                                        )}
+                                        {/* Removed Bot Avatar per user request */}
 
                                         <div className={`${msg.sender === 'user'
                                             ? 'bg-blue-600/10 text-blue-50 border border-blue-500/20 rounded-2xl rounded-tr-sm shadow-[0_0_15px_rgba(37,99,235,0.05)]'
@@ -269,9 +296,7 @@ const TextAgentDemo = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         className="flex gap-3 items-start"
                                     >
-                                        <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-zinc-900 top-1 relative">
-                                             <Bot className="w-4 h-4 text-blue-400" />
-                                        </div>
+                                        {/* Removed Bot Avatar per user request */}
                                         <div className="flex flex-col gap-1">
                                             <div className="bg-white/5 px-4 py-3 rounded-2xl rounded-tl-sm border border-white/5 backdrop-blur-sm">
                                                 <div className="flex gap-1.5 opacity-60">
@@ -318,42 +343,174 @@ const TextAgentDemo = () => {
 
 const VoiceAgentDemo = () => {
     const [isCallActive, setIsCallActive] = useState(false);
-    const [convoStep, setConvoStep] = useState(0);
-    const [callDuration, setCallDuration] = useState(0);
+    const [isAgentTalking, setIsAgentTalking] = useState(false);
+    const [isInitializing, setIsInitializing] = useState(false);
+    const [callDuration, setCallDuration] = useState(150); // 2:30 in seconds
+    const [dailyCalls, setDailyCalls] = useState(0);
+    const MAX_DAILY_CALLS = 2;
 
-    // Active conversation steps (0-indexed)
-    const conversation = [
-        { speaker: "Sarah", text: "Hi! This is Sarah from Lumoscale. How can I help you today?", delay: 1000 },
-        { speaker: "User", text: "I'm looking to automate my lead follow-ups.", delay: 3500 },
-        { speaker: "Sarah", text: "Great! Our AI can handle that 24/7. Would you like to see a demo?", delay: 6000 },
-        { speaker: "User", text: "Yes, that would be perfect.", delay: 9000 },
-        { speaker: "Sarah", text: "Awesome. I'll send the details to your inbox right now.", delay: 11500 },
-        { speaker: "User", text: "Thanks, I appreciate it.", delay: 14000 },
-        { speaker: "Sarah", text: "You're welcome! Let me know if you have any questions.", delay: 16500 }
-    ];
+    const callContainerRef = useRef<HTMLDivElement>(null);
+
+    const fetchDailyCalls = () => {
+        try {
+            const stored = localStorage.getItem('lumoscale_voice_calls');
+            if (stored) {
+                const data = JSON.parse(stored);
+                // Check if the recorded date is today
+                const today = new Date().toDateString();
+                if (data.date === today) {
+                    setDailyCalls(data.count);
+                } else {
+                    // Reset if it's a new day
+                    localStorage.setItem('lumoscale_voice_calls', JSON.stringify({ date: today, count: 0 }));
+                    setDailyCalls(0);
+                }
+            } else {
+                localStorage.setItem('lumoscale_voice_calls', JSON.stringify({ date: new Date().toDateString(), count: 0 }));
+            }
+        } catch (e) {
+            console.error("Local storage error", e);
+        }
+    };
+
+    // Initialize daily calls from local storage
+    useEffect(() => {
+        fetchDailyCalls();
+        window.addEventListener('storage', fetchDailyCalls);
+        window.addEventListener('lumoscale_voice_calls_updated', fetchDailyCalls);
+        return () => {
+            window.removeEventListener('storage', fetchDailyCalls);
+            window.removeEventListener('lumoscale_voice_calls_updated', fetchDailyCalls);
+        };
+    }, []);
+    const [transcript, setTranscript] = useState<{ id: string, speaker: 'User' | 'Sarah', text: string }[]>([]);
 
     useEffect(() => {
+        // Setup Retell Event Listeners
+        retellWebClient.on("call_started", () => {
+            setIsCallActive(true);
+            setIsInitializing(false);
+            setTranscript([]); // reset on new call
+        });
+
+        retellWebClient.on("call_ended", () => {
+            setIsCallActive(false);
+            setIsAgentTalking(false);
+            setIsInitializing(false);
+            setTimeout(() => setTranscript([]), 1000); // fade out after a sec
+        });
+
+        retellWebClient.on("agent_start_talking", () => setIsAgentTalking(true));
+        retellWebClient.on("agent_stop_talking", () => setIsAgentTalking(false));
+
+        // Listen for live transcript updates
+        retellWebClient.on("update", (update) => {
+            if (update.transcript) {
+                // Map the Retell transcript to our UI transcript array
+                const parsedTranscript = update.transcript
+                    // Filter out truly empty utterances to prevent irrelevant/blank bubbles
+                    .filter((utterance) => utterance.content && utterance.content.trim().length > 0)
+                    .map((utterance, idx) => ({
+                        id: `${utterance.role}-${idx}`,
+                        speaker: utterance.role === 'agent' ? 'Sarah' : 'User' as 'Sarah' | 'User',
+                        text: utterance.content
+                    }));
+                setTranscript(parsedTranscript);
+            }
+        });
+
+        retellWebClient.on("error", (error) => {
+            console.error("Retell Error:", error);
+            setIsCallActive(false);
+            setIsInitializing(false);
+            alert("Call failed. Check console for details.");
+        });
+
+        // Cleanup
+        return () => {
+            retellWebClient.removeAllListeners();
+            retellWebClient.stopCall();
+        };
+    }, []);
+
+    // Countdown timer for UI (starts at 2:30, counts down to 0:00)
+    useEffect(() => {
         if (!isCallActive) {
-            setConvoStep(0);
-            setCallDuration(0);
+            setCallDuration(150);
+            return;
+        }
+        setCallDuration(150);
+        const timerInterval = setInterval(() => {
+            setCallDuration(prev => {
+                if (prev <= 1) { clearInterval(timerInterval); return 0; }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => clearInterval(timerInterval);
+    }, [isCallActive]);
+
+    const handleStartCall = async () => {
+        if (dailyCalls >= MAX_DAILY_CALLS) {
+            alert(`You have reached the daily limit of ${MAX_DAILY_CALLS} demo calls. Please try again tomorrow!`);
             return;
         }
 
-        // Timer for call duration
-        const timerInterval = setInterval(() => {
-            setCallDuration(prev => prev + 1);
-        }, 1000);
+        setIsInitializing(true);
+        try {
+            // ==============================================================================
+            // 🚨 ACTION REQUIRED: CONFIGURE YOUR N8N WEBHOOK URL HERE 🚨
+            // ==============================================================================
+            // To start a secure web call, your frontend needs a temporary `access_token`. 
+            // Create an n8n webhook that makes a POST request to: https://api.retellai.com/v2/create-web-call
+            // with Header: `Authorization: Bearer YOUR_SECRET_RETELL_API_KEY`
+            // and Body: `{ "agent_id": "agent_f0bfa0d5cb79d539d25d0c1000" }`
+            // Then, paste that n8n webhook URL below so this frontend can fetch the token securely.
+            
+            const YOUR_N8N_WEBHOOK_URL = "https://n8n.srv1011051.hstgr.cloud/webhook/8a593fb4-49b5-4301-8ad2-e64a1ec98f48"; 
+            
+            // 1. Fetch the token from your secure backend (n8n)
+            const response = await fetch(YOUR_N8N_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+            
+            if (!response.ok) throw new Error("Failed to fetch access token from webhook");
+            
+            const data = await response.json();
+            
+            // Adjust this based on exactly what your n8n webhook returns. 
+            // Normally Retell returns { access_token: "..." }
+            const accessToken = data.access_token || data.accessToken || data.token; 
+            
+            if (!accessToken) throw new Error("No access token found in webhook response");
 
-        // Conversation flow
-        const timers = conversation.map((_, i) =>
-            setTimeout(() => setConvoStep(i + 1), conversation[i].delay)
-        );
+            // Increment daily calls
+            try {
+                const newCount = dailyCalls + 1;
+                localStorage.setItem('lumoscale_voice_calls', JSON.stringify({ 
+                    date: new Date().toDateString(), 
+                    count: newCount 
+                }));
+                setDailyCalls(newCount);
+                window.dispatchEvent(new Event('lumoscale_voice_calls_updated'));
+            } catch(e) { console.error(e) }
 
-        return () => {
-            clearInterval(timerInterval);
-            timers.forEach(clearTimeout);
-        };
-    }, [isCallActive]);
+            // 2. Start the Retell WebRTC call
+            await retellWebClient.startCall({ accessToken });
+
+        } catch (error) {
+            console.error("Failed to start Retell call:", error);
+            setIsInitializing(false);
+            alert("Failed to start the call. Check the console for more details.");
+        }
+    };
+
+    const handleEndCall = () => {
+        retellWebClient.stopCall();
+        setIsCallActive(false);
+    };
+
+    const isUserSpeaking = (!isAgentTalking && isCallActive);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -361,168 +518,281 @@ const VoiceAgentDemo = () => {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const currentSpeaker = convoStep > 0 && convoStep <= conversation.length ? conversation[convoStep - 1].speaker : "Sarah";
-    const isUserSpeaking = currentSpeaker === "User";
-
     return (
-        <PhoneMockup time="10:25" accentColor="emerald">
-            {/* INCOMING CALL SCREEN */}
-            <AnimatePresence mode="wait">
-                {!isCallActive ? (
+        <div className="relative flex justify-center w-full max-w-5xl mx-auto">
+            <PhoneMockup accentColor="emerald" callDuration={0}>
+                <div className="flex-1 flex flex-col bg-black h-full relative z-10 overflow-hidden font-sans">
+                    
+                    {/* Pure Black Background */}
+                    <div className="absolute inset-0 bg-black pointer-events-none -z-10" />
 
-                    <motion.div
-                        key="incoming"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black"
-                    >
-                         {/* Ambient Background Glow Removed */}
-                        <div className="z-10 flex flex-col items-center gap-8">
-                            <motion.button
-                                onClick={() => setIsCallActive(true)}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="group relative w-24 h-24 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center shadow-lg transition-all duration-500 hover:border-white/20"
-                            >
-                                {/* Inner Pulse */}
-                                {/* Inner Pulse removed */}
-                                
-                                <Phone className="w-8 h-8 text-emerald-400 fill-current group-hover:scale-110 transition-transform duration-300" />
-                            </motion.button>
-                            
-                            <div className="text-center">
-                                <h3 className="text-white text-xl font-semibold mb-1">Talk to AI</h3>
-                                <p className="text-zinc-500 text-sm">Tap to start conversation</p>
-                            </div>
-                        </div>
-                    </motion.div>
-                ) : (
-                    /* ACTIVE CALL SCREEN */
-                    <motion.div
-                        key="active"
-                        initial={{ opacity: 0, y: "10%" }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: "10%" }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="absolute inset-0 z-20 flex flex-col bg-black"
-                    >
-                         {/* Header */}
-                         <div className="pt-14 pb-6 flex flex-col items-center justify-center w-full relative z-10 px-6">
-                            <div className="flex items-center gap-2 mb-2">
-                                 <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10">
-                                      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" className="w-full h-full object-cover" />
-                                 </div>
-                                 <h3 className="text-xl font-semibold text-white">Sarah</h3>
-                            </div>
-                            {/* Timestamp Removed/Hidden to save space or keep it small */}
-                            {/* <p className="text-emerald-400 text-sm font-medium tracking-wide font-mono">{formatTime(callDuration)}</p> */}
-                        </div>
 
-                         {/* Main Content Area */}
-                         <div className="flex-1 flex flex-col w-full relative overflow-hidden mb-20">
-                            
-                            {/* Visualizer Area (Fixed Top) */}
-                            <div className="h-24 w-full flex items-center justify-center shrink-0 relative z-20 -mt-2">
-                                {/* Listening State (User Turn) */}
-                                {isUserSpeaking && (
-                                    <motion.div 
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        className="absolute inset-0 flex flex-col items-center justify-center z-20"
+                    {/* Main Content Area */}
+                    <div className="flex-1 flex flex-col items-center justify-center relative z-10 w-full mt-4">
+                        
+                        {/* Premium Countdown Timer (Only visible when active) */}
+                        <div className="h-[80px] flex items-end justify-center pb-8">
+                            <AnimatePresence>
+                                {isCallActive && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        className="text-center flex flex-col items-center"
                                     >
-                                        <div className="w-16 h-16 rounded-full border-2 border-white/20 flex items-center justify-center mb-2 relative">
-                                            <div className="absolute inset-0 rounded-full bg-white/5 animate-ping-slow" />
-                                            <Mic className="w-6 h-6 text-white/80" />
+                                        <div className="px-5 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center gap-3">
+                                            <div className="flex gap-1">
+                                                <motion.div
+                                                    animate={{ opacity: [1, 0.3, 1] }}
+                                                    transition={{ duration: 2, repeat: Infinity }}
+                                                    className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                                                />
+                                            </div>
+                                            <span className="text-2xl font-mono tracking-widest text-white/90">
+                                                {formatTime(callDuration)}
+                                            </span>
                                         </div>
-                                        <p className="text-white/50 text-sm font-light animate-pulse">Listening...</p>
                                     </motion.div>
                                 )}
+                            </AnimatePresence>
+                        </div>
+                        
+                        {/* The "AI Core" 3D Gyroscope Visualizer */}
+                        <div className="relative z-20 mb-16 flex items-center justify-center w-[200px] h-[200px]" style={{ perspective: '800px' }}>
+                            <AnimatePresence>
+                                {/* Outer Ring */}
+                                <motion.div
+                                    animate={isCallActive ? {
+                                        rotateX: [0, 360],
+                                        rotateY: [0, 180],
+                                        rotateZ: [0, 360],
+                                        scale: isAgentTalking ? 1.1 : 1
+                                    } : { rotateX: 60, rotateY: 20, rotateZ: 45, scale: 0.9 }}
+                                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                                    className={`absolute w-[180px] h-[180px] rounded-full border border-white/5 shadow-[0_0_30px_rgba(255,255,255,0.02)]`}
+                                    style={{ transformStyle: 'preserve-3d' }}
+                                />
+                                
+                                {/* Middle Ring */}
+                                <motion.div
+                                    animate={isCallActive ? {
+                                        rotateX: [360, 0],
+                                        rotateY: [180, 0],
+                                        rotateZ: [360, 0],
+                                        scale: isAgentTalking ? 1.2 : 1,
+                                        borderColor: isAgentTalking ? 'rgba(52,211,153,0.3)' : 'rgba(56,189,248,0.2)'
+                                    } : { rotateX: -40, rotateY: -30, rotateZ: -60, scale: 0.8 }}
+                                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                    className="absolute w-[130px] h-[130px] rounded-full border border-white/10 backdrop-blur-[1px]"
+                                    style={{ transformStyle: 'preserve-3d' }}
+                                />
 
-                                {/* Speaking State (AI Turn) */}
-                                <motion.div 
-                                    animate={{ 
-                                        opacity: isUserSpeaking ? 0.3 : 1,
-                                        scale: isUserSpeaking ? 0.9 : 1
-                                    }}
-                                    className="flex items-center justify-center gap-1.5 h-full w-full"
+                                {/* Inner Core Orb */}
+                                <motion.div
+                                    animate={isCallActive ? {
+                                        scale: isAgentTalking ? [1, 1.2, 1] : [1, 1.05, 1],
+                                        boxShadow: isAgentTalking 
+                                            ? '0 0 60px rgba(52,211,153,0.6), inset 0 0 20px rgba(52,211,153,0.5)' 
+                                            : '0 0 40px rgba(56,189,248,0.3), inset 0 0 10px rgba(56,189,248,0.2)',
+                                        background: isAgentTalking 
+                                            ? 'rgba(16,185,129,0.1)' 
+                                            : 'rgba(14,165,233,0.05)'
+                                    } : { scale: 1, boxShadow: '0 0 20px rgba(255,255,255,0.05)', background: 'transparent' }}
+                                    transition={{ duration: isAgentTalking ? 0.3 : 2, repeat: Infinity, ease: "easeInOut" }}
+                                    className="absolute w-[70px] h-[70px] rounded-full flex items-center justify-center border border-white/20 backdrop-blur-md"
                                 >
-                                    {[...Array(isUserSpeaking ? 3 : 12)].map((_, i) => (
-                                        <motion.div
-                                            key={i}
-                                            animate={{
-                                                height: isUserSpeaking ? [10, 10, 10] : [20, 50 + Math.random() * 30, 20],
-                                                backgroundColor: isUserSpeaking ? "#52525b" : "#34d399",
-                                                filter: isUserSpeaking ? "none" : "drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))" 
-                                            }}
-                                            transition={{
-                                                duration: 0.4,
-                                                repeat: Infinity,
-                                                repeatType: "mirror",
-                                                delay: i * 0.05,
-                                                ease: "easeInOut"
-                                            }}
-                                            className="w-1.5 rounded-full"
-                                            style={{ height: '30px' }}
-                                        />
-                                    ))}
-                                </motion.div>
-                            </div>
-
-                            {/* Transcript Area (Scrolling List) */}
-                            <div className="flex-1 w-full relative overflow-hidden px-6 flex flex-col justify-end pb-24">
-                                {/* Top Fade Gradient */}
-                                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black via-black/90 to-transparent z-10 pointer-events-none" />
-
-                                <div className="flex flex-col gap-4 justify-end">
-                                     <AnimatePresence initial={false} mode="popLayout">
-                                        {conversation.slice(0, convoStep).map((msg, idx) => {
-                                            const isLast = idx === (conversation.slice(0, convoStep).length - 1);
-                                            const dist = conversation.slice(0, convoStep).length - 1 - idx;
-                                            return (
+                                    {!isCallActive ? (
+                                        <Mic className="w-5 h-5 text-white/50" strokeWidth={1} />
+                                    ) : (
+                                        <div className="flex gap-1 items-center justify-center h-full">
+                                            {[1, 2, 3].map((i) => (
                                                 <motion.div
-                                                    key={idx}
-                                                    layout
-                                                    initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                                                    animate={{ 
-                                                        opacity:  Math.max(0.1, 1 - dist * 0.15), 
-                                                        y: 0, 
-                                                        scale: 1 - dist * 0.02,
-                                                        filter: `blur(${dist * 0.5}px)`
+                                                    key={i}
+                                                    animate={{
+                                                        height: isAgentTalking ? [4, 16 + Math.random() * 8, 4] : 4,
+                                                        opacity: isAgentTalking ? 1 : 0.6,
+                                                        backgroundColor: isAgentTalking ? '#a7f3d0' : '#bae6fd' 
                                                     }}
-                                                    transition={{ duration: 0.5, ease: "easeOut" }}
-                                                    className={`flex w-full ${msg.speaker === 'User' ? 'justify-end' : 'justify-start'} ${isLast ? 'z-20' : 'z-0'}`}
-                                                >
-                                                    <div className={`max-w-[85%] ${msg.speaker === 'User' ? 'text-right' : 'text-left'}`}>
-                                                        <p className={`text-xl font-medium leading-relaxed tracking-tight ${msg.speaker === 'User' ? 'text-zinc-500' : 'text-white drop-shadow-md'}`}>
-                                                            "{msg.text}"
-                                                        </p>
-                                                    </div>
-                                                </motion.div>
-                                            )
-                                        })}
-                                     </AnimatePresence>
-                                </div>
-                            </div>
-                         </div>
-
-
-
-                         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
-                            <motion.button
-                                onClick={() => setIsCallActive(false)}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center shadow-lg shadow-red-600/40"
+                                                    transition={{ duration: 0.2 + (i * 0.1), repeat: Infinity, repeatType: 'reverse' }}
+                                                    className="w-1 rounded-full"
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+                    {/* Cinematic Typography */}
+                    <div className="text-center z-20 relative w-full px-8">
+                        <AnimatePresence mode="wait">
+                            <motion.h2 
+                                key={isCallActive ? (isAgentTalking ? 'analyzing' : 'awaiting') : 'initiate'}
+                                initial={{ opacity: 0, letterSpacing: '0.1em' }}
+                                animate={{ opacity: 1, letterSpacing: '0.2em' }}
+                                exit={{ opacity: 0, letterSpacing: '0.3em' }}
+                                transition={{ duration: 0.6, ease: "easeOut" }}
+                                className="text-[16px] font-bold text-white mb-2 uppercase"
                             >
-                                <Phone className="w-8 h-8 text-white fill-current rotate-[135deg]" />
-                            </motion.button>
-                         </div>
+                                {!isCallActive ? "Awaiting Initiation" : (isAgentTalking ? "Analyzing Input" : "Listening")}
+                            </motion.h2>
+                        </AnimatePresence>
+                        
+                        {/* Subtitle / Transcript Peek */}
+                        <motion.div 
+                            className="h-10 flex items-center justify-center overflow-hidden"
+                            animate={{ opacity: isCallActive ? 1 : 0.8 }}
+                        >
+                            <p className="text-[13px] text-zinc-400 font-medium tracking-wide">
+                                {!isCallActive ? "Establish Neural Link" : (isAgentTalking ? "Agent dictates..." : "Signal received...")}
+                            </p>
+                        </motion.div>
+                    </div>
+
+                    {/* Bottom Action Area (Morphing Glass Control) */}
+                    <div className="w-full px-8 pb-10 mt-auto relative z-20 flex justify-center">
+                        <AnimatePresence mode="wait">
+                            {!isCallActive ? (
+                                <motion.div 
+                                    key="start-btn"
+                                    initial={{ opacity: 0, y: 30 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 30, scale: 0.9 }}
+                                    className="w-full flex flex-col gap-6 items-center"
+                                >
+                                    <div className="flex items-center gap-2 opacity-80">
+                                        <div className="w-4 h-4 rounded-full border border-white/50 flex items-center justify-center">
+                                            <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                                        </div>
+                                        <span className="text-[11px] font-semibold text-zinc-300 uppercase tracking-widest">Mic Permission Auth</span>
+                                    </div>
+                                    <button
+                                        onClick={handleStartCall}
+                                        disabled={isInitializing || dailyCalls >= MAX_DAILY_CALLS}
+                                        className={`relative w-full max-w-[220px] group overflow-hidden ${
+                                            dailyCalls >= MAX_DAILY_CALLS 
+                                            ? 'bg-zinc-800 border border-zinc-700 cursor-not-allowed opacity-70' 
+                                            : 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 border border-emerald-400/50 hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] shadow-[0_0_30px_rgba(16,185,129,0.3)]'
+                                        } transition-all duration-500 py-4 rounded-full flex items-center justify-center gap-3`}
+                                    >
+                                        {dailyCalls >= MAX_DAILY_CALLS ? (
+                                            <div className="w-2.5 h-2.5 rounded-full bg-zinc-500" />
+                                        ) : isInitializing ? (
+                                            <div className="w-4 h-4 rounded-full border-t-2 border-white animate-spin" />
+                                        ) : (
+                                            <div className="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_10px_white]" />
+                                        )}
+                                        <span className={`font-bold text-[12px] tracking-[0.15em] ${dailyCalls >= MAX_DAILY_CALLS ? 'text-zinc-400' : 'text-white'}`}>
+                                            {dailyCalls >= MAX_DAILY_CALLS ? "LIMIT REACHED" : isInitializing ? "CONNECTING..." : "TALK TO AI"}
+                                        </span>
+                                        {dailyCalls < MAX_DAILY_CALLS && (
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                                        )}
+                                    </button>
+                                    
+                                    {dailyCalls > 0 && dailyCalls < MAX_DAILY_CALLS && (
+                                        <p className="text-[10px] text-zinc-500 font-mono absolute -bottom-6">
+                                            {MAX_DAILY_CALLS - dailyCalls} calls remaining today
+                                        </p>
+                                    )}
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="end-btn"
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    className="w-full flex flex-col gap-6 items-center"
+                                >
+                                    <div className="flex items-center gap-2 opacity-80">
+                                        <div className="w-4 h-4 rounded-full border border-red-500/50 flex items-center justify-center">
+                                            <motion.div
+                                                animate={{ opacity: [1, 0.5, 1] }}
+                                                transition={{ duration: 1.5, repeat: Infinity }}
+                                                className="w-1.5 h-1.5 bg-red-500 rounded-full"
+                                            />
+                                        </div>
+                                        <span className="text-[11px] font-semibold text-red-400 uppercase tracking-widest">Active Link</span>
+                                    </div>
+                                    <button
+                                        onClick={handleEndCall}
+                                        className="relative w-full max-w-[220px] group overflow-hidden bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 border border-red-400/50 transition-all duration-500 py-4 rounded-full flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(239,68,68,0.2)] hover:shadow-[0_0_40px_rgba(239,68,68,0.4)]"
+                                    >
+                                        <div className="w-3 h-3 rounded-sm bg-white shadow-[0_0_10px_white]" />
+                                        <span className="font-bold text-[12px] tracking-[0.15em] text-white">
+                                            END CALL
+                                        </span>
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </div>
+                </div>
+            </PhoneMockup>
+
+            {/* Out-of-screen Floating Transcript (Desktop Only) */}
+            <AnimatePresence>
+                {isCallActive && (
+                    <motion.div 
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        className="hidden lg:flex absolute left-[calc(50%+220px)] top-[10%] bottom-[10%] w-[350px] flex-col justify-end pointer-events-none z-30 overflow-hidden"
+                    >
+                        {/* Top fade out mask for smooth disappearance */}
+                        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10" />
+
+                        <div className="flex flex-col justify-end gap-3 pb-4">
+                            <AnimatePresence initial={false}>
+                                {transcript.slice(-6).map((msg, idx, arr) => {
+                                    const isSarah = msg.speaker !== 'User';
+                                    const dist = arr.length - 1 - idx; // 0=newest
+                                    return (
+                                        <motion.div
+                                            key={msg.id}
+                                            layout
+                                            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                                            animate={{ opacity: Math.max(0.1, 1 - dist * 0.25), y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: -40, scale: 0.95 }}
+                                            transition={{ duration: 0.3, ease: "easeOut" }} // Sped up from 0.5s to 0.3s
+                                            className={`flex w-full ${isSarah ? 'justify-start' : 'justify-end'}`}
+                                        >
+                                            <div className={`max-w-[85%] rounded-2xl px-4 py-3 backdrop-blur-md shadow-xl ${
+                                                isSarah
+                                                    ? 'bg-emerald-900/40 border border-emerald-700/50 rounded-tl-sm'
+                                                    : 'bg-zinc-800/80 border border-zinc-700/50 rounded-tr-sm'
+                                            }`}>
+                                                <p className={`text-[11px] font-bold mb-1 tracking-wider uppercase ${isSarah ? 'text-emerald-400' : 'text-zinc-400'}`}>
+                                                    {isSarah ? 'Sarah' : 'You'}
+                                                </p>
+                                                <p className="text-white text-sm leading-relaxed">{msg.text}</p>
+                                            </div>
+                                        </motion.div>
+                                    );
+                                })}
+                            </AnimatePresence>
+
+                            {/* Typing dots — user is speaking */}
+                            {isUserSpeaking && transcript.length > 0 && transcript[transcript.length - 1].speaker !== 'User' && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 0.6, y: 0 }}
+                                    exit={{ opacity: 0 }}
+                                    className="flex justify-end mt-2"
+                                >
+                                    <div className="bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-2xl rounded-tr-sm px-4 py-3 flex gap-1.5 items-center shadow-xl">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "0ms" }} />
+                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "150ms" }} />
+                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+                                    </div>
+                                </motion.div>
+                            )}
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </PhoneMockup>
+        </div>
     );
 };
 
