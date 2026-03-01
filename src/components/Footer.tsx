@@ -28,7 +28,7 @@ const Footer = () => {
                 <span className="text-2xl font-bold text-white tracking-tight">LUMOSCALE</span>
               </div>
               <p className="text-white/60 text-lg leading-relaxed max-w-sm">
-                We build AI Voice & Text Agents that turn missed calls and inquiries into booked appointments. 24/7 coverage for healthcare and real estate. No manual work.
+                We build AI Voice & Text Agents that turn missed calls and inquiries into booked appointments. 24/7 coverage for real estate. No manual work.
               </p>
 
               <div className="flex gap-4">

@@ -57,7 +57,7 @@ const PrivacyPolicy = () => {
             <div className="h-px w-full bg-blue-500/20 mb-6" />
             <p>
               Lumoscale is a UDYAM registered MSME providing done-for-you AI
-              automation services for real estate and healthcare businesses.
+              automation services for real estate businesses.
               We're based in Bengaluru, India, and help businesses automate
               client communication through AI-powered voice and text agents.
             </p>
@@ -273,48 +273,6 @@ const PrivacyPolicy = () => {
                 requirements
               </li>
             </ul>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              8. HEALTHCARE CLIENTS - IMPORTANT NOTICE
-            </h2>
-            <div className="h-px w-full bg-blue-500/20 mb-6" />
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">
-              HIPAA Compliance Status:
-            </h3>
-            <p className="mb-4">
-              We are actively working toward full HIPAA compliance. Our roadmap
-              includes:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 mb-6 marker:text-blue-500">
-              <li>Signing Business Associate Agreements (BAAs)</li>
-              <li>Implementing HIPAA-compliant infrastructure</li>
-              <li>Formalizing internal access controls and policies</li>
-            </ul>
-
-            <p className="mb-4">Until full compliance is achieved:</p>
-            <ul className="list-disc pl-6 space-y-2 mb-6 marker:text-blue-500">
-              <li>
-                We scope projects to avoid handling Protected Health Information
-                (PHI) directly
-              </li>
-              <li>
-                Our AI agents provide appointment scheduling and approved
-                information only
-              </li>
-              <li>We do NOT provide medical advice</li>
-              <li>
-                For healthcare support scenarios, AI uses only client-approved
-                materials
-              </li>
-              <li>We will communicate compliance timelines transparently</li>
-            </ul>
-
-            <p>
-              If your practice requires strict HIPAA compliance for PHI handling,
-              please contact us to discuss timing and options.
-            </p>
           </section>
 
           <section>

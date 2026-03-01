@@ -22,7 +22,7 @@ export default function AuditModal() {
     const [form, setForm] = useState({
         // Step 1
         serviceType: "" as "voice" | "text" | "both" | "",
-        industry: "" as "Real Estate" | "Healthcare" | "",
+        industry: "" as "Real Estate" | "",
 
         // Voice 
         callVolume: "",
@@ -162,7 +162,7 @@ export default function AuditModal() {
     };
 
     /* ---------- DATA LISTS ---------- */
-    const INDUSTRIES = ["Real Estate", "Healthcare"];
+    const INDUSTRIES = ["Real Estate"];
 
     const VOICE_PAIN = [
         "Missed calls during off-hours or busy times",
@@ -195,10 +195,12 @@ export default function AuditModal() {
 
     const REVENUE_RANGES = ["Under ₹2L", "₹2L - ₹5L", "₹5L - ₹10L", "₹10L+"];
 
-    const SETUP_OPTIONS = form.industry === "Healthcare"
-        ? ["Solo practitioner", "Small practice (2-5 staff)", "Multi-provider practice", "Healthcare group/network"]
-        : ["Solo agent", "Small team (2-5 agents)", "Growing agency (5-15 agents)", "Established brokerage (15+ agents)"];
-
+    const SETUP_OPTIONS = [
+        "Solo agent",
+        "Team (2-5 agents)",
+        "Mid-size brokerage",
+        "Large brokerage/enterprise"
+    ];
     return (
         <AnimatePresence>
             {isOpen && (
