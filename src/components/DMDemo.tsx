@@ -570,7 +570,7 @@ const VoiceAgentDemo = () => {
                         </div>
                         
                         {/* The "AI Core" 3D Gyroscope Visualizer */}
-                        <div className="relative z-20 mb-16 flex items-center justify-center w-[200px] h-[200px]" style={{ perspective: '800px' }}>
+                        <div className={`relative z-20 ${isMobile && isCallActive ? 'mb-4 mt-0 scale-75' : 'mb-16'} flex items-center justify-center w-[200px] h-[200px] transition-all duration-500`} style={{ perspective: '800px' }}>
                             <AnimatePresence>
                                 {/* Outer Ring */}
                                 <motion.div
@@ -634,31 +634,84 @@ const VoiceAgentDemo = () => {
                                 </motion.div>
                             </AnimatePresence>
                         </div>
-                    {/* Cinematic Typography */}
-                    <div className="text-center z-20 relative w-full px-8">
-                        <AnimatePresence mode="wait">
-                            <motion.h2 
-                                key={isCallActive ? (isAgentTalking ? 'analyzing' : 'awaiting') : 'initiate'}
-                                initial={{ opacity: 0, letterSpacing: '0.1em' }}
-                                animate={{ opacity: 1, letterSpacing: '0.2em' }}
-                                exit={{ opacity: 0, letterSpacing: '0.3em' }}
-                                transition={{ duration: 0.6, ease: "easeOut" }}
-                                className="text-[16px] font-bold text-white mb-2 uppercase"
+                    {/* Cinematic Typography - Hidden on Mobile during active call */}
+                    {!(isMobile && isCallActive) && (
+                        <div className="text-center z-20 relative w-full px-8">
+                            <AnimatePresence mode="wait">
+                                <motion.h2 
+                                    key={isCallActive ? (isAgentTalking ? 'analyzing' : 'awaiting') : 'initiate'}
+                                    initial={{ opacity: 0, letterSpacing: '0.1em' }}
+                                    animate={{ opacity: 1, letterSpacing: '0.2em' }}
+                                    exit={{ opacity: 0, letterSpacing: '0.3em' }}
+                                    transition={{ duration: 0.6, ease: "easeOut" }}
+                                    className="text-[16px] font-bold text-white mb-2 uppercase"
+                                >
+                                    {!isCallActive ? "Awaiting Initiation" : (isAgentTalking ? "Analyzing Input" : "Listening")}
+                                </motion.h2>
+                            </AnimatePresence>
+                            
+                            {/* Subtitle / Transcript Peek */}
+                            <motion.div 
+                                className="h-10 flex items-center justify-center overflow-hidden"
+                                animate={{ opacity: isCallActive ? 1 : 0.8 }}
                             >
-                                {!isCallActive ? "Awaiting Initiation" : (isAgentTalking ? "Analyzing Input" : "Listening")}
-                            </motion.h2>
-                        </AnimatePresence>
-                        
-                        {/* Subtitle / Transcript Peek */}
-                        <motion.div 
-                            className="h-10 flex items-center justify-center overflow-hidden"
-                            animate={{ opacity: isCallActive ? 1 : 0.8 }}
-                        >
-                            <p className="text-[13px] text-zinc-400 font-medium tracking-wide">
-                                {!isCallActive ? "Establish Neural Link" : (isAgentTalking ? "Agent dictates..." : "Signal received...")}
-                            </p>
-                        </motion.div>
-                    </div>
+                                <p className="text-[13px] text-zinc-400 font-medium tracking-wide">
+                                    {!isCallActive ? "Establish Neural Link" : (isAgentTalking ? "Agent dictates..." : "Signal received...")}
+                                </p>
+                            </motion.div>
+                        </div>
+                    )}
+
+                    {/* Integrated Mobile Transcript */}
+                    <AnimatePresence>
+                        {isCallActive && isMobile && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute inset-x-0 top-[280px] bottom-[160px] px-6 overflow-hidden z-10"
+                                style={{
+                                    maskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)',
+                                    WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)'
+                                }}
+                            >
+                                <div 
+                                    ref={transcriptContainerRef}
+                                    className="flex flex-col gap-4 overflow-y-auto no-scrollbar max-h-full scroll-smooth pt-20 pb-10"
+                                >
+                                    <AnimatePresence initial={false}>
+                                        {transcript.slice(-4).map((msg, idx, arr) => {
+                                            const isSarah = msg.speaker !== 'User';
+                                            const dist = arr.length - 1 - idx; 
+                                            return (
+                                                <motion.div
+                                                    key={msg.id}
+                                                    layout
+                                                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                                                    animate={{ 
+                                                        opacity: dist === 0 ? 1 : Math.max(0, 1 - dist * 0.4), 
+                                                        y: 0, 
+                                                        scale: 1 
+                                                    }}
+                                                    exit={{ opacity: 0, y: -30, scale: 0.9 }}
+                                                    transition={{ duration: 0.4, ease: "easeOut" }}
+                                                    className={`flex w-full ${isSarah ? 'justify-start' : 'justify-end'}`}
+                                                >
+                                                    <div className={`max-w-[80%] rounded-2xl px-4 py-3 backdrop-blur-md border ${
+                                                        isSarah
+                                                            ? 'bg-emerald-500/10 border-emerald-500/20 rounded-tl-sm shadow-[0_4px_20px_rgba(16,185,129,0.1)]'
+                                                            : 'bg-white/5 border-white/10 rounded-tr-sm'
+                                                    }`}>
+                                                        <p className="text-[13px] leading-relaxed text-white font-medium">{msg.text}</p>
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </AnimatePresence>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     {/* Bottom Action Area (Morphing Glass Control) */}
                     <div className="w-full px-8 pb-10 mt-auto relative z-20 flex justify-center">
@@ -744,27 +797,23 @@ const VoiceAgentDemo = () => {
             </PhoneMockup>
             </div>
 
-            {/* Responsive Transcript */}
+            {/* Desktop-only Floating Transcript */}
             <AnimatePresence>
-                {isCallActive && (
+                {isCallActive && !isMobile && (
                     <motion.div 
-                        initial={{ opacity: 0, x: isMobile ? 0 : 20, y: isMobile ? 20 : 0 }}
-                        animate={{ opacity: 1, x: 0, y: 0 }}
-                        exit={{ opacity: 0, x: isMobile ? 0 : 20, y: isMobile ? 20 : 0 }}
-                        className={`${
-                            isMobile 
-                            ? "w-full max-w-[380px] h-[400px] mt-2" 
-                            : "absolute left-[calc(50%+220px)] top-[10%] bottom-[10%] w-[350px]"
-                        } flex flex-col justify-end z-30 overflow-hidden group`}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        className="absolute left-[calc(50%+220px)] top-[10%] bottom-[10%] w-[350px] flex flex-col justify-end z-30 overflow-hidden group"
                     >
-                        {!isMobile && <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10" />}
+                        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10" />
 
                         <div 
                             ref={transcriptContainerRef}
-                            className={`flex flex-col gap-3 pb-4 overflow-y-auto no-scrollbar max-h-full scroll-smooth ${isMobile ? 'pointer-events-auto px-4' : 'pointer-events-none'}`}
+                            className="flex flex-col gap-3 pb-4 overflow-y-auto no-scrollbar max-h-full scroll-smooth pointer-events-none"
                         >
                             <AnimatePresence initial={false}>
-                                {transcript.slice(isMobile ? -15 : -10).map((msg, idx, arr) => {
+                                {transcript.slice(-10).map((msg, idx, arr) => {
                                     const isSarah = msg.speaker !== 'User';
                                     const dist = arr.length - 1 - idx; 
                                     return (
@@ -772,7 +821,7 @@ const VoiceAgentDemo = () => {
                                             key={msg.id}
                                             layout
                                             initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                                            animate={{ opacity: isMobile ? (dist === 0 ? 1 : 0.6) : Math.max(0.1, 1 - dist * 0.25), y: 0, scale: 1 }}
+                                            animate={{ opacity: Math.max(0.1, 1 - dist * 0.25), y: 0, scale: 1 }}
                                             exit={{ opacity: 0, y: -40, scale: 0.95 }}
                                             transition={{ duration: 0.3, ease: "easeOut" }}
                                             className={`flex w-full ${isSarah ? 'justify-start' : 'justify-end'}`}
@@ -791,21 +840,6 @@ const VoiceAgentDemo = () => {
                                     );
                                 })}
                             </AnimatePresence>
-
-                            {isUserSpeaking && transcript.length > 0 && transcript[transcript.length - 1].speaker !== 'User' && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 0.6, y: 0 }}
-                                    exit={{ opacity: 0 }}
-                                    className="flex justify-end mt-2"
-                                >
-                                    <div className="bg-zinc-800/80 backdrop-blur-md border border-zinc-700/50 rounded-2xl rounded-tr-sm px-4 py-3 flex gap-1.5 items-center shadow-xl">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "0ms" }} />
-                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "150ms" }} />
-                                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "300ms" }} />
-                                    </div>
-                                </motion.div>
-                            )}
                         </div>
                     </motion.div>
                 )}
