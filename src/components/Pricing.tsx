@@ -267,7 +267,7 @@ export default function Pricing() {
                         <Zap className="w-5 h-5 text-blue-400" />
                     </div>
                     <div>
-                        <h4 className="text-white font-bold text-lg mb-1">Industry-Specific AI Agents</h4>
+                        <h4 className="text-white font-bold text-lg mb-1">Custom AI agents</h4>
                         <p className="text-zinc-400 text-sm leading-snug">
                             Trained on your exact SOPs, scripts, and customer types.
                         </p>
@@ -286,7 +286,7 @@ export default function Pricing() {
                         <Sparkles className="w-5 h-5 text-purple-400" />
                     </div>
                     <div>
-                        <h4 className="text-white font-bold text-lg mb-1">Full Automation Builds</h4>
+                        <h4 className="text-white font-bold text-lg mb-1">Custom AI workflows</h4>
                         <p className="text-zinc-400 text-sm leading-snug">
                             We map and automate your entire lead-to-booking pipeline.
                         </p>
