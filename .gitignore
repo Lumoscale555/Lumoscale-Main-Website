@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# GitHub push credentials — never commit this!
+.env.push
