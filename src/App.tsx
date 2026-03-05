@@ -20,38 +20,31 @@ import { AuditModalProvider } from "./context/AuditModalContext";
 import { HelmetProvider } from 'react-helmet-async';
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <HelmetProvider>
-      <AuditModalProvider>
-        <TooltipProvider>
-          <h1 style={{ color: 'white', position: 'fixed', top: 0, left: 0, zIndex: 9999 }}>RENDER TEST</h1>
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AuditModalProvider>
           <Toaster />
           <Sonner />
-          <AuditModal /> {/* Add Global Modal */}
           <BrowserRouter>
+            <AuditModal />
             <Routes>
               <Route path="/" element={<Index />} />
-
-              {/* Blog Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin" element={<ProtectedRoute />}>
+                <Route index element={<Dashboard />} />
+                <Route path="editor" element={<Editor />} />
+                <Route path="editor/:id" element={<Editor />} />
+              </Route>
               <Route path="/blog" element={<BlogIndex />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
-
-              {/* Admin Routes */}
-              <Route path="/admin/login" element={<Login />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/admin" element={<Dashboard />} />
-                <Route path="/admin/new" element={<Editor />} />
-                <Route path="/admin/edit/:id" element={<Editor />} />
-              </Route>
-
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-        </TooltipProvider>
-      </AuditModalProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
+        </AuditModalProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;

@@ -50,7 +50,7 @@ const Hero = () => {
   // Mouse tracking for 3D tilt or Auto-tilt on mobile
   useEffect(() => {
     let animationFrameId: number;
-    let startTime = Date.now();
+    const startTime = Date.now();
 
     const animateMobile = () => {
       const elapsed = Date.now() - startTime;
