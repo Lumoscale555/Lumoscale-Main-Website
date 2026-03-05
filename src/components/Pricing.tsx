@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform } from "framer-motion";
 import {
   Check,
   ArrowRight,
@@ -12,6 +12,7 @@ import {
 import { useAuditModal } from "../context/AuditModalContext";
 import { useIsMobile } from "../hooks/use-mobile";
 
+// ... (Constants TEXT_FEATURES, VOICE_FEATURES, CUSTOM_FEATURES remain the same: lines 16-40)
 /* ---------- TEXT AGENT FEATURES ---------- */
 const TEXT_FEATURES = [
   "Instagram, WhatsApp & Website automation",
@@ -62,6 +63,7 @@ const cardVariants = {
 };
 
 export default function Pricing() {
+  // ... (Pricing component render logic remains the same: lines 65-160)
   return (
     <section id="pricing" className="relative w-full bg-black py-24 px-6 overflow-hidden">
       {/* Background Gradients/Grid */}
@@ -161,41 +163,29 @@ export default function Pricing() {
 
 function PricingCard({ title, subtitle, description, price, features, icon: Icon, isPopular = false, gradient, glowColor, ctaText }: any) {
   const { openModal } = useAuditModal();
+  const cardRef = useRef<HTMLDivElement>(null);
+  
+  // Mouse Interaction (Desktop)
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-
-  // 3D Tilt Values
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
+  
   const isMobile = useIsMobile();
 
-  useEffect(() => {
-    if (!isMobile) return;
+  // Scroll Interaction (Mobile)
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"]
+  });
 
-    let animationFrameId: number;
-    let startTime = Date.now();
+  // Map scroll progress to spotlight position (sweep across)
+  const scrollX = useTransform(scrollYProgress, [0, 1], [-200, 600]);
+  const scrollY = useTransform(scrollYProgress, [0, 1], [-200, 600]);
 
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const cx = 150;
-      const cy = 200;
-
-      const x = cx + Math.sin(elapsed * 0.001) * 100;
-      const y = cy + Math.cos(elapsed * 0.001) * 100;
-
-      mouseX.set(x);
-      mouseY.set(y);
-
-      // Tilt
-      rotateX.set(((y - cy) / cy) * -2.5);
-      rotateY.set(((x - cx) / cx) * 2.5);
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isMobile, mouseX, mouseY, rotateX, rotateY]);
+  // Map scroll to slight tilt effect
+  const scrollRotateX = useTransform(scrollYProgress, [0, 0.5, 1], [-2, 0, 2]);
+  const scrollRotateY = useTransform(scrollYProgress, [0, 0.5, 1], [-2, 0, 2]);
 
   function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
     if (isMobile) return;
@@ -207,6 +197,7 @@ function PricingCard({ title, subtitle, description, price, features, icon: Icon
 
     const centerX = width / 2;
     const centerY = height / 2;
+    // Desktop tilt is stronger/interactive
     const rotateXValue = ((y - centerY) / centerY) * -2.5;
     const rotateYValue = ((x - centerX) / centerX) * 2.5;
 
@@ -222,43 +213,70 @@ function PricingCard({ title, subtitle, description, price, features, icon: Icon
     mouseY.set(0);
   }
 
+  // Opacity transform for mobile spotlight
+  const mobileOpacity = useTransform(scrollYProgress, [0.1, 0.5, 0.9], [0, 1, 0]);
+
+  const mobileSpotlight = useMotionTemplate`radial-gradient(
+    600px circle at ${scrollX}px ${scrollY}px,
+    ${glowColor || 'rgba(255, 255, 255, 0.05)'},
+    transparent 80%
+  )`;
+
+  const desktopSpotlight = useMotionTemplate`radial-gradient(
+    600px circle at ${mouseX}px ${mouseY}px,
+    ${glowColor || 'rgba(255, 255, 255, 0.05)'},
+    transparent 80%
+  )`;
+
+  // Choose the source for spotlight/tilt based on device
+  // We use useMotionTemplate which needs MotionValues.
+  // We can't swap MotionValues easily in one template without conditional logic inside or distinct trees.
+  // Swapping specific rendered elements for Mobile vs Desktop is cleaner.
+
   return (
     <motion.div
+      ref={cardRef}
       variants={cardVariants}
       style={{ perspective: 1000 }}
-      className="h-full"
+      className="h-full relative"
     >
       <motion.div
         onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
         style={{
-          rotateX,
-          rotateY,
+          rotateX: isMobile ? scrollRotateX : rotateX,
+          rotateY: isMobile ? scrollRotateY : rotateY,
           transformStyle: "preserve-3d",
         }}
         className={`group relative flex flex-col p-8 rounded-[32px] overflow-hidden bg-[#0A0A0A] border border-white/5 transition-all duration-500 h-full hover:shadow-2xl hover:shadow-black/50`}
       >
-        {/* Animated Rotating Border Gradient Hover */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden rounded-[32px]">
-          <div className={`absolute -inset-[50%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] opacity-20`} />
-        </div>
+        {/* Animated Rotating Border Gradient Hover (Desktop Only or Subtle?) */}
+        {!isMobile && (
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden rounded-[32px]">
+            <div className={`absolute -inset-[50%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] opacity-20`} />
+            </div>
+        )}
 
         {/* Inner Dark Background */}
         <div className="absolute inset-[1px] bg-[#0A0A0A] rounded-[31px] z-0" />
 
         {/* SPOTLIGHT EFFECT */}
-        <motion.div
-          className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-10"
-          style={{
-            background: useMotionTemplate`
-            radial-gradient(
-              600px circle at ${mouseX}px ${mouseY}px,
-              ${glowColor || 'rgba(255, 255, 255, 0.05)'},
-              transparent 80%
-            )
-          `,
-          }}
-        />
+        {isMobile ? (
+             <motion.div
+                className="pointer-events-none absolute -inset-px transition duration-300 z-10"
+                style={{
+                  opacity: mobileOpacity,
+                  background: mobileSpotlight,
+                }}
+              />
+        ) : (
+             <motion.div
+                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-10"
+                style={{
+                  background: desktopSpotlight,
+                }}
+              />
+        )}
 
         {/* GLOWING TOP GRADIENT (Popular Only) */}
         {isPopular && (

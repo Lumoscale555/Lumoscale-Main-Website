@@ -161,8 +161,12 @@ export default function ChatWidget() {
                                             )}
                                             
                                             {messages.map((msg, idx) => (
-                                                <div
+                                                <motion.div
                                                     key={idx}
+                                                    layout
+                                                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                                     className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}
                                                 >
                                                     {msg.sender === 'ai' && (
@@ -185,11 +189,17 @@ export default function ChatWidget() {
                                                             ) : msg.text}
                                                         </p>
                                                     </div>
-                                                </div>
+                                                </motion.div>
                                             ))}
 
                                             {isTyping && (
-                                                <div className="flex gap-3 items-start">
+                                                <motion.div 
+                                                    layout
+                                                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                    transition={{ duration: 0.3 }}
+                                                    className="flex gap-3 items-start"
+                                                >
                                                     <div className="w-7 h-7 rounded-full overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-zinc-900 mt-1">
                                                          <Bot className="w-3.5 h-3.5 text-blue-400" />
                                                     </div>
@@ -203,7 +213,7 @@ export default function ChatWidget() {
                                                         </div>
                                                         <span className="text-[10px] text-zinc-500 px-1 italic">AI is typing...</span>
                                                     </div>
-                                                </div>
+                                                </motion.div>
                                             )}
                                             <div ref={messagesEndRef} />
                                         </div>

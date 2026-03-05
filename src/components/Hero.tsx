@@ -101,14 +101,14 @@ const Hero = () => {
             >
               {/* Premium Talk to Team Button */}
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
                 <Button
                   className="relative h-auto px-8 py-5 text-lg bg-white text-black font-bold rounded-2xl shadow-xl hover:scale-[1.02] transition-all duration-300 border border-white/50 overflow-hidden"
                   onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
                 >
                   <span className="relative z-10 flex items-center">
                     Talk to our team
-                    <Zap className="w-5 h-5 ml-2 fill-blue-500 text-blue-500 group-hover:fill-emerald-600 group-hover:text-emerald-600 transition-colors duration-300" />
+                    <Zap className="w-5 h-5 ml-2 fill-blue-500 text-blue-500 group-hover:fill-blue-600 group-hover:text-blue-600 transition-colors duration-300" />
                   </span>
 
                   {/* Internal Shimmer */}
@@ -133,17 +133,21 @@ const Hero = () => {
             className="relative flex items-center justify-center min-w-0 h-[640px] lg:h-[700px]"
           >
             {/* Dynamic Glow Behind Graphic */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none mix-blend-screen" />
+            {/* Dynamic Glow Behind Graphic - Hidden on mobile (black bg), visible on desktop */}
+            <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none mix-blend-screen" />
 
             <div
               className="relative w-full h-full flex items-center justify-center"
             >
 
               {/* --- CARD 1: TEXT AGENT (Back/Left) --- */}
-              <div
+              <motion.div
+                initial={{ opacity: 0, x: -20, y: 20 }}
+                animate={{ opacity: 1, x: -20, y: 0 }} // Keep x: -20 as per original transform
+                transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
                 className="absolute left-0 right-0 mx-auto lg:mx-0 lg:left-8 lg:right-auto top-4 lg:top-20 w-[320px] bg-[#0A0A0A]/90 backdrop-blur-xl rounded-[32px] p-6 shadow-2xl z-10 border border-blue-500/20"
                 style={{
-                  transform: 'translateX(-20px)', // Fixed position, no 3D
+                  // transform: 'translateX(-20px)', // Moved to animate prop
                   boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.1)'
                 }}
               >
@@ -197,14 +201,17 @@ const Hero = () => {
                     )}
                   </AnimatePresence>
                 </div>
-              </div>
+              </motion.div>
 
 
               {/* --- CARD 2: VOICE AGENT (Front/Right) --- */}
-              <div
+              <motion.div
+                initial={{ opacity: 0, x: 20, y: 40 }}
+                animate={{ opacity: 1, x: 20, y: 0 }} // Keep x: 20 as per original transform
+                transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
                 className="absolute left-0 right-0 mx-auto lg:mx-0 lg:left-auto lg:right-8 bottom-4 lg:bottom-32 w-[300px] bg-[#0A0A0A] rounded-[32px] p-8 z-20 border border-purple-500/20"
                 style={{
-                  transform: 'translateX(20px)', // Fixed position
+                  // transform: 'translateX(20px)', // Moved to animate prop
                   boxShadow: '0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 50px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255,255,255,0.1)'
                 }}
               >
@@ -254,7 +261,7 @@ const Hero = () => {
                   </button>
                 </div>
 
-              </div>
+              </motion.div>
 
             </div>
           </div>

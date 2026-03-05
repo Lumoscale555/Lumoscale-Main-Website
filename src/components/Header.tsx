@@ -139,9 +139,9 @@ const Header = () => {
                   });
                 }
               }}
-              className="px-3 py-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors border border-cyan-500/30 rounded-full hover:border-cyan-500/50 whitespace-nowrap"
+              className="px-4 py-2 text-xs font-bold text-white bg-white/10 backdrop-blur-md border border-white/10 rounded-full shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:shadow-[0_0_25px_rgba(74,222,128,0.4)] hover:bg-white/20 transition-all whitespace-nowrap active:scale-95"
             >
-              Talk to AI
+              <span className="bg-gradient-to-r from-emerald-200 to-white bg-clip-text text-transparent">Talk to AI</span>
             </a>
           </div>
 
