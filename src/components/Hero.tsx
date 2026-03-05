@@ -17,14 +17,6 @@ const Hero = () => {
   const positionsRef = useRef<{ x: number; y: number }[]>([]);
 
   const [showVideoModal, setShowVideoModal] = useState(false);
-  const [showBetaPopup, setShowBetaPopup] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowBetaPopup(true);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     const circle = circleRef.current;
@@ -91,10 +83,11 @@ const Hero = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15),transparent_60%)]" />
 
         <div className="container mx-auto grid lg:grid-cols-2 gap-12 relative z-10 mt-6 min-w-0">
+          {/* LEFT */}
           <div className="flex flex-col justify-center space-y-8 mt-6 min-w-0">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full w-fit animate-fade-up">
               <span className="text-sm font-medium text-primary">
-                FOR B2B and B2C Business Owners
+                FOR B2B AND B2C BUSINESS OWNERS
               </span>
             </div>
 
@@ -106,7 +99,9 @@ const Hero = () => {
               className="text-xl md:text-2xl text-muted-foreground animate-fade-up"
               style={{ animationDelay: "0.2s" }}
             >
-              AI responds in 60 seconds, qualifies every lead, and books consultations automatically, so you never lose a client to slow replies.
+              AI responds in 60 seconds, qualifies every lead, and books
+              consultations automatically, so you never lose a client to slow
+              replies.
             </p>
 
             <div
@@ -133,6 +128,7 @@ const Hero = () => {
             </div>
           </div>
 
+          {/* RIGHT */}
           <div className="relative flex items-center justify-center min-w-0">
             <div
               ref={circleRef}
@@ -152,9 +148,11 @@ const Hero = () => {
                 <div className="flex items-start gap-2">
                   <MessageSquare className="text-primary h-5 w-5 mt-1" />
                   <div>
-                    <p className="text-xs text-muted-foreground">AI Response</p>
+                    <p className="text-xs text-muted-foreground">
+                      AI Response
+                    </p>
                     <p className="text-sm">
-                      Hey Mike, what type of agency do you run
+                      Hey Mike, what type of business do you run?
                     </p>
                   </div>
                 </div>
@@ -170,7 +168,9 @@ const Hero = () => {
                     <p className="text-xs text-muted-foreground">
                       Booking Confirmed
                     </p>
-                    <p className="text-sm font-semibold">Thu, 2:00 PM</p>
+                    <p className="text-sm font-semibold">
+                      Thu, 2:00 PM
+                    </p>
                   </div>
                 </div>
               </div>
@@ -234,77 +234,24 @@ const Hero = () => {
             </div>
 
             <div className="p-6 bg-card">
-              <h3 className="text-2xl font-bold mb-2">See How It Works</h3>
+              <h3 className="text-2xl font-bold mb-2">
+                See How It Works
+              </h3>
               <p className="text-muted-foreground mb-4">
-                Watch how our system responds to DMs, qualifies leads, and books consultations automatically.
+                Watch how our system responds to DMs, qualifies leads, and books
+                consultations automatically.
               </p>
               <Button
                 className="w-full bg-gradient-to-r from-primary to-secondary text-black hover:scale-105 transition-all"
                 onClick={() => {
                   setShowVideoModal(false);
-                  window.open("https://cal.com/lumoscale/30min", "_blank");
+                  window.open(
+                    "https://cal.com/lumoscale/30min",
+                    "_blank"
+                  );
                 }}
               >
                 Book Your Strategy Call Now
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* BETA POPUP */}
-      {showBetaPopup && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="relative bg-gradient-to-br from-card to-card/80 border border-primary/30 rounded-2xl max-w-md w-full p-8 shadow-2xl">
-            <button
-              onClick={() => setShowBetaPopup(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="text-center space-y-6">
-              <div className="text-6xl animate-pulse">🔥</div>
-
-              <h2 className="text-3xl font-bold gradient-text">
-                First 5 Founding Clients
-              </h2>
-
-              <p className="text-muted-foreground text-lg">
-                We are onboarding only{" "}
-                <strong className="text-foreground">
-                  5 founding clients
-                </strong>{" "}
-                with exclusive early access benefits.
-              </p>
-
-              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 space-y-2 text-left">
-                <p className="flex items-center gap-2 text-sm">
-                  <span className="text-primary">✓</span>
-                  <span>No setup fee. 40% founding client benefit.</span>
-                </p>
-                <p className="flex items-center gap-2 text-sm">
-                  <span className="text-primary">✓</span>
-                  <span>Priority support for early partners</span>
-                </p>
-                <p className="flex items-center gap-2 text-sm">
-                  <span className="text-primary">✓</span>
-                  <span>Lifetime grandfathered access</span>
-                </p>
-              </div>
-
-              <p className="text-sm text-primary font-semibold">
-                Limited founding client availability
-              </p>
-
-              <Button
-                className="w-full bg-gradient-to-r from-primary to-secondary text-black text-lg py-6 hover:scale-105 transition-all"
-                onClick={() => {
-                  setShowBetaPopup(false);
-                  window.open("https://cal.com/lumoscale/30min", "_blank");
-                }}
-              >
-                Book Strategy Call
               </Button>
             </div>
           </div>
