@@ -13,10 +13,10 @@ const BeforeAfter = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6">
             <span className="w-2 h-2 rounded-full bg-blue-400" />
-            <span className="text-xs font-semibold text-blue-300 tracking-wide uppercase">Comparison</span>
+            <span className="text-xs font-semibold text-blue-300 tracking-wide uppercase">The Real Difference</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            Before Lumoscale vs. <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">After Lumoscale</span>
+            While They Miss Calls, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">You're Closing Them</span>
           </h2>
         </div>
 
@@ -46,22 +46,22 @@ const BeforeAfter = () => {
                 <TrendingDown className="w-6 h-6 text-red-500" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">BEFORE</h3>
-                <p className="text-sm text-red-400 font-medium">Manual Chaos</p>
+                <h3 className="text-xl font-bold text-white">BEFORE <span className="text-lg text-zinc-500 font-medium">— Other Solutions</span></h3>
+                <p className="text-sm text-red-400 font-medium mt-1">Generic Automation Models</p>
               </div>
             </div>
 
             <div className="space-y-6 flex-1 relative z-10">
               {[
-                { label: "Manual Response Work", val: "60-80 hrs/month" },
-                { label: "Response Time", val: "Minutes to hours (or never)" },
-                { label: "Missed Opportunities", val: "40%+ no-shows & ghosted leads" },
-                { label: "Performance Visibility", val: "Zero insights or tracking" },
-                { label: "Capacity", val: "Struggles with volume, drops leads, burns out team" },
+                { label: "Missed Calls, Lost Revenue", val: "Unanswered calls during busy hours go straight to your competitor." },
+                { label: "Built on Templates", val: "Same generic script used for every business, every industry." },
+                { label: "Slow Follow-Up", val: "Leads go cold before your team even sees the missed call." },
+                { label: "Zero Accountability", val: "No support once the system is live and breaking." },
+                { label: "Short Life Cycle", val: "Systems typically fall apart within the first few weeks." },
               ].map((item, i) => (
                 <div key={i} className="border-b border-white/5 pb-4 last:border-0">
                   <span className="text-xs text-zinc-500 uppercase tracking-wider font-semibold block mb-1">{item.label}</span>
-                  <span className="text-base text-zinc-300 font-medium">{item.val}</span>
+                  <span className="text-sm text-zinc-300 font-medium leading-relaxed">{item.val}</span>
                 </div>
               ))}
             </div>
@@ -69,7 +69,7 @@ const BeforeAfter = () => {
             <div className="mt-8 pt-6 border-t border-white/5">
               <p className="text-sm text-zinc-400">
                 <span className="text-red-500 text-lg mr-2">❌</span>
-                You're drowning in inquiries, not growing your business.
+                Unanswered calls and slow follow-ups are sending your revenue straight to competitors.
               </p>
             </div>
           </motion.div>
@@ -91,22 +91,22 @@ const BeforeAfter = () => {
                 <TrendingUp className="w-6 h-6 text-emerald-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">AFTER</h3>
-                <p className="text-sm text-emerald-400 font-medium">System Control</p>
+                <h3 className="text-xl font-bold text-white">AFTER <span className="text-lg text-zinc-500 font-medium">— Lumoscale Voice Engine</span></h3>
+                <p className="text-sm text-emerald-400 font-medium mt-1">Self-Learning Front Desk System</p>
               </div>
             </div>
 
             <div className="space-y-6 flex-1 relative z-10">
               {[
-                { label: "Manual Response Work", val: "0 hours (fully automated)" },
-                { label: "Response Time", val: "Under 60 seconds, 24/7" },
-                { label: "Missed Opportunities", val: "Less than 5% no-shows" },
-                { label: "Performance Visibility", val: "Full dashboard with insights" },
-                { label: "Capacity", val: "Unlimited handles - 10 or 1,000 inquiries seamlessly" },
+                { label: "Every Call Answered", val: "Instant pickup 24/7, no lead left behind." },
+                { label: "Built Around Your Business", val: "Custom trained on your services, pricing, and booking flow." },
+                { label: "60-Second Response", val: "Every lead heard from immediately, every single time." },
+                { label: "Full Ownership", val: "24/7 dedicated support with complete accountability." },
+                { label: "Gets Smarter Over Time", val: "Continuously trained on real call data from your business." },
               ].map((item, i) => (
                 <div key={i} className="border-b border-emerald-500/10 pb-4 last:border-0">
                   <span className="text-xs text-emerald-500/60 uppercase tracking-wider font-semibold block mb-1">{item.label}</span>
-                  <span className="text-base text-white font-bold">{item.val}</span>
+                  <span className="text-sm text-white font-bold leading-relaxed">{item.val}</span>
                 </div>
               ))}
             </div>
@@ -114,7 +114,7 @@ const BeforeAfter = () => {
             <div className="mt-8 pt-6 border-t border-emerald-500/10">
               <p className="text-sm text-zinc-300">
                 <span className="text-emerald-500 text-lg mr-2">✅</span>
-                Every inquiry becomes a trackable, revenue-generating opportunity.
+                Every call is answered instantly, capturing leads and booking appointments 24/7.
               </p>
             </div>
           </motion.div>
