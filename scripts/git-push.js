@@ -1,79 +1,95 @@
 import readline from 'readline';
-import { execSync } from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 
-// ⚠️ User: Configure your two GitHub repository URLs here!
-// To push as a different user, add your GitHub username with an '@' before "github.com".
-// Example: If your URL is https://github.com/lumoscale555/repo.git
-// Change it to: https://lumoscale555@github.com/lumoscale555/repo.git
-
+// ============================================================
+// 🔧 CONFIGURE YOUR TWO GITHUB ACCOUNTS BELOW
+// ============================================================
 const accounts = {
   1: {
-    name: "GitHub Account 1 (e.g., Personal)",
-    // Replace with: https://YOUR_USERNAME@github.com/...
-    repoUrl: "https://vamsi1465@github.com/vamsi1465/Lumoscale-Main-Website-main.git" 
+    label: "vamsi1465 (Personal)",
+    username: "vamsi1465",
+    // ⚠ Make sure this repo exists on GitHub under vamsi1465
+    repoUrl: "https://vamsi1465@github.com/vamsi1465/Lumoscale-Main-Website-main.git"
   },
   2: {
-    name: "GitHub Account 2 (e.g., Work / lumoscale555)",
-    // Replace with: https://YOUR_USERNAME@github.com/...
-    repoUrl: "https://lumoscale555@github.com/lumoscale555/Lumoscale-Main-Website-main.git" 
+    label: "lumoscale555 (Company)",
+    username: "lumoscale555",
+    // ⚠ Make sure this repo exists on GitHub under lumoscale555
+    repoUrl: "https://lumoscale555@github.com/lumoscale555/Lumoscale-Main-Website-main.git"
   }
 };
+// ============================================================
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-console.log("----------------------------------------");
-console.log("🚀 Select GitHub Account to Push To");
-console.log("----------------------------------------");
-console.log(`1. ${accounts[1].name}`);
-console.log(`2. ${accounts[2].name}`);
-console.log("----------------------------------------");
+console.log("\n╔══════════════════════════════════════╗");
+console.log("║     🚀 GitHub Push — Select Account   ║");
+console.log("╠══════════════════════════════════════╣");
+console.log(`║  1.  ${accounts[1].label.padEnd(32)}║`);
+console.log(`║  2.  ${accounts[2].label.padEnd(32)}║`);
+console.log("╚══════════════════════════════════════╝\n");
 
 rl.question('Enter 1 or 2: ', (answer) => {
   const selected = accounts[answer.trim()];
-  
+
   if (!selected) {
-    console.log("❌ Invalid selection. Please run the script again and enter 1 or 2.");
+    console.log("\n❌ Invalid choice. Please run again and enter 1 or 2.");
     rl.close();
     return;
   }
 
-  if (selected.repoUrl.includes("YOUR_USERNAME")) {
-    console.log("⚠️  Wait! You haven't updated the repository URLs in the script yet.");
-    console.log("Please open 'scripts/git-push.js' and replace the placeholder URLs with your actual GitHub repository URLs.");
-    rl.close();
-    return;
-  }
+  console.log(`\n✅ Selected: ${selected.label}`);
 
-  console.log(`\n⏳ Setting up remote for: ${selected.name}...`);
-  
   try {
-    // Remove existing origin if it exists to avoid conflicts
-    try {
-      execSync('git remote remove origin', { stdio: 'ignore' });
-    } catch (e) {
-      // It's okay if origin doesn't exist yet
+    // Stage any unstaged changes
+    const statusResult = spawnSync('git', ['status', '--short'], { encoding: 'utf8' });
+    const hasChanges = statusResult.stdout.trim().length > 0;
+
+    if (hasChanges) {
+      console.log("\n📦 Uncommitted changes found. Staging and committing...");
+      rl.question('Enter commit message (or press Enter for "Update"): ', (message) => {
+        const commitMsg = message.trim() || "Update";
+        try {
+          execSync('git add .', { stdio: 'inherit' });
+          execSync(`git commit -m "${commitMsg}"`, { stdio: 'inherit' });
+        } catch (e) {
+          // Nothing to commit is fine
+        }
+        doPush(selected, rl);
+      });
+    } else {
+      doPush(selected, rl);
     }
-    
-    // Add the selected remote
-    execSync(`git remote add origin ${selected.repoUrl}`, { stdio: 'inherit' });
-    
-    // Ensure we are on the main branch
+
+  } catch (err) {
+    console.error("❌ Error:", err.message);
+    rl.close();
+  }
+});
+
+function doPush(account, rl) {
+  try {
+    console.log(`\n🔗 Setting remote to ${account.repoUrl}...`);
+
+    // Remove old origin if exists
+    try { execSync('git remote remove origin', { stdio: 'ignore' }); } catch (_) {}
+
+    // Set new origin with the username embedded in the URL
+    execSync(`git remote add origin ${account.repoUrl}`, { stdio: 'inherit' });
     execSync('git branch -M main', { stdio: 'inherit' });
-    
-    console.log(`\n🚀 Pushing code to ${selected.repoUrl}...`);
-    // Push the code
+
+    console.log(`\n⬆  Pushing to GitHub as ${account.username}...`);
+    console.log("   (If a login window pops up, sign in as: " + account.username + ")");
+
     execSync('git push -u origin main', { stdio: 'inherit' });
-    
-    console.log("\n✅ Successfully pushed your code!");
-  } catch (error) {
-    console.error("\n❌ Failed to push. Make sure:");
-    console.error("   1. You have committed your latest changes (git add . && git commit -m \"message\")");
-    console.error("   2. The target repository exists on GitHub");
-    console.error("   3. Your Windows Git Credential Manager has access (you may be prompted to log in)");
+
+    console.log("\n🎉 Successfully pushed to " + account.label + "!");
+  } catch (err) {
+    console.error("\n❌ Push failed. Make sure:");
+    console.error("   1. The repo exists on GitHub under '" + account.username + "'");
+    console.error("   2. You have access rights to the repo");
+    console.error("   3. You logged in with the correct account if a browser popup appeared");
   }
 
   rl.close();
-});
+}
