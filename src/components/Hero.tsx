@@ -215,7 +215,7 @@ const Hero = () => {
               <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 space-y-2 text-left">
                 <p className="flex items-center gap-2 text-sm">
                   <span className="text-primary">✓</span>
-                  <span>No setup fee, <span className="line-through opacity-60">$799</span> <span className="font-semibold">$497</span> per month</span>
+                  <span>No setup fee, <span className="line-through opacity-60">$799</span> <span className="font-semibold">$399</span> per month</span>
                 </p>
                 <p className="flex items-center gap-2 text-sm">
                   <span className="text-primary">✓</span>

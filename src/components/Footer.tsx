@@ -1,105 +1,112 @@
 import React from "react";
+import logo from "@/assets/lumoscale-logo.jpg";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="relative bg-black border-t border-white/10 pt-16 pb-10 overflow-hidden">
-      
-      {/* Glow background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-400/10 blur-[120px]" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-green-400/10 blur-[140px]" />
-      </div>
+    <footer className="bg-black border-t border-white/10">
+      <div className="container mx-auto px-6 py-12">
 
-      <div className="relative container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        {/* Top section */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10">
 
-          {/* BRAND */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-extrabold tracking-wide bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
-              Lumoscale
-            </h3>
-            <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
+          {/* Brand */}
+          <div className="max-w-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src={logo}
+                alt="Lumoscale"
+                className="h-9 w-auto object-contain"
+              />
+              <span className="text-lg font-bold tracking-tight text-white">
+                Lumoscale
+              </span>
+            </div>
+
+            <p className="text-sm text-slate-400 leading-relaxed">
               We turn Instagram DMs into booked consultations automatically,
               without missed leads or manual follow ups.
             </p>
           </div>
 
-          {/* NAVIGATION */}
-          <div>
-            <h4 className="text-sm font-semibold mb-4 text-white/90">
-              Navigate
-            </h4>
-            <ul className="space-y-3 text-sm">
-              {[
-                { label: "Home", href: "#hero" },
-                { label: "Solution", href: "#solution" },
-                { label: "Pain Points", href: "#painpoints" },
-                { label: "Before vs After", href: "#beforeafter" }
-              ].map((item) => (
-                <li key={item.label}>
-                  <a
-                    href={item.href}
-                    className="text-slate-400 hover:text-cyan-400 transition-colors"
-                  >
-                    {item.label}
+          {/* Links */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 text-sm">
+
+            {/* Product */}
+            <div>
+              <p className="mb-4 font-semibold text-white">Product</p>
+              <ul className="space-y-3">
+                <li>
+                  <a href="#solution" className="text-slate-400 hover:text-white transition-colors">
+                    Solution
                   </a>
                 </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* PRODUCT */}
-          <div>
-            <h4 className="text-sm font-semibold mb-4 text-white/90">
-              Product
-            </h4>
-            <ul className="space-y-3 text-sm">
-              {[
-                { label: "Pricing", href: "#pricing" },
-                { label: "DM Demo", href: "#demo" },
-                { label: "Get Started", href: "#finalcta" }
-              ].map((item) => (
-                <li key={item.label}>
-                  <a
-                    href={item.href}
-                    className="text-slate-400 hover:text-green-400 transition-colors"
-                  >
-                    {item.label}
+                <li>
+                  <a href="#demo" className="text-slate-400 hover:text-white transition-colors">
+                    Demo
                   </a>
                 </li>
-              ))}
-            </ul>
-          </div>
+                <li>
+                  <a href="#pricing" className="text-slate-400 hover:text-white transition-colors">
+                    Pricing
+                  </a>
+                </li>
+              </ul>
+            </div>
 
-          {/* CONTACT */}
-          <div>
-            <h4 className="text-sm font-semibold mb-4 text-white/90">
-              Contact
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <a
-                  href="mailto:contact@lumoscale.com"
-                  className="text-cyan-400 hover:text-green-400 transition-colors"
-                >
-                  contact@lumoscale.com
-                </a>
-              </li>
-              <li>
-                <a href="tel:+918919053970" className="text-slate-400 hover:text-green-400 transition-colors">+91 89190 53970</a>
-              </li>
-              <li className="text-slate-500 text-xs">
-                © {new Date().getFullYear()} Lumoscale. All rights reserved.
-              </li>
-            </ul>
-          </div>
+            {/* Company */}
+            <div>
+              <p className="mb-4 font-semibold text-white">Company</p>
+              <ul className="space-y-3">
+                <li>
+                  <a href="#painpoints" className="text-slate-400 hover:text-white transition-colors">
+                    Problems
+                  </a>
+                </li>
+                <li>
+                  <a href="#beforeafter" className="text-slate-400 hover:text-white transition-colors">
+                    Results
+                  </a>
+                </li>
+                <li>
+                  <a href="#hero" className="text-slate-400 hover:text-white transition-colors">
+                    Overview
+                  </a>
+                </li>
+              </ul>
+            </div>
 
+            {/* Contact */}
+            <div>
+              <p className="mb-4 font-semibold text-white">Contact</p>
+              <ul className="space-y-3">
+                <li>
+                  <a
+                    href="mailto:contact@lumoscale.com"
+                    className="text-slate-400 hover:text-white transition-colors"
+                  >
+                    contact@lumoscale.com
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="tel:+918919053970"
+                    className="text-slate-400 hover:text-white transition-colors"
+                  >
+                    +91 89190 53970
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+          </div>
         </div>
 
-        {/* Bottom divider */}
-        <div className="mt-12 pt-6 border-t border-white/5 text-center text-xs text-slate-500">
-          Built for founders who value speed, clarity, and automation.
+        {/* Bottom */}
+        <div className="mt-12 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <span>© {new Date().getFullYear()} Lumoscale. All rights reserved.</span>
+          <span>Built for founders who value speed and automation.</span>
         </div>
+
       </div>
     </footer>
   );

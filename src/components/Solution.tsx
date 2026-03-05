@@ -99,7 +99,7 @@ export default function Solution() {
             drop-shadow-[0_0_25px_rgba(106,242,225,0.35)]
             mx-auto max-w-[90%]"
           >
-            How It Works, From Instagram DM to Booked Call
+            How It Works, From DM's to Booked Call
           </h2>
 
           <p className="mt-6 text-lg text-[#A3B6B2] max-w-3xl mx-auto leading-relaxed">
