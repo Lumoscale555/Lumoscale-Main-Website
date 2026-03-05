@@ -10,7 +10,12 @@ const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { ch
     const isMobile = useIsMobile();
 
     useEffect(() => {
-        if (!isMobile) return;
+        // Disable auto-sway on mobile to prevent performance lag
+        if (isMobile) {
+            setRotateX(0);
+            setRotateY(0);
+            return;
+        }
 
         let animationFrameId: number;
         let startTime = Date.now();
@@ -97,6 +102,7 @@ const TextAgentDemo = () => {
     const [typingState, setTypingState] = useState<{ type: 'user' | 'ai' | null }>({ type: null });
     const [isBooked, setIsBooked] = useState(false);
     const chatContainerRef = useRef<HTMLDivElement>(null);
+    const isMobile = useIsMobile();
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
@@ -254,7 +260,7 @@ const TextAgentDemo = () => {
                                         key={idx}
                                         initial={{ opacity: 0, y: -20, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        layout
+                                        layout={!isMobile}
                                         className={`flex gap-2 ${msg.sender === 'lead' ? 'justify-end' : ''}`}
                                     >
                                         {msg.sender === 'ai' && (
@@ -586,16 +592,17 @@ const VoiceWave = () => {
                 <motion.div
                     key={i}
                     animate={{
-                        height: [10, 24, 10],
+                        scaleY: [0.4, 1, 0.4],
                         opacity: [0.5, 1, 0.5]
                     }}
                     transition={{
                         duration: 0.8,
                         repeat: Infinity,
                         delay: i * 0.1,
-                        ease: "easeInOut"
+                        ease: "linear"
                     }}
-                    className="w-1.5 bg-emerald-400 rounded-full"
+                    className="w-1.5 bg-emerald-400 rounded-full origin-center"
+                    style={{ height: '24px' }}
                 />
             ))}
         </div>
@@ -773,7 +780,7 @@ const VoiceAgentDemo = () => {
                                         <motion.div
                                             key={i}
                                             animate={{
-                                                height: [20, Math.random() * 60 + 20, 20],
+                                                scaleY: [0.3, 1, 0.3],
                                                 opacity: [0.3, 1, 0.3]
                                             }}
                                             transition={{
@@ -782,7 +789,8 @@ const VoiceAgentDemo = () => {
                                                 repeatType: "reverse",
                                                 delay: i * 0.1,
                                             }}
-                                            className="w-2 bg-gradient-to-t from-emerald-600 to-emerald-300 rounded-full"
+                                            className="w-2 bg-gradient-to-t from-emerald-600 to-emerald-300 rounded-full origin-center"
+                                            style={{ height: '60px' }}
                                         />
                                     ))}
                                 </div>
