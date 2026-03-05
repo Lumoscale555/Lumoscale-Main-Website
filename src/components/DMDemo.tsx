@@ -372,6 +372,8 @@ const VoiceAgentDemo = () => {
 
     const transcriptContainerRef = useRef<HTMLDivElement>(null);
 
+    const [callWarning, setCallWarning] = useState<'none' | '30s' | '10s'>('none');
+
     const fetchDailyCalls = () => {
         try {
             const stored = localStorage.getItem('lumoscale_voice_calls');
@@ -412,6 +414,18 @@ const VoiceAgentDemo = () => {
         transcriptRef.current = transcript;
     }, [transcript]);
 
+    // Reset warning state when call ends or starts
+    useEffect(() => {
+        if (!isCallActive) setCallWarning('none');
+    }, [isCallActive]);
+
+    // Trigger warnings at 30s and 10s remaining
+    useEffect(() => {
+        if (!isCallActive) return;
+        if (callDuration === 30) setCallWarning('30s');
+        else if (callDuration === 10) setCallWarning('10s');
+    }, [callDuration, isCallActive]);
+
     // Auto-scroll transcript to bottom
     const prevTranscriptLengthRef = useRef(0);
     useEffect(() => {
@@ -431,6 +445,17 @@ const VoiceAgentDemo = () => {
             setIsCallActive(true);
             setIsInitializing(false);
             setTranscript([]); // reset on new call
+
+            // Increment daily call count only when call actually starts
+            try {
+                const stored = localStorage.getItem('lumoscale_voice_calls');
+                const today = new Date().toDateString();
+                const current = stored ? JSON.parse(stored) : { date: today, count: 0 };
+                const newCount = (current.date === today ? current.count : 0) + 1;
+                localStorage.setItem('lumoscale_voice_calls', JSON.stringify({ date: today, count: newCount }));
+                setDailyCalls(newCount);
+                window.dispatchEvent(new Event('lumoscale_voice_calls_updated'));
+            } catch (e) { console.error(e); }
         });
 
         retellWebClient.on("call_ended", async () => {
@@ -556,17 +581,6 @@ const VoiceAgentDemo = () => {
             
             if (!accessToken) throw new Error("No access token found in webhook response");
 
-            // Increment daily calls
-            try {
-                const newCount = dailyCalls + 1;
-                localStorage.setItem('lumoscale_voice_calls', JSON.stringify({ 
-                    date: new Date().toDateString(), 
-                    count: newCount 
-                }));
-                setDailyCalls(newCount);
-                window.dispatchEvent(new Event('lumoscale_voice_calls_updated'));
-            } catch(e) { console.error(e) }
-
             // 2. Start the Retell WebRTC call
             await retellWebClient.startCall({ accessToken });
 
@@ -598,6 +612,52 @@ const VoiceAgentDemo = () => {
                     
                     {/* Pure Black Background */}
                     <div className="absolute inset-0 bg-black pointer-events-none -z-10" />
+
+                    {/* Time Warning Alert */}
+                    <AnimatePresence>
+                        {isCallActive && callWarning !== 'none' && (
+                            <motion.div
+                                key={callWarning}
+                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+                                className="absolute top-14 inset-x-4 z-50"
+                            >
+                                <div className="relative flex items-start gap-3 px-4 py-3 rounded-2xl bg-red-950/90 border border-red-500/40 backdrop-blur-xl shadow-[0_8px_32px_rgba(239,68,68,0.25)] overflow-hidden">
+                                    {/* Animated left border glow */}
+                                    <motion.div
+                                        animate={{ opacity: [1, 0.4, 1] }}
+                                        transition={{ duration: 1.2, repeat: Infinity }}
+                                        className="absolute left-0 inset-y-0 w-1 rounded-l-2xl bg-red-500"
+                                    />
+                                    <div className="shrink-0 mt-0.5">
+                                        <motion.div
+                                            animate={{ scale: [1, 1.2, 1] }}
+                                            transition={{ duration: 1, repeat: Infinity }}
+                                            className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center"
+                                        >
+                                            <span className="text-[8px] font-black text-white">!</span>
+                                        </motion.div>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-red-300 text-[11px] font-bold tracking-wide leading-tight">
+                                            {callWarning === '30s' ? '30 seconds left!' : '10 seconds left!'}
+                                        </p>
+                                        <p className="text-red-400/80 text-[10px] mt-0.5 leading-snug">
+                                            Book a call to continue the conversation →
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => setCallWarning('none')}
+                                        className="shrink-0 text-red-500/60 hover:text-red-400 text-[14px] leading-none font-light transition-colors"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
 
                     {/* Main Content Area */}
@@ -738,7 +798,8 @@ const VoiceAgentDemo = () => {
                             >
                                 <div 
                                     ref={transcriptContainerRef}
-                                    className="flex flex-col gap-4 overflow-y-auto no-scrollbar max-h-full scroll-smooth pt-20 pb-10"
+                                    className="flex flex-col gap-4 overflow-y-auto max-h-full pt-20 pb-10"
+                                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                                 >
                                     <AnimatePresence initial={false}>
                                         {transcript.slice(-4).map((msg, idx, arr) => {
