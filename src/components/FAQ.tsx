@@ -6,42 +6,42 @@ import { useIsMobile } from "../hooks/use-mobile";
 const FAQS = [
     {
         question: "Will this sound robotic or is it actually human-like?",
-        answer: "This isn't a basic chatbot or DIY tool—it's an end-to-end done-for-you system. We train the AI on YOUR successful conversations (your tone, language, style), so it sounds exactly like you, not a generic bot.",
+        answer: "This isn't a basic chatbot or DIY tool, it's an end-to-end done-for-you system. We train the AI on YOUR successful conversations (your tone, language, style), so it sounds exactly like you, not a generic bot.",
         icon: MessageCircle
     },
     {
         question: "Is Instagram DM automation safe? Will my account get banned?",
-        answer: "100% safe. We use Meta's official Instagram Graph API, fully compliant with Instagram's terms. We only access Instagram messages—nothing else from your account.",
+        answer: "100% safe. We use Meta's official Instagram Graph API, fully compliant with Instagram's terms. We only access Instagram messages, nothing else from your account.",
         icon: ShieldCheck
     },
     {
         question: "How much setup time do I need to invest?",
-        answer: "Zero. This is a totally done-for-you service—one 30-minute kickoff call to understand your offer, and we handle everything else. You're live in 3 days.",
+        answer: "Zero. This is a totally done-for-you service, one 30-minute kickoff call to understand your offer, and we handle everything else. You're live in 3 days.",
         icon: Clock
     },
     {
         question: "What happens to my existing leads/customers during the transition?",
-        answer: "Nothing changes for them—they still message you normally on Instagram. We just handle the replies behind the scenes, so conversations feel seamless and uninterrupted.",
+        answer: "Nothing changes for them, they still message you normally on Instagram. We just handle the replies behind the scenes, so conversations feel seamless and uninterrupted.",
         icon: Users
     },
     {
         question: "How is this different from hiring a VA?",
-        answer: "VAs work limited hours and need constant management. With our system, you get 24/7 availability with zero management, plus pre-call intelligence that shows you exactly who's serious before you even say hello—VAs can't provide that level of insight.",
+        answer: "VAs work limited hours and need constant management. With our system, you get 24/7 availability with zero management, plus pre-call intelligence that shows you exactly who's serious before you even say hello, VAs can't provide that level of insight.",
         icon: Zap
     },
     {
         question: "How do you qualify leads? What stops unqualified people from booking?",
-        answer: "The system automatically sorts every lead into three categories: qualified (ready to buy), unqualified (not a fit), or freebie-seekers. You only see qualified prospects on your calendar—the rest get nurtured or exited appropriately.",
+        answer: "The system automatically sorts every lead into three categories: qualified (ready to buy), unqualified (not a fit), or freebie-seekers. You only see qualified prospects on your calendar, the rest get nurtured or exited appropriately.",
         icon: HelpCircle
     },
     {
         question: "What if I want to handle a DM myself or talk to someone personally?",
-        answer: "You have full control. Switch between \"handle by system\" and \"handle manually\" anytime with one click. Once you're done with manual handling, click back to system mode—complete flexibility.",
+        answer: "You have full control. Switch between \"handle by system\" and \"handle manually\" anytime with one click. Once you're done with manual handling, click back to system mode, complete flexibility.",
         icon: ToggleRight
     },
     {
         question: "How is this different from ManyChat, chatbots, or other DM automation tools?",
-        answer: "Tools like ManyChat and chatbots require you to build, manage, and fix everything yourself (10-15 hours monthly). We're a complete done-for-you service—trained on YOUR conversations, fully managed, continuously optimized—you do zero work.",
+        answer: "Tools like ManyChat and chatbots require you to build, manage, and fix everything yourself (10-15 hours monthly). We're a complete done-for-you service, trained on YOUR conversations, fully managed, continuously optimized, you do zero work.",
         icon: Layers
     },
     {
@@ -52,7 +52,7 @@ const FAQS = [
 
     {
         question: "What if I get 500 DMs one month and 50 the next? Do I pay more?",
-        answer: "No. Same fixed price regardless of volume fluctuations—unlike other service agencies that charge per contact or per message. You pay one flat rate whether you get 10 or 500 DMs.",
+        answer: "No. Same fixed price regardless of volume fluctuations, unlike other service agencies that charge per contact or per message. You pay one flat rate whether you get 10 or 500 DMs.",
         icon: CreditCard
     }
 ];
