@@ -2,23 +2,48 @@ import React, { useState, useEffect } from "react";
 import logo from "@/assets/lumoscale-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ArrowRight } from "lucide-react";
-import FloatingContact from "./FloatingContact";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuditModal } from "@/context/AuditModalContext";
 
 /* ---------- Nav Item ---------- */
-const NavItem = ({ href, label }: { href: string; label: string }) => (
-  <a
-    href={href}
-    className="relative px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:text-white group"
-  >
-    {label}
-    <span className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-cyan-500/0 via-cyan-500/70 to-cyan-500/0 opacity-0 transition-opacity group-hover:opacity-100" />
-  </a>
-);
+const NavItem = ({ href, label }: { href: string; label: string }) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // If it's not a scroll anchor, allow default navigation
+    if (!href.includes('/#')) {
+      return;
+    }
+
+    e.preventDefault();
+    const targetId = href.replace('/#', '');
+    const element = document.getElementById(targetId);
+    if (element) {
+      const headerOffset = 100; // Fixed header height + spacing
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  return (
+    <a
+      href={href}
+      onClick={handleClick}
+      className="relative px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:text-white group"
+    >
+      {label}
+      <span className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-cyan-500/0 via-cyan-500/70 to-cyan-500/0 opacity-0 transition-opacity group-hover:opacity-100" />
+    </a>
+  );
+};
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { openModal } = useAuditModal();
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -36,9 +61,9 @@ const Header = () => {
     };
   }, []);
 
-  const scrollToCTA = () => {
-    document.getElementById("finalcta")?.scrollIntoView({ behavior: "smooth" });
+  const handleAuditClick = () => {
     setOpen(false);
+    openModal();
   };
 
   return (
@@ -73,27 +98,22 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            <NavItem href="#hero" label="Home" />
-            <NavItem href="#painpoints" label="Pain Points" />
-            <NavItem href="#solution" label="How It Works" />
-            <NavItem href="#demo" label="Demo" />
-            <NavItem href="#beforeafter" label="Comparisons" />
-            <NavItem href="#pricing" label="Pricing" />
-            <NavItem href="#faq" label="Questions" />
+            <NavItem href="/#hero" label="Home" />
+            <NavItem href="/#beforeafter" label="Why Lumoscale" />
+            <NavItem href="/#demo" label="Live Demo" />
+            <NavItem href="/#solution" label="Features" />
+            <NavItem href="/blog" label="Blogs" />
+            <NavItem href="/#pricing" label="Pricing" />
+            <NavItem href="/#faq" label="FAQ" />
 
             <div className="w-px h-4 bg-white/10 mx-2" />
 
             <button
-              onClick={scrollToCTA}
-              className="group relative inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black rounded-full font-bold text-xs uppercase tracking-wide hover:bg-zinc-200 transition-all active:scale-95"
+              onClick={handleAuditClick}
+              className="group relative inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black rounded-full font-bold text-xs uppercase tracking-wide hover:bg-zinc-200 transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]"
             >
-              <span>Get Free System Audit</span>
+              <span>Free Audit</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-
-              {/* Shine effect */}
-              <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
-                <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -skew-x-12 -translate-x-full group-hover:animate-shine" />
-              </div>
             </button>
           </nav>
 
@@ -138,18 +158,39 @@ const Header = () => {
 
               <div className="space-y-2">
                 {[
-                  { label: "Home", href: "#hero" },
-                  { label: "Pain Points", href: "#painpoints" },
-                  { label: "How It Works", href: "#solution" },
-                  { label: "Live Demo", href: "#demo" },
-                  { label: "Comparisons", href: "#beforeafter" },
-                  { label: "Pricing", href: "#pricing" },
-                  { label: "Questions", href: "#faq" },
+                  { href: "/#hero", label: "Home" },
+                  { href: "/#beforeafter", label: "Why Lumoscale" },
+                  { href: "/#demo", label: "Live Demo" },
+                  { href: "/#solution", label: "Features" },
+                  { href: "/blog", label: "Blogs" },
+                  { href: "/#pricing", label: "Pricing" },
+                  { href: "/#faq", label: "FAQ" },
                 ].map((item) => (
                   <a
                     key={item.label}
                     href={item.href}
-                    onClick={() => setOpen(false)}
+                    onClick={(e) => {
+                      // If it's not a scroll anchor, allow default navigation
+                      if (!item.href.includes('/#')) {
+                        setOpen(false);
+                        return;
+                      }
+
+                      e.preventDefault();
+                      const targetId = item.href.replace('/#', '');
+                      const element = document.getElementById(targetId);
+                      if (element) {
+                        const headerOffset = 100;
+                        const elementPosition = element.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: 'smooth'
+                        });
+                      }
+                      setOpen(false);
+                    }}
                     className="block px-4 py-3 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 transition-all text-lg font-medium"
                   >
                     {item.label}
@@ -159,10 +200,10 @@ const Header = () => {
 
               <div className="mt-8 pt-6 border-t border-white/10">
                 <button
-                  onClick={scrollToCTA}
-                  className="w-full py-4 bg-white text-black rounded-xl font-bold uppercase tracking-wide hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2"
+                  onClick={handleAuditClick}
+                  className="w-full py-4 bg-white text-black rounded-xl font-bold uppercase tracking-wide hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 shadow-lg"
                 >
-                  <span>Get Free Audit</span>
+                  <span>Get Started</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -170,7 +211,7 @@ const Header = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <FloatingContact />
+
     </>
   );
 };

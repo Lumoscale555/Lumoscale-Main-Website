@@ -1,608 +1,861 @@
-import { CheckCircle2, MessageCircle, Bell, Calendar, FileText, TrendingUp, Zap, Bot, Loader2, Video, Clock, Mail, Users, ArrowRight, ExternalLink } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Wifi, Battery, Video, CheckCircle2, Bell } from "lucide-react";
 
-// Configuration for avatars
-const AVATARS = {
-    user: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=faces&q=80",
-    ai: "bot"
-};
+// Premium Phone Mockup Component with 3D Tilt and Glass Reflections
+const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { children: React.ReactNode, time?: string, accentColor?: "emerald" | "blue" | "purple" }) => {
+    const [rotateX, setRotateX] = useState(0);
+    const [rotateY, setRotateY] = useState(0);
 
-const messages = [
-    { sender: "lead", text: "Hey, I have 100+ leads sitting in my DMs right now and I can't get to them.", delay: 0 },
-    { sender: "ai", text: "Oof, that's a great problem to have... but also painful if they go cold. Are you handling all those yourself or do you have someone helping?", delay: 2500 },
-    { sender: "lead", text: "My VA tries, but she's too slow and misses the qualified ones. I'm definitely losing revenue.", delay: 5500 },
-    { sender: "ai", text: "Yeah, I hear that a lot. Speed kills in DMs, by the time someone replies 6 hours later, the lead's already talking to 3 other people. How much time are you spending managing this daily?", delay: 8500 },
-    { sender: "lead", text: "Honestly? Too much. And the VA still needs me to step in constantly.", delay: 11500 },
-    { sender: "ai", text: "Makes sense. That's exactly why we built this—takes the whole thing off your plate. Replies in under a minute, sorts who's serious vs who's browsing, and only sends you people ready to buy. No VA needed.", delay: 15000 },
-    { sender: "lead", text: "I'm interested, but I don't want it to sound like a generic bot. My brand is premium.", delay: 18000 },
-    { sender: "ai", text: "Totally get it. That's why we don't use templates, we actually train it on your past conversations. Your tone, your style, how you handle objections. It sounds like you, not a robot. Want to see how it works with a quick demo?", delay: 22000 },
-    { sender: "lead", text: "Yeah, let's see it.", delay: 25000 },
-    { sender: "ai", text: "Perfect. Here's the link: https://cal.com/lumoscale/30min. We can walk through exactly how it'd handle your 100 leads and get them moving again. Sound good?", delay: 27500 },
-    { sender: "lead", text: "Sounds good, booked.", delay: 30000 },
-    { sender: "ai", text: "Awesome. Talk soon! 🚀", delay: 31500 }
-];
 
-// The 5 specific steps requested
-const checkpoints = [
-    { text: "Reply Instantly", sub: "Responds in seconds", icon: Zap },
-    { text: "Pitches Solution", sub: "Qualifies & Offers", icon: Bot },
-    { text: "Booking Link", sub: "sends calendar link", icon: Calendar },
-    { text: "Team Alert", sub: "Slack/Email Notification", icon: Bell },
-    { text: "Pre Call Brief", sub: "AI Generated Report", icon: FileText }
-];
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
 
-const DMDemo = () => {
-    // 0: DM, 1: Booking, 2: Alert, 3: Brief
-    const [demoStep, setDemoStep] = useState(0);
-    const [visibleMessages, setVisibleMessages] = useState(0);
-    const [isBooked, setIsBooked] = useState(false);
+        // Calculate rotation (max 12 degrees for more dynamic feel)
+        setRotateX((y - centerY) / 22);
+        setRotateY((centerX - x) / 22);
 
-    // Active Checkpoint State (0-4)
-    const [activeCheckpoint, setActiveCheckpoint] = useState(0);
-
-    const timerRef = useRef<number | null>(null);
-    const sectionRef = useRef(null);
-    const [inView, setInView] = useState(false);
-    const dmScrollRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const node = sectionRef.current;
-        if (!node) return;
-        const observer = new IntersectionObserver(
-            ([entry]) => { setInView(entry.isIntersecting); },
-            { threshold: 0.3 }
-        );
-        observer.observe(node);
-        return () => observer.disconnect();
-    }, []);
-
-    const clearTimers = () => {
-        if (timerRef.current) {
-            window.clearTimeout(timerRef.current);
-            timerRef.current = null;
-        }
     };
 
-    // Auto-scroll chat
-    useEffect(() => {
-        if (demoStep === 0 && dmScrollRef.current) {
-            requestAnimationFrame(() => {
-                dmScrollRef.current?.scrollTo({ top: dmScrollRef.current.scrollHeight, behavior: 'smooth' });
-            });
-        }
-    }, [visibleMessages, demoStep]);
-
-    // Handle Reset on Scroll Out
-    useEffect(() => {
-        if (!inView) {
-            resetDemo();
-        }
-    }, [inView]);
-
-    const resetDemo = () => {
-        clearTimers();
-        setDemoStep(0);
-        setVisibleMessages(0);
-        setIsBooked(false);
-        setActiveCheckpoint(0);
+    const handleMouseLeave = () => {
+        setRotateX(0);
+        setRotateY(0);
     };
-
-    // Main Sequence Controller
-    useEffect(() => {
-        if (!inView) return;
-
-        // Step 0: Run Chat
-        if (demoStep === 0) {
-            let mounted = true;
-
-            // Logic to update checkpoints based on chat progress
-            // Total messages = 8 (indices 0-7)
-            // 0: Lead (Hi)
-            // 1: AI (Reply) -> "Reply Instantly" (Checkpoint 0)
-            // 3: AI (Pitch) -> "Pitches Solution" (Checkpoint 1)
-            // 7: AI (Link) -> "Booking Link" (Checkpoint 2)
-
-            const runChat = (index: number) => {
-                if (!mounted) return;
-
-                // Update Checkpoint based on message index
-                if (index >= 1 && index < 5) setActiveCheckpoint(0); // Reply
-                if (index >= 5 && index < 9) setActiveCheckpoint(1); // Pitch
-                if (index >= 9) setActiveCheckpoint(2); // Booking Link
-
-                if (index > messages.length) {
-                    // Chat done, wait a bit then go to booking screen
-                    timerRef.current = window.setTimeout(() => {
-                        setDemoStep(1);
-                    }, 2000);
-                    return;
-                }
-                setVisibleMessages(index);
-                const currentMsg = messages[index - 1];
-                const nextMsg = messages[index];
-
-                const delay = nextMsg?.delay
-                    ? nextMsg.delay - (currentMsg?.delay || 0)
-                    : 2000;
-
-                timerRef.current = window.setTimeout(() => {
-                    runChat(index + 1);
-                }, Math.max(300, delay));
-            };
-
-            // Only start if we are at start
-            if (visibleMessages === 0) {
-                setActiveCheckpoint(0);
-                runChat(1);
-            }
-
-            return () => { mounted = false; clearTimers(); };
-        }
-
-        // Step 1: Booking Screen
-        if (demoStep === 1) {
-            setActiveCheckpoint(2); // Ensure Booking Link is highlighted
-
-            // Auto click "Confirm Booking" after 2s
-            timerRef.current = window.setTimeout(() => {
-                setIsBooked(true);
-                // Then move to step 2 after success msg
-                timerRef.current = window.setTimeout(() => {
-                    setDemoStep(2);
-                }, 2000);
-            }, 2000);
-            return () => clearTimers();
-        }
-
-        // Step 2: Alert Screen
-        if (demoStep === 2) {
-            setActiveCheckpoint(3); // Team Alert
-            // Show alert for 4s then move to brief
-            timerRef.current = window.setTimeout(() => {
-                setDemoStep(3);
-            }, 4000);
-            return () => clearTimers();
-        }
-
-        // Step 3: Brief Screen
-        if (demoStep === 3) {
-            setActiveCheckpoint(4); // Pre Call Brief
-            // Show Brief for 5s then RESTART
-            timerRef.current = window.setTimeout(() => {
-                resetDemo();
-            }, 8000);
-            return () => clearTimers();
-        }
-
-    }, [demoStep, inView]);
-
 
     return (
-        <section id="demo" ref={sectionRef} className="py-10 relative overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent">
-            <div className="container mx-auto px-6">
-                <div className="max-w-7xl mx-auto">
+        <motion.div
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            animate={{ rotateX, rotateY }}
+            transition={{ type: "spring", stiffness: 100, damping: 20, mass: 0.5 }}
+            style={{ perspective: 1000 }}
+            className="relative mx-auto w-full max-w-[450px] h-[750px] bg-gradient-to-b from-zinc-900 via-black to-zinc-900 rounded-[3.5rem] border-[6px] border-zinc-800/50 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8),0_0_60px_-10px_rgba(99,102,241,0.15)] overflow-hidden ring-2 ring-white/5 ml-0 lg:mx-auto group/phone"
+        >
 
-                    {/* HEADING */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="text-center mb-12"
-                    >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full mb-6">
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                            </span>
-                            <span className="text-sm font-semibold text-primary uppercase tracking-wide">
-                                Live System Demo
-                            </span>
-                        </div>
 
-                        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
-                            Watch It Happen <span className="text-primary">Step-by-Step</span>
-                        </h2>
-                        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                            See how our AI handles lead overflow, qualifies prospects, and books sales calls on autopilot.
-                        </p>
-                    </motion.div>
+            {/* Dynamic Island / Notch Area */}
+            <div className="absolute top-0 inset-x-0 h-14 z-50 px-7 flex items-end justify-between pb-2 text-white">
+                <span className="text-[14px] font-bold w-14">{time}</span>
 
-                    {/* VISUAL PROGRESS BAR FOR STEPS */}
-                    <div className="flex justify-center mb-12">
+                {/* Dynamic Island */}
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 w-[110px] h-[32px] bg-black rounded-full flex items-center justify-center z-50 ring-1 ring-white/10 shadow-inner">
+                    <div className={`w-2 h-2 rounded-full bg-zinc-950 absolute right-5 ring-1 ${accentColor === "blue" ? "ring-blue-500/20" : "ring-emerald-500/20"}`} />
+                </div>
+
+                <div className="flex items-center gap-2 w-14 justify-end">
+                    <Signal className="w-4 h-4" />
+                    <Wifi className="w-4 h-4" />
+                    <Battery className="w-5 h-5 ml-0.5" />
+                </div>
+            </div>
+
+            {/* Screen Content Wrapper */}
+            <div className="absolute inset-x-[3px] inset-y-[3px] rounded-[3.2rem] overflow-hidden bg-black flex flex-col">
+                <div className="absolute inset-0 pt-12 bg-black flex flex-col">
+                    {children}
+                </div>
+            </div>
+
+            {/* Home Bar */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-36 h-1.5 bg-white rounded-full z-50 opacity-30" />
+
+            {/* Edge Highlight Lighting */}
+            <div className="absolute inset-0 rounded-[3.5rem] border-2 border-white/10 z-30 pointer-events-none" />
+
+            {/* Premium Glow Effect */}
+            <div className="absolute inset-0 rounded-[3.5rem] shadow-[inset_0_0_60px_rgba(99,102,241,0.1)] z-30 pointer-events-none" />
+        </motion.div>
+    );
+};
+
+const TextAgentDemo = () => {
+    const [step, setStep] = useState(0); // 0: Chat, 1: Booking, 2: Slack, 3: Brief
+    const [visibleMessages, setVisibleMessages] = useState<any[]>([]);
+    const [typingState, setTypingState] = useState<{ type: 'user' | 'ai' | null }>({ type: null });
+    const [isBooked, setIsBooked] = useState(false);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTo({
+                top: chatContainerRef.current.scrollHeight,
+                behavior: "smooth"
+            });
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [visibleMessages, typingState]);
+
+    // The script provided by the user
+    const script = [
+        { sender: "lead", text: "Hey, I have 100+ leads sitting in my DMs right now and I can't get to them.", delay: 500 },
+        { sender: "ai", text: "Oof, that's a great problem to have... but also painful if they go cold. Are you handling all those yourself or do you have someone helping?", delay: 3500 },
+        { sender: "lead", text: "My VA tries, but she's too slow and misses the qualified ones. I'm definitely losing revenue.", delay: 6500 },
+        { sender: "ai", text: "Yeah, I hear that a lot. Speed kills in DMs, by the time someone replies 6 hours later, the lead's already talking to 3 other people. How much time are you spending managing this daily?", delay: 10500 },
+        { sender: "lead", text: "Honestly? Too much. And the VA still needs me to step in constantly.", delay: 13500 },
+        { sender: "ai", text: "Makes sense. That's exactly why we built this—takes the whole thing off your plate. Replies in under a minute, sorts who's serious vs who's browsing, and only sends you people ready to buy. No VA needed.", delay: 18000 },
+        { sender: "lead", text: "I'm interested, but I don't want it to sound like a generic bot. My brand is premium.", delay: 21500 },
+        { sender: "ai", text: "Totally get it. That's why we don't use templates, we actually train it on your past conversations. Your tone, your style, how you handle objections. It sounds like you, not a robot. Want to see how it works with a quick demo?", delay: 26000 },
+        { sender: "lead", text: "Yeah, let's see it.", delay: 29000 },
+        { sender: "ai", text: "Perfect. Here's the link: https://cal.com/lumoscale/30min. We can walk through exactly how it'd handle your 100 leads and get them moving again. Sound good?", delay: 33000 },
+        { sender: "lead", text: "Sounds good, booked.", delay: 36000 },
+        { sender: "ai", text: "Awesome. Talk soon! 🚀", delay: 38500 }
+    ];
+
+    // Chat Sequence Controller
+    useEffect(() => {
+        if (step !== 0) return;
+
+        let timeouts: NodeJS.Timeout[] = [];
+        let startTime = Date.now();
+
+        // clear previous state
+        setVisibleMessages([]);
+        setTypingState({ type: null });
+
+        // Schedule messages and typing indicators
+        script.forEach((msg, index) => {
+            // Schedule Message Appearance
+            timeouts.push(setTimeout(() => {
+                setVisibleMessages(prev => [...prev, msg]);
+                setTypingState({ type: null }); // Stop typing when msg appears
+
+                // If this is the last message, schedule transition
+                if (index === script.length - 1) {
+                    setTimeout(() => setStep(1), 3000);
+                }
+            }, msg.delay));
+
+            // Schedule Typing Indicator (1.5s before message, except first one if too fast)
+            const typingStart = msg.delay - 1500;
+            if (typingStart > 0) {
+                timeouts.push(setTimeout(() => {
+                    setTypingState({ type: msg.sender === 'lead' ? 'user' : 'ai' });
+                }, typingStart));
+            } else if (index === 0) {
+                // Special case for first message if needed, or just let it pop
+                timeouts.push(setTimeout(() => {
+                    setTypingState({ type: msg.sender === 'lead' ? 'user' : 'ai' });
+                }, 0));
+            }
+        });
+
+        return () => timeouts.forEach(clearTimeout);
+    }, [step]);
+
+    // App Sequence (Booking -> Slack -> Brief -> Reset)
+    useEffect(() => {
+        if (step === 0) return;
+
+        const stepTimers = [
+            { step: 1, duration: 8000 }, // Booking (Simulated Interaction)
+            { step: 2, duration: 5000 }, // Slack
+            { step: 3, duration: 6000 }  // Brief
+        ];
+
+        const currentTimer = stepTimers.find(s => s.step === step);
+        if (currentTimer) {
+            const timer = setTimeout(() => {
+                setStep(prev => (prev + 1) > 3 ? 0 : prev + 1);
+            }, currentTimer.duration);
+            return () => clearTimeout(timer);
+        }
+    }, [step]);
+
+    return (
+        <PhoneMockup time="10:23" accentColor="blue">
+            {/* Header */}
+            <div className="px-5 py-3.5 border-b border-zinc-900/50 flex justify-between items-center bg-black sticky top-0 z-20">
+                <div className="flex items-center gap-3">
+                    {step === 0 && (
+                        <>
+                            <div className="relative">
+                                <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-blue-400/20">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150"
+                                        alt="AI Avatar"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-blue-400 rounded-full border-2 border-black"></div>
+                            </div>
+                            <div>
+                                <h3 className="text-white font-semibold text-sm">Lumoscale AI</h3>
+                                <div className="flex items-center gap-1.5">
+                                    <span className="text-blue-400 text-[10px] font-bold">ONLINE</span>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    {step === 1 && (
                         <div className="flex items-center gap-2">
-                            {[0, 1, 2, 3].map((step) => (
-                                <div key={step} className={`h-1.5 rounded-full transition-all duration-500 ${demoStep === step ? "w-12 bg-[#4ade80] shadow-[0_0_10px_#4ade80]" : "w-3 bg-white/10"
-                                    }`} />
-                            ))}
+                            <div className="p-2 bg-blue-400/10 rounded-lg"><Calendar className="w-4 h-4 text-blue-400" /></div>
+                            <span className="text-white font-bold">Booking</span>
                         </div>
-                    </div>
+                    )}
+                    {step === 2 && (
+                        <div className="flex items-center gap-2">
+                            <div className="p-2 bg-[#4A154B]/20 rounded-lg"><Slack className="w-4 h-4 text-white" /></div>
+                            <span className="text-white font-bold">Slack</span>
+                        </div>
+                    )}
+                    {step === 3 && (
+                        <div className="flex items-center gap-2">
+                            <div className="p-2 bg-blue-500/10 rounded-lg"><FileText className="w-4 h-4 text-blue-400" /></div>
+                            <span className="text-white font-bold">Brief</span>
+                        </div>
+                    )}
+                </div>
+                {step === 0 && (
+                    <button className="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:bg-zinc-800 transition-colors">
+                        <Video className="w-4 h-4 text-zinc-400" />
+                    </button>
+                )}
+            </div>
 
-                    {/* MAIN GRID */}
-                    <div className="grid lg:grid-cols-2 gap-12 items-center justify-center mb-24">
+            {/* Content Area */}
+            <div className="flex-1 bg-black relative overflow-hidden flex flex-col">
+                <AnimatePresence mode="wait">
 
-                        {/* LEFT SIDE: PHONE MOCKUP */}
-                        <div className="relative flex justify-center lg:justify-end">
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[450px] bg-primary/15 blur-[80px] rounded-full pointer-events-none" />
-
-                            <div className="relative z-10 w-full max-w-[420px]">
-                                {/* Premium Mockup Frame */}
-                                <div className="bg-[#121417] border-[6px] border-[#2a2d33] rounded-[3rem] shadow-2xl relative overflow-hidden ring-1 ring-white/10">
-                                    {/* Notch */}
-                                    <div className="absolute top-0 inset-x-0 h-7 flex justify-center z-20 pointer-events-none">
-                                        <div className="w-40 h-full bg-[#121417] rounded-b-2xl" />
-                                    </div>
-
-                                    <div className="relative bg-[#000] h-[680px] flex flex-col overflow-hidden">
-
-                                        {/* Dynamic Header */}
-                                        <div className="pt-12 pb-4 px-6 bg-gradient-to-b from-white/10 to-transparent flex items-center justify-between border-b border-white/5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#4ade80] to-[#84cc16] flex items-center justify-center text-black font-bold text-xs ring-2 ring-white/10 shadow-[0_0_10px_rgba(74,222,128,0.3)]">
-                                                    AI
-                                                </div>
-                                                <div>
-                                                    <h4 className="text-white font-bold text-sm leading-none">Lumoscale AI</h4>
-                                                    <span className="text-[10px] text-[#4ade80] font-medium flex items-center gap-1">
-                                                        <span className="w-1.5 h-1.5 bg-[#4ade80] rounded-full animate-pulse"></span>
-                                                        Online
-                                                    </span>
-                                                </div>
+                    {/* STEP 0: CHAT */}
+                    {step === 0 && (
+                        <div
+                            ref={chatContainerRef}
+                            className="flex-1 p-5 flex flex-col justify-start space-y-4 pb-8 overflow-y-auto no-scrollbar scroll-smooth"
+                        >
+                            <AnimatePresence mode="popLayout" initial={false}>
+                                {visibleMessages.map((msg, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        layout
+                                        className={`flex gap-2 ${msg.sender === 'lead' ? 'justify-end' : ''}`}
+                                    >
+                                        {msg.sender === 'ai' && (
+                                            <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-zinc-800 shrink-0">
+                                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150" className="w-full h-full object-cover" />
                                             </div>
-                                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                                                <Video className="w-4 h-4 text-white/40" />
+                                        )}
+
+                                        <div className={`${msg.sender === 'lead'
+                                            ? 'bg-blue-500 text-white rounded-br-sm'
+                                            : 'bg-zinc-900 text-zinc-200 border border-zinc-800 rounded-bl-sm'
+                                            } px-4 py-3 rounded-2xl max-w-[80%] shadow-lg`}
+                                        >
+                                            <p className="text-xs leading-relaxed">
+                                                {/* Render links if present */}
+                                                {msg.text.includes('https://') ? (
+                                                    <span dangerouslySetInnerHTML={{ __html: msg.text.replace(/(https:\/\/[^\s]+)/g, '<span class="underline decoration-black/30 font-bold">$1</span>') }} />
+                                                ) : msg.text}
+                                            </p>
+                                        </div>
+
+                                        {msg.sender === 'lead' && (
+                                            <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-zinc-700 shrink-0">
+                                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150" alt="User" className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                ))}
+
+                                {/* Typing Indicators (Always at bottom) */}
+                                {typingState.type === 'user' && (
+                                    <motion.div
+                                        key="typing-user"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        layout
+                                        className="flex justify-end gap-2"
+                                    >
+                                        <div className="bg-zinc-800 px-4 py-3 rounded-2xl rounded-br-sm">
+                                            <div className="flex gap-1"><span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" /><span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce delay-75" /><span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce delay-150" /></div>
+                                        </div>
+                                        <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-zinc-700 shrink-0">
+                                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150" alt="User" className="w-full h-full object-cover" />
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {typingState.type === 'ai' && (
+                                    <motion.div
+                                        key="typing-ai"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        layout
+                                        className="flex flex-col gap-1"
+                                    >
+                                        <div className="flex gap-2 items-center">
+                                            <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-zinc-800 shrink-0">
+                                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150" className="w-full h-full object-cover" />
+                                            </div>
+                                            <div className="bg-zinc-900 px-4 py-3 rounded-2xl rounded-bl-sm border border-zinc-800">
+                                                <div className="flex gap-1"><span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" /><span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce delay-75" /><span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce delay-150" /></div>
+                                            </div>
+                                        </div>
+                                        <span className="text-[10px] text-zinc-500 font-medium ml-11">AI is generating response...</span>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
+
+                    {/* STEP 1: BOOKING */}
+                    {step === 1 && (
+                        <motion.div
+                            key="booking"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0, x: -50 }}
+                            className="h-full flex flex-col justify-center px-4"
+                        >
+                            <AnimatePresence mode="wait">
+                                {!isBooked ? (
+                                    <motion.div
+                                        key="selection"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        className="bg-[#1a1d21] rounded-3xl p-6 shadow-xl relative overflow-hidden border border-white/5"
+                                    >
+                                        <div className="flex justify-between items-center mb-6">
+                                            <h5 className="font-bold text-white text-base">Select a Time</h5>
+                                            <div className="bg-[#2d3339] text-white px-3 py-1 rounded-full text-[10px] font-bold border border-white/10">30 min</div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-3 mb-6">
+                                            <div className="bg-blue-500 text-white font-bold text-center py-4 rounded-xl text-xs shadow-lg transform scale-105 relative ring-2 ring-white/10">
+                                                <div className="absolute -top-2 -right-2 w-6 h-6 bg-black rounded-full border-2 border-blue-500 flex items-center justify-center">
+                                                    <CheckCircle2 className="w-3 h-3 text-blue-500" />
+                                                </div>
+                                                2:00 PM
+                                            </div>
+                                            <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-xs border border-white/5">
+                                                2:30 PM
+                                            </div>
+                                            <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-xs border border-white/5">
+                                                3:00 PM
+                                            </div>
+                                            <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-xs border border-white/5">
+                                                3:30 PM
                                             </div>
                                         </div>
 
-                                        {/* CONTENT AREA */}
-                                        <div className="flex-1 overflow-hidden relative p-4 flex flex-col bg-[#050505]">
+                                        <button
+                                            onClick={() => setIsBooked(true)}
+                                            className="w-full py-4 rounded-xl bg-white text-black font-bold text-sm shadow-xl flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
+                                        >
+                                            <Calendar className="w-4 h-4" />
+                                            Confirm Booking
+                                            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse ml-2" />
+                                        </button>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="confirmed"
+                                        initial={{ scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        className="bg-[#111316] rounded-3xl p-6 border border-white/10 relative overflow-hidden"
+                                    >
+                                        {/* Top Green Bar */}
+                                        <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500" />
 
-                                            {/* STEP 0: AI CHAT */}
-                                            {demoStep === 0 && (
-                                                <div ref={dmScrollRef} className="h-full overflow-y-auto pr-2 scrollbar-hide space-y-4 pb-12">
-                                                    <div className="text-center py-4">
-                                                        <span className="text-[10px] text-white/30 font-bold uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full">Today 10:23 AM</span>
-                                                    </div>
+                                        <div className="flex items-center gap-4 mb-6 mt-2">
+                                            <div className="w-12 h-12 rounded-full bg-[#1a2e22] flex items-center justify-center">
+                                                <CheckCircle2 className="w-6 h-6 text-blue-500" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold text-white leading-tight">Booking Confirmed</h3>
+                                                <p className="text-white/40 text-[10px]">Check your email for details</p>
+                                            </div>
+                                        </div>
 
-                                                    <AnimatePresence initial={false}>
-                                                        {messages.slice(0, visibleMessages).map((msg, i) => {
-                                                            const isLead = msg.sender === "lead";
-                                                            return (
-                                                                <motion.div
-                                                                    key={i}
-                                                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                                                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                                                                    className={`flex items-end gap-3 ${isLead ? "justify-end" : "justify-start"}`}
-                                                                >
-                                                                    {!isLead && <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] flex items-center justify-center mb-1 flex-shrink-0 shadow-lg border border-white/10"><Bot className="w-3 h-3 text-[#4ade80]" /></div>}
-                                                                    <div className={`max-w-[85%] p-3 rounded-2xl shadow-sm border text-[13px] leading-relaxed ${isLead
-                                                                        ? "bg-gradient-to-r from-[#84cc16] to-[#4ade80] text-black font-medium rounded-tr-sm border-transparent shadow-[0_0_15px_rgba(74,222,128,0.1)]"
-                                                                        : "bg-[#1a1d21] text-gray-100 border-white/5 rounded-tl-sm"
-                                                                        }`}>
-                                                                        <p>{msg.text}</p>
-                                                                    </div>
-                                                                    {isLead && <img src={AVATARS.user} alt="User" className="w-6 h-6 rounded-full object-cover border-2 border-white/10 mb-1 flex-shrink-0" />}
-                                                                </motion.div>
-                                                            );
-                                                        })}
-                                                    </AnimatePresence>
+                                        <div className="bg-[#1a1d21] rounded-2xl p-4 border border-white/5 space-y-4">
+                                            <div>
+                                                <p className="text-[10px] text-white/30 font-bold uppercase tracking-wider mb-1">EVENT</p>
+                                                <p className="text-white font-bold text-sm">Strategy Session: Scale AI</p>
+                                            </div>
 
-                                                    {visibleMessages < messages.length && (
-                                                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2 text-muted-foreground text-[10px] ml-11">
-                                                            <div className="flex gap-1">
-                                                                <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                                                <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                                                <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                                                            </div>
-                                                        </motion.div>
-                                                    )}
+                                            <div className="flex items-start gap-3">
+                                                <Calendar className="w-4 h-4 text-blue-500 mt-0.5" />
+                                                <div>
+                                                    <p className="text-white text-[10px] font-medium">Tomorrow (Oct 25th)</p>
+                                                    <p className="text-white/40 text-[10px]">2:00 PM - 2:30 PM EST</p>
                                                 </div>
-                                            )}
+                                            </div>
 
-                                            {/* STEP 1: BOOKING */}
-                                            {demoStep === 1 && (
-                                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col justify-center px-4">
-                                                    {!isBooked ? (
-                                                        <div className="bg-[#1a1d21] rounded-3xl p-6 shadow-xl relative overflow-hidden border border-white/5">
-                                                            <div className="flex justify-between items-center mb-6">
-                                                                <h5 className="font-bold text-white text-lg">Select a Time</h5>
-                                                                <div className="bg-[#2d3339] text-white px-3 py-1 rounded-full text-xs font-bold border border-white/10">30 min</div>
-                                                            </div>
+                                            <div className="flex items-start gap-3">
+                                                <Video className="w-4 h-4 text-blue-500 mt-0.5" />
+                                                <div>
+                                                    <p className="text-white text-[10px] font-medium">Google Meet</p>
+                                                    <p className="text-blue-400 text-[10px] underline">meet.google.com/abc-xyz</p>
+                                                </div>
+                                            </div>
 
-                                                            <div className="grid grid-cols-2 gap-3 mb-6">
-                                                                <div className="bg-[#4ade80] text-black font-bold text-center py-4 rounded-xl text-sm shadow-lg transform scale-105 relative ring-2 ring-[#4ade80]/50">
-                                                                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-black rounded-full border-2 border-[#4ade80] flex items-center justify-center">
-                                                                        <CheckCircle2 className="w-3 h-3 text-[#4ade80]" />
-                                                                    </div>
-                                                                    2:00 PM
-                                                                </div>
-                                                                <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-sm border border-white/5">
-                                                                    2:30 PM
-                                                                </div>
-                                                                <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-sm border border-white/5">
-                                                                    3:00 PM
-                                                                </div>
-                                                                <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-sm border border-white/5">
-                                                                    3:30 PM
-                                                                </div>
-                                                            </div>
+                                            <div className="flex items-start gap-3">
+                                                <FileText className="w-4 h-4 text-blue-500 mt-0.5" />
+                                                <div>
+                                                    <p className="text-white text-[10px] font-medium">Agenda</p>
+                                                    <p className="text-white/40 text-[10px]">Lead Flow Analysis & Automation Demo</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
+                    )}
 
-                                                            <button className="w-full py-4 rounded-xl bg-white text-black font-bold text-sm shadow-xl flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors">
-                                                                <Calendar className="w-4 h-4" />
-                                                                Confirm Booking
-                                                                <span className="w-2 h-2 bg-[#4ade80] rounded-full animate-pulse ml-2" />
-                                                            </button>
-                                                        </div>
-                                                    ) : (
-                                                        <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-[#111316] rounded-3xl p-6 border border-white/10 relative overflow-hidden">
-                                                            {/* Top Green Bar */}
-                                                            <div className="absolute top-0 left-0 right-0 h-1 bg-[#4ade80]" />
+                    {/* STEP 2: SLACK */}
+                    {step === 2 && (
+                        <motion.div
+                            key="slack"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, x: -50 }}
+                            className="h-full flex flex-col justify-center px-2"
+                        >
+                            <div className="bg-[#1a1d21] rounded-lg overflow-hidden shadow-2xl relative border border-white/10">
+                                <div className="bg-[#2d3339] px-4 py-3 flex items-center justify-between border-b border-white/5">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-white/70 font-bold text-xs"># closed-deals</span>
+                                    </div>
+                                    <Bell className="w-4 h-4 text-white/50" />
+                                </div>
 
-                                                            <div className="flex items-center gap-4 mb-6 mt-2">
-                                                                <div className="w-12 h-12 rounded-full bg-[#1a2e22] flex items-center justify-center">
-                                                                    <CheckCircle2 className="w-6 h-6 text-[#4ade80]" />
-                                                                </div>
-                                                                <div>
-                                                                    <h3 className="text-xl font-bold text-white leading-tight">Booking Confirmed</h3>
-                                                                    <p className="text-white/40 text-xs">Check your email for details</p>
-                                                                </div>
-                                                            </div>
+                                <div className="p-5 bg-[#111316]">
+                                    <div className="flex gap-3">
+                                        <div className="w-9 h-9 rounded bg-blue-500 flex items-center justify-center text-white shrink-0 mt-1">
+                                            <Bot className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-white font-bold text-sm">Lumoscale Bot</span>
+                                                <span className="bg-white/10 text-white/60 text-[10px] px-1 rounded uppercase font-bold">APP</span>
+                                                <span className="text-white/30 text-xs">10:48 AM</span>
+                                            </div>
 
-                                                            <div className="bg-[#1a1d21] rounded-2xl p-4 border border-white/5 space-y-4">
-                                                                <div>
-                                                                    <p className="text-[10px] text-white/30 font-bold uppercase tracking-wider mb-1">EVENT</p>
-                                                                    <p className="text-white font-bold text-sm">Strategy Session: Scale AI</p>
-                                                                </div>
+                                            <div className="mt-1 text-white/90 text-xs">
+                                                <p className="font-bold mb-1">🔥 NEW DEMO BOOKED!</p>
+                                                <p className="text-white/70">A high-value lead just booked a time slot.</p>
+                                            </div>
 
-                                                                <div className="flex items-start gap-3">
-                                                                    <Calendar className="w-4 h-4 text-[#4ade80] mt-0.5" />
-                                                                    <div>
-                                                                        <p className="text-white text-xs font-medium">Wednesday, October 24th</p>
-                                                                        <p className="text-white/40 text-[10px]">2:00 PM - 2:30 PM EST</p>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="flex items-start gap-3">
-                                                                    <Video className="w-4 h-4 text-[#4ade80] mt-0.5" />
-                                                                    <div>
-                                                                        <p className="text-white text-xs font-medium">Google Meet</p>
-                                                                        <p className="text-blue-400 text-[10px] underline">meet.google.com/abc-xyz</p>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="flex items-start gap-3">
-                                                                    <FileText className="w-4 h-4 text-[#4ade80] mt-0.5" />
-                                                                    <div>
-                                                                        <p className="text-white text-xs font-medium">Agenda</p>
-                                                                        <p className="text-white/40 text-[10px]">Lead Flow Analysis & Automation Demo</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </motion.div>
-                                                    )}
-                                                </motion.div>
-                                            )}
-
-                                            {/* STEP 2: ALERT (Slack Style) */}
-                                            {demoStep === 2 && (
-                                                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="h-full flex flex-col justify-center px-2">
-                                                    <div className="bg-[#1a1d21] rounded-lg overflow-hidden shadow-2xl relative border border-white/10">
-                                                        <div className="bg-[#2d3339] px-4 py-3 flex items-center justify-between border-b border-white/5">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="text-white/70 font-bold text-sm"># closed-deals</span>
-                                                            </div>
-                                                            <Bell className="w-4 h-4 text-white/50" />
-                                                        </div>
-
-                                                        <div className="p-5 bg-[#111316]">
-                                                            <div className="flex gap-3">
-                                                                <div className="w-9 h-9 rounded bg-[#4ade80] flex items-center justify-center text-black shrink-0 mt-1">
-                                                                    <Bot className="w-5 h-5" />
-                                                                </div>
-                                                                <div>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="text-white font-bold text-sm">Lumoscale Bot</span>
-                                                                        <span className="bg-white/10 text-white/60 text-[10px] px-1 rounded uppercase font-bold">APP</span>
-                                                                        <span className="text-white/30 text-xs">10:48 AM</span>
-                                                                    </div>
-
-                                                                    <div className="mt-1 text-white/90 text-sm">
-                                                                        <p className="font-bold mb-1">🔥 NEW DEMO BOOKED!</p>
-                                                                        <p className="text-white/70">A high-value lead just booked a time slot.</p>
-                                                                    </div>
-
-                                                                    <div className="mt-3 pl-3 border-l-2 border-[#4ade80] bg-[#4ade80]/10 p-3 rounded-r-lg">
-                                                                        <div className="grid grid-cols-2 gap-y-2 text-xs">
-                                                                            <div><span className="text-white/40 block text-[10px] uppercase">Name</span> <span className="font-bold text-white">Mike Chen</span></div>
-                                                                            <div><span className="text-white/40 block text-[10px] uppercase">Value</span> <span className="font-bold text-[#4ade80]">$5k - $10k</span></div>
-                                                                            <div className="col-span-2"><span className="text-white/40 block text-[10px] uppercase">Context</span> <span className="text-white/80 italic">"Losing revenue, VA is too slow..."</span></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </motion.div>
-                                            )}
-
-                                            {/* STEP 3: BRIEF */}
-                                            {demoStep === 3 && (
-                                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col justify-center px-4">
-                                                    <div className="bg-[#0f1115] rounded-3xl p-6 shadow-2xl relative border border-white/10 h-full max-h-[600px] overflow-hidden">
-                                                        {/* Header */}
-                                                        <div className="flex items-center gap-4 mb-6">
-                                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#4ade80] to-[#22c55e] flex items-center justify-center shadow-[0_0_15px_rgba(74,222,128,0.3)]">
-                                                                <FileText className="w-6 h-6 text-black" />
-                                                            </div>
-                                                            <div>
-                                                                <h4 className="text-white font-bold text-lg leading-none mb-1">Pre-Call Brief</h4>
-                                                                <div className="flex items-center gap-1.5">
-                                                                    <div className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" />
-                                                                    <span className="text-white/40 text-xs">System Active</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Main Card */}
-                                                        <div className="bg-[#16191d] rounded-2xl p-5 border border-white/5 relative overflow-hidden">
-                                                            <div className="flex justify-between items-center mb-4">
-                                                                <div className="flex items-center gap-2">
-                                                                    <FileText className="w-3 h-3 text-[#4ade80]" />
-                                                                    <span className="text-[#4ade80] text-xs font-bold tracking-widest uppercase">Pre-Call Brief</span>
-                                                                </div>
-                                                                <span className="text-[10px] text-white/20 font-mono">DELIVERED 1HR BEFORE CALL</span>
-                                                            </div>
-
-                                                            {/* Core Problem */}
-                                                            <div className="bg-[#1f2329] rounded-xl p-3 mb-3 border border-white/5">
-                                                                <span className="text-[#4ade80]/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Core Problem</span>
-                                                                <p className="text-white text-sm font-medium leading-relaxed">
-                                                                    Manual follow-up is broken. Drowning in 100+ unread leads/week.
-                                                                </p>
-                                                            </div>
-
-                                                            {/* Grid: Urgency & Style */}
-                                                            <div className="grid grid-cols-2 gap-3 mb-3">
-                                                                <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5">
-                                                                    <span className="text-[#4ade80]/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Urgency Level</span>
-                                                                    <p className="text-[#f87171] text-xs font-bold">HIGH - Ready to act</p>
-                                                                </div>
-                                                                <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5">
-                                                                    <span className="text-[#4ade80]/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Comm Style</span>
-                                                                    <p className="text-white text-xs font-bold">Direct, Frustrated</p>
-                                                                </div>
-                                                            </div>
-
-                                                            {/* Opening Approach */}
-                                                            <div className="bg-[#1f2329] rounded-xl p-3 mb-3 border border-white/5">
-                                                                <span className="text-[#4ade80]/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Opening Approach</span>
-                                                                <p className="text-white/80 text-xs italic">
-                                                                    "I can see you're leaving money on the table. Let's fix that today."
-                                                                </p>
-                                                            </div>
-
-                                                            {/* What They Need */}
-                                                            <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5 mb-4">
-                                                                <span className="text-[#4ade80]/60 text-[10px] font-bold uppercase tracking-wider block mb-1">What They Need</span>
-                                                                <p className="text-white text-xs font-bold">
-                                                                    Automation that feels human + Immediate ROI
-                                                                </p>
-                                                            </div>
-
-                                                            {/* Footer */}
-                                                            <div className="border-t border-white/5 pt-3 flex items-center justify-between">
-                                                                <div className="text-[10px] text-white/50">
-                                                                    <span className="text-white font-bold">Why this matters:</span> Know exactly how to close.
-                                                                </div>
-                                                                <span className="bg-[#4ade80] text-black text-[10px] font-bold px-2 py-1 rounded">
-                                                                    +50% Close Rate
-                                                                </span>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Restart Indicator */}
-                                                        <div className="mt-4 flex items-center justify-center gap-2 text-[#4ade80] opacity-80">
-                                                            <div className="w-5 h-5 rounded-full border border-[#4ade80] flex items-center justify-center">
-                                                                <CheckCircle2 className="w-3 h-3" />
-                                                            </div>
-                                                            <span className="text-sm font-bold">Brief Sent to You</span>
-                                                        </div>
-                                                    </div>
-                                                </motion.div>
-                                            )}
-
+                                            <div className="mt-3 pl-3 border-l-2 border-blue-500 bg-blue-500/10 p-3 rounded-r-lg">
+                                                <div className="grid grid-cols-2 gap-y-2 text-[10px]">
+                                                    <div><span className="text-white/40 block text-[10px] uppercase">Name</span> <span className="font-bold text-white">Mike Chen</span></div>
+                                                    <div><span className="text-white/40 block text-[10px] uppercase">Value</span> <span className="font-bold text-blue-400">$5k - $10k</span></div>
+                                                    <div className="col-span-2"><span className="text-white/40 block text-[10px] uppercase">Context</span> <span className="text-white/80 italic">"Losing revenue, VA is too slow..."</span></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
+                    )}
 
-                        {/* RIGHT SIDE: CHECKPOINTS */}
-                        <div className="flex flex-col justify-center h-full pl-0 lg:pl-12">
-                            <div className="space-y-4">
-                                {checkpoints.map((checkpoint, i) => {
-                                    // SIMPLE LOGIC: Highlight the "activeCheckpoint" state
-                                    const active = i === activeCheckpoint;
-                                    // Also show completed state? 
-                                    const completed = i < activeCheckpoint;
+                    {/* STEP 3: BRIEF */}
+                    {step === 3 && (
+                        <motion.div
+                            key="brief"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="h-full flex flex-col justify-center px-4"
+                        >
+                            <div className="bg-[#0f1115] rounded-3xl p-6 shadow-2xl relative border border-white/10 h-full max-h-[600px] overflow-hidden">
+                                {/* Header */}
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                                        <FileText className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-white font-bold text-base leading-none mb-1">Pre-Call Brief</h4>
+                                        <div className="flex items-center gap-1.5">
+                                            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                                            <span className="text-white/40 text-[10px]">System Active</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                    return (
+                                {/* Main Card */}
+                                <div className="bg-[#16191d] rounded-2xl p-5 border border-white/5 relative overflow-hidden">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div className="flex items-center gap-2">
+                                            <FileText className="w-3 h-3 text-blue-500" />
+                                            <span className="text-blue-500 text-xs font-bold tracking-widest uppercase">Pre-Call Brief</span>
+                                        </div>
+                                        <span className="text-[10px] text-white/20 font-mono">DELIVERED 1HR BEFORE CALL</span>
+                                    </div>
+
+                                    {/* Core Problem */}
+                                    <div className="bg-[#1f2329] rounded-xl p-3 mb-3 border border-white/5">
+                                        <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Core Problem</span>
+                                        <p className="text-white text-xs font-medium leading-relaxed">
+                                            Manual follow-up is broken. Drowning in 100+ unread leads/week.
+                                        </p>
+                                    </div>
+
+                                    {/* Grid: Urgency & Style */}
+                                    <div className="grid grid-cols-2 gap-3 mb-3">
+                                        <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5">
+                                            <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Urgency Level</span>
+                                            <p className="text-[#f87171] text-xs font-bold">HIGH - Ready to act</p>
+                                        </div>
+                                        <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5">
+                                            <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Comm Style</span>
+                                            <p className="text-white text-[10px] font-bold">Direct, Frustrated</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Opening Approach */}
+                                    <div className="bg-[#1f2329] rounded-xl p-3 mb-3 border border-white/5">
+                                        <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Opening Approach</span>
+                                        <p className="text-white/80 text-xs italic">
+                                            "I can see you're leaving money on the table. Let's fix that today."
+                                        </p>
+                                    </div>
+
+                                    {/* What They Need */}
+                                    <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5 mb-4">
+                                        <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">What They Need</span>
+                                        <p className="text-white text-xs font-bold">
+                                            Automation that feels human + Immediate ROI
+                                        </p>
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="border-t border-white/5 pt-3 flex items-center justify-between">
+                                        <div className="text-[10px] text-white/50">
+                                            <span className="text-white font-bold">Why this matters:</span> Know exactly how to close.
+                                        </div>
+                                        <span className="bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded">
+                                            +50% Close Rate
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Restart Indicator */}
+                                <div className="mt-4 flex items-center justify-center gap-2 text-blue-500 opacity-80">
+                                    <div className="w-5 h-5 rounded-full border border-blue-500 flex items-center justify-center">
+                                        <CheckCircle2 className="w-3 h-3" />
+                                    </div>
+                                    <span className="text-sm font-bold">Brief Sent to You</span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                </AnimatePresence>
+            </div>
+        </PhoneMockup>
+    );
+};
+
+const VoiceWave = () => {
+    return (
+        <div className="flex items-center gap-1 h-8">
+            {[...Array(5)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    animate={{
+                        height: [10, 24, 10],
+                        opacity: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                        duration: 0.8,
+                        repeat: Infinity,
+                        delay: i * 0.1,
+                        ease: "easeInOut"
+                    }}
+                    className="w-1.5 bg-emerald-400 rounded-full"
+                />
+            ))}
+        </div>
+    );
+};
+
+const VoiceAgentDemo = () => {
+    const [isCallActive, setIsCallActive] = useState(false);
+    const [convoStep, setConvoStep] = useState(0);
+
+    // Active conversation steps
+    const conversation = [
+        { speaker: "Sarah", text: "Hi! This is Sarah from Lumoscale. How can I help you today?", delay: 1000 },
+        { speaker: "User", text: "I'm looking to automate my lead follow-ups.", delay: 3500 },
+        { speaker: "Sarah", text: "Great! Our AI can handle that 24/7. Would you like to see a demo?", delay: 6000 },
+        { speaker: "User", text: "Yes, that would be perfect.", delay: 9000 }
+    ];
+
+    useEffect(() => {
+        if (!isCallActive) {
+            setConvoStep(0);
+            return;
+        }
+
+        const timers = conversation.map((_, i) =>
+            setTimeout(() => setConvoStep(i + 1), conversation[i].delay)
+        );
+
+        return () => timers.forEach(clearTimeout);
+    }, [isCallActive]);
+
+    return (
+        <PhoneMockup time="10:25" accentColor="emerald">
+            {/* App Header */}
+            {!isCallActive && (
+                <div className="absolute top-0 inset-x-0 pt-14 px-6 z-20 flex justify-between items-start pointer-events-none">
+                    <div className="flex items-center gap-2 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 mx-auto mt-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-emerald-500 text-[10px] font-bold tracking-widest uppercase">Incoming Call</span>
+                    </div>
+                </div>
+            )}
+
+            {/* Content Area */}
+            <div className={`flex-1 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 bg-zinc-950`}>
+
+                {/* Premium Animated Background */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-900/20 blur-[120px] rounded-full mix-blend-screen opacity-50" />
+                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-900/10 blur-[120px] rounded-full mix-blend-screen opacity-50" />
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay" />
+                </div>
+
+                <AnimatePresence mode="wait">
+                    {!isCallActive ? (
+                        <motion.div
+                            key="incoming"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)", transition: { duration: 0.5 } }}
+                            className="w-full h-full flex flex-col items-center justify-between py-12 px-8 relative z-10"
+                        >
+                            {/* Caller Info */}
+                            <div className="flex flex-col items-center mt-8">
+                                <div className="relative mb-8 group">
+                                    {/* Ambient Glows */}
+                                    <div className="absolute inset-0 bg-emerald-500/30 blur-[40px] rounded-full animate-pulse-slow" />
+
+                                    {/* Avatar Container */}
+                                    <div className="w-32 h-32 rounded-full relative z-10 p-1 bg-gradient-to-br from-white/10 to-transparent ring-1 ring-white/20 shadow-2xl">
+                                        <div className="w-full h-full rounded-full overflow-hidden border-4 border-black relative">
+                                            <img
+                                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                alt="Sarah - AI Agent"
+                                                className="w-full h-full object-cover scale-110"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 to-transparent mix-blend-overlay" />
+                                        </div>
+
+                                        {/* Status Dot */}
+                                        <div className="absolute bottom-2 right-2 w-5 h-5 bg-emerald-500 border-4 border-black rounded-full z-20 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                    </div>
+
+                                    {/* Ripples */}
+                                    <div className="absolute inset-0 border border-emerald-500/30 rounded-full animate-[ping_3s_linear_infinite]" />
+                                    <div className="absolute inset-0 border border-emerald-500/20 rounded-full animate-[ping_3s_linear_infinite_1s]" />
+                                </div>
+
+                                <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">Lumoscale AI</h2>
+                                <p className="text-emerald-400/80 text-sm font-medium tracking-widest uppercase">Verified Business</p>
+                            </div>
+
+                            {/* Action Button */}
+                            <div className="w-full pb-6">
+                                <motion.button
+                                    onClick={() => setIsCallActive(true)}
+                                    animate={{
+                                        scale: [1, 1.05, 1],
+                                        boxShadow: [
+                                            "0 20px 40px -10px rgba(16, 185, 129, 0.3)",
+                                            "0 20px 60px -10px rgba(16, 185, 129, 0.6)",
+                                            "0 20px 40px -10px rgba(16, 185, 129, 0.3)"
+                                        ]
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        ease: "easeInOut"
+                                    }}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="relative w-full py-5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-black font-bold text-lg flex items-center justify-center gap-3 overflow-hidden group shadow-emerald-900/20"
+                                >
+                                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+
+                                    {/* Shaking Icon */}
+                                    <motion.div
+                                        animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
+                                        transition={{
+                                            duration: 1.5,
+                                            repeat: Infinity,
+                                            repeatDelay: 0.5,
+                                            ease: "linear"
+                                        }}
+                                    >
+                                        <Phone className="w-6 h-6 fill-current" />
+                                    </motion.div>
+
+                                    <span className="relative z-10">Answer Call</span>
+
+                                    {/* Shine effect */}
+                                    <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine" />
+                                </motion.button>
+                                <p className="text-center text-white/30 text-xs mt-4">Average response time: &lt;1s</p>
+                            </div>
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="active"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="w-full h-full flex flex-col pt-20 pb-8 px-6 relative z-10"
+                        >
+                            {/* Active Call Header */}
+                            <div className="text-center mb-12">
+                                <motion.div
+                                    initial={{ scale: 0.5, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    className="inline-block relative mb-4"
+                                >
+                                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/10 ring-4 ring-emerald-500/20 shadow-2xl">
+                                        <img
+                                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            alt="Sarah"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-1.5 border-4 border-zinc-950">
+                                        <Mic className="w-3 h-3 text-black fill-current" />
+                                    </div>
+                                </motion.div>
+
+                                <h3 className="text-2xl font-bold text-white mb-2">Sarah (AI)</h3>
+                                <div className="flex items-center justify-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-widest bg-emerald-500/10 py-1.5 px-3 rounded-full inline-flex border border-emerald-500/20">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                    00:{convoStep < 4 ? '12' : '24'}
+                                </div>
+                            </div>
+
+                            {/* Dynamic Voice Visualization */}
+                            <div className="flex-1 flex items-center justify-center mb-8">
+                                <div className="flex items-center gap-1.5 h-16">
+                                    {[...Array(7)].map((_, i) => (
                                         <motion.div
                                             key={i}
                                             animate={{
-                                                scale: active ? 1.05 : 1,
-                                                borderColor: active ? "#ffffff" : "rgba(255,255,255, 0.1)",
-                                                backgroundColor: active ? "rgba(255,255,255, 0.1)" : "rgba(255,255,255, 0.02)",
-                                                opacity: active ? 1 : (completed ? 0.5 : 0.3),
-                                                x: active ? 20 : 0
+                                                height: [20, Math.random() * 60 + 20, 20],
+                                                opacity: [0.3, 1, 0.3]
                                             }}
-                                            transition={{ duration: 0.3 }}
-                                            className="flex items-center gap-5 p-4 rounded-2xl border backdrop-blur-sm"
-                                        >
-                                            <div className="relative">
-                                                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-300 ${active ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" :
-                                                    completed ? "bg-green-500 text-black" :
-                                                        "bg-white/5 text-white/20 border border-white/5"
-                                                    }`}>
-                                                    {completed ? <CheckCircle2 className="w-6 h-6" /> : <checkpoint.icon className="w-6 h-6" />}
-                                                </div>
-                                                {/* Connecting Line */}
-                                                {i < checkpoints.length - 1 && (
-                                                    <div className={`absolute top-12 left-1/2 -translate-x-1/2 w-0.5 h-8 ${completed ? "bg-green-500/30" : "bg-white/5"
-                                                        }`} />
-                                                )}
-                                            </div>
-
-                                            <div className="flex-1">
-                                                <h4 className={`text-lg font-bold transition-colors duration-300 ${active ? "text-white" : "text-white/40"}`}>
-                                                    {checkpoint.text}
-                                                </h4>
-                                                <p className={`text-sm transition-colors duration-300 ${active ? "text-blue-200" : "text-white/20"}`}>{checkpoint.sub}</p>
-                                            </div>
-
-                                            {active && (
-                                                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
-                                                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
-                                                </motion.div>
-                                            )}
-                                        </motion.div>
-                                    );
-                                })}
+                                            transition={{
+                                                duration: 0.5,
+                                                repeat: Infinity,
+                                                repeatType: "reverse",
+                                                delay: i * 0.1,
+                                            }}
+                                            className="w-2 bg-gradient-to-t from-emerald-600 to-emerald-300 rounded-full"
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
 
+
+                            {/* Floating Captions */}
+                            <div className="h-[140px] relative mb-8">
+                                <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-transparent to-zinc-950 z-10 pointer-events-none" />
+                                <AnimatePresence mode="popLayout">
+                                    {conversation.slice(0, convoStep).slice(-1).map((msg, i) => (
+                                        <motion.div
+                                            key={convoStep + i}
+                                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                                            className="absolute bottom-0 inset-x-0 text-center"
+                                        >
+                                            <p className="text-lg font-medium text-white/90 leading-relaxed px-4 drop-shadow-md">
+                                                "{msg.text}"
+                                            </p>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Glass Controls */}
+                            <div className="grid grid-cols-4 gap-4 px-2">
+                                <button className="aspect-square rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/5">
+                                    <Mic className="w-6 h-6" />
+                                </button>
+                                <button className="aspect-square rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/5">
+                                    <Video className="w-6 h-6" />
+                                </button>
+                                <button className="aspect-square rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/5">
+                                    <User className="w-6 h-6" />
+                                </button>
+                                <button
+                                    onClick={() => setIsCallActive(false)}
+                                    className="aspect-square rounded-2xl bg-red-500/90 hover:bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-500/30 transition-all hover:scale-105"
+                                >
+                                    <Phone className="w-7 h-7 fill-current rotate-[135deg]" />
+                                </button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+        </PhoneMockup>
+    );
+};
+
+export default function DMDemo() {
+    return (
+        <section id="demo" className="py-24 bg-black overflow-hidden relative">
+            {/* Background glow for ambience */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="container mx-auto px-6 max-w-7xl relative z-10">
+                <div className="text-center mb-20">
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
+                        Experience the <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">Future.</span>
+                    </h2>
+                    <p className="text-zinc-400 max-w-2xl mx-auto text-lg font-light leading-relaxed">
+                        Watch how our AI Text and Voice agents seamlessly handle customer interactions,
+                        running on realistic mobile infrastructure.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start relative">
+                    {/* Center Divider Line - Only visible on large screens */}
+                    <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-zinc-800 to-transparent" />
+
+                    <div className="flex flex-col items-center">
+                        <div className="text-center mb-10 w-full max-w-sm p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <h3 className="text-xl font-bold text-white mb-2 relative z-10">Voice Intelligence</h3>
+                            <p className="text-zinc-400 text-sm font-medium relative z-10">Human-like latency with emotional intelligence.</p>
+                        </div>
+                        <VoiceAgentDemo />
                     </div>
 
-                    {/* RESTORED RESULT CARD */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="flex justify-center w-full"
-                    >
-                        <div className="relative p-1 rounded-3xl bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full max-w-3xl">
-                            <div className="relative bg-card/80 backdrop-blur-xl border border-white/10 p-8 rounded-[22px] text-center shadow-2xl">
-                                <div className="flex justify-center mb-4">
-                                    <div className="p-4 bg-white rounded-full border border-white/50 shadow-lg shadow-white/20">
-                                        <TrendingUp className="w-8 h-8 text-blue-600" />
-                                    </div>
-                                </div>
-                                <h3 className="text-2xl md:text-4xl font-bold text-white mb-3">
-                                    Result: You Wake Up to Booked Consultations
-                                </h3>
-                                <p className="text-slate-400 text-lg">
-                                    All this happened while you were asleep. <br className="hidden md:block" />
-                                    <span className="text-white font-medium">Zero manual work. Zero missed leads.</span>
-                                </p>
-                            </div>
+                    <div className="flex flex-col items-center">
+                        <div className="text-center mb-10 w-full max-w-sm p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <h3 className="text-xl font-bold text-white mb-2 relative z-10">Conversation Engine</h3>
+                            <p className="text-zinc-400 text-sm font-medium relative z-10">Instant lead qualification and booking.</p>
                         </div>
-                    </motion.div>
-
+                        <TextAgentDemo />
+                    </div>
                 </div>
             </div>
         </section>
     );
-};
-
-export default DMDemo;
+}   

@@ -1,336 +1,347 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Calendar,
   MessageSquare,
-  Bell,
+  Zap,
   User,
-  Smartphone,
   X,
   Play,
+  CheckCircle2,
+  Phone
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
-// Roles to cycle through with unique colors
+// Roles to cycle through for Niche
 const ROLES = [
-  { text: "Sales Team,", color: "#00d4ff" },
-  { text: "Appointment Setter,", color: "#ff6b6b" },
-  { text: "Virtual Assistant,", color: "#a855f7" },
-  { text: "SDR,", color: "#facc15" },
-  { text: "Lead Manager,", color: "#3b82f6" },
-  { text: "Chat Support,", color: "#14b8a6" },
-  { text: "Follow-up System,", color: "#f472b6" },
+  { text: "Every Patient,", color: "#60a5fa" }, // Blue-400
+  { text: "Every Home Buyer,", color: "#34d399" }, // Emerald-400
+  { text: "Every Appointment,", color: "#c084fc" }, // Purple-400
 ];
 
 const Hero = () => {
-  const circleRef = useRef<HTMLDivElement | null>(null);
-  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const velocitiesRef = useRef<{ dx: number; dy: number }[]>([]);
-  const positionsRef = useRef<{ x: number; y: number }[]>([]);
+  const deviceRef = useRef<HTMLDivElement | null>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  // Voice Agent State
+  const [voiceActive, setVoiceActive] = useState(true);
 
-  // Role cycling effect
+  // Text Agent State
+  const [textStep, setTextStep] = useState(0);
+
+  // Real Estate Chat Sequence
+  const chatMessages = [
+    { type: 'in', text: "Is 12 Oak St still available?", delay: 1000 },
+    { type: 'out', text: "Yes! Just hit the market yesterday.", delay: 3000 },
+    { type: 'in', text: "Can I tour it tomorrow?", delay: 5500 },
+    { type: 'out', text: "Sure! 2 PM or 4 PM work best?", delay: 7500 },
+  ];
+
+  // Cycle through chat messages
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentRoleIndex((prev) => (prev + 1) % ROLES.length);
-        setIsAnimating(false);
-      }, 300);
+    const timer = setInterval(() => {
+      setTextStep((prev) => (prev + 1) % (chatMessages.length + 2)); // +2 for pause at end
     }, 2500);
-
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, []);
 
+  // Mouse tracking for 3D tilt
   useEffect(() => {
-    const circle = circleRef.current;
-    if (!circle) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!deviceRef.current) return;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const mouseX = (e.clientX - windowWidth / 2) / windowWidth;
+      const mouseY = (e.clientY - windowHeight / 2) / windowHeight;
 
-    const radius = circle.offsetWidth / 2;
-    const items = itemsRef.current.filter(Boolean) as HTMLDivElement[];
-
-    positionsRef.current = items.map(() => {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = Math.random() * (radius * 0.5);
-      return { x: Math.cos(angle) * dist, y: Math.sin(angle) * dist };
-    });
-
-    velocitiesRef.current = items.map(() => ({
-      dx: (Math.random() - 0.5) * 1.8,
-      dy: (Math.random() - 0.5) * 1.8,
-    }));
-
-    items.forEach((item, index) => {
-      const pos = positionsRef.current[index];
-      item.style.transform = `translate(-50%, -50%) translate(${pos.x}px, ${pos.y}px)`;
-    });
-
-    let frameId: number;
-    let isIntersecting = false;
-
-    // Use IntersectionObserver to pause animation when offscreen
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isIntersecting = entry.isIntersecting;
-        if (isIntersecting) {
-          if (!frameId) frameId = requestAnimationFrame(animate);
-        } else {
-          cancelAnimationFrame(frameId);
-          frameId = 0;
-        }
-      },
-      { threshold: 0 }
-    );
-
-    if (circle) observer.observe(circle);
-
-    const animate = () => {
-      if (!isIntersecting) return;
-
-      items.forEach((item, index) => {
-        const pos = positionsRef.current[index];
-        const vel = velocitiesRef.current[index];
-
-        pos.x += vel.dx;
-        pos.y += vel.dy;
-
-        const dist = Math.sqrt(pos.x * pos.x + pos.y * pos.y);
-        const maxDist = Math.max(40, radius - 90);
-
-        if (dist > maxDist) {
-          const nx = pos.x / dist;
-          const ny = pos.y / dist;
-          const dot = vel.dx * nx + vel.dy * ny;
-          vel.dx -= 2 * dot * nx;
-          vel.dy -= 2 * dot * ny;
-          pos.x = nx * maxDist;
-          pos.y = ny * maxDist;
-        }
-
-        item.style.transform = `translate(-50%, -50%) translate(${pos.x}px, ${pos.y}px)`;
+      setTilt({
+        x: mouseY * 10,
+        y: -mouseX * 10,
       });
-
-      frameId = requestAnimationFrame(animate);
     };
-
-    // Initial start if visible (IntersectionObserver will handle subsequent toggles, 
-    // but we need to kick it off or let the observer callback handle it logic)
-    // Actually, the observer callback runs immediately on observe with initial state.
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      observer.disconnect();
-    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  const scrollToDemo = () => {
+    const demoSection = document.getElementById('demo');
+    if (demoSection) {
+      demoSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
       <section
         id="hero"
-        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-32 pb-8"
+        className="relative min-h-[100vh] flex items-center justify-center overflow-hidden px-6 pt-32 pb-20 bg-black"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 animate-glow-pulse" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15),transparent_60%)]" />
+        <div className="container mx-auto grid lg:grid-cols-2 gap-16 relative z-10 items-center">
+          {/* LEFT CONTENT */}
+          <div className="flex flex-col justify-center space-y-10 min-w-0 text-left">
 
-        <div className="container mx-auto grid lg:grid-cols-2 gap-12 relative z-10 mt-6 min-w-0">
-          {/* LEFT */}
-          <div className="flex flex-col justify-center space-y-8 mt-6 min-w-0">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full w-fit animate-fade-up">
-              <span className="text-sm font-medium text-primary">
-                For Coaches and Service Business Owners
+            {/* Pill Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-3 px-4 py-2 bg-blue-500/5 rounded-full w-fit backdrop-blur-md border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
+            >
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
               </span>
-            </div>
+              <span className="text-xs font-bold tracking-widest text-blue-200 uppercase">
+                AI for Healthcare & Real Estate
+              </span>
+            </motion.div>
 
-            <div className="animate-fade-up pb-3">
-              <h1
-                className="text-3xl md:text-5xl lg:text-6xl tracking-tight leading-[1.15]"
-                style={{ fontFamily: "'Inter', 'SF Pro Display', -apple-system, sans-serif" }}
-              >
-                <span className="block font-extrabold text-white mb-2">
-                  What If Your DMs Worked Like a
+            <div className="space-y-6">
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.05]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <span className="block text-white drop-shadow-2xl overflow-hidden pb-2">
+                  {"Never Miss Another".split("").map((char, index) => (
+                    <motion.span
+                      key={index}
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.03, ease: [0.33, 1, 0.68, 1] }}
+                      className="inline-block"
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </motion.span>
+                  ))}
                 </span>
-                <span className="block min-h-[1.2em]">
-                  <span
-                    className={`inline-block font-black transition-all duration-300 ease-out ${isAnimating
-                      ? "opacity-0 translate-y-2"
-                      : "opacity-100 translate-y-0"
-                      }`}
-                    style={{
-                      color: ROLES[currentRoleIndex].color,
-                    }}
-                  >
-                    {ROLES[currentRoleIndex].text}
-                  </span>
-                </span>
-                <span className="block font-extrabold text-white mt-2">
-                  Not an Inbox?
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600 drop-shadow-lg pb-2 overflow-hidden">
+                  {"Patient or Buyer".split("").map((char, index) => (
+                    <motion.span
+                      key={index}
+                      initial={{ opacity: 0, y: 40 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.5 + (index * 0.03), ease: [0.33, 1, 0.68, 1] }}
+                      className="inline-block"
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </motion.span>
+                  ))}
                 </span>
               </h1>
-            </div>
 
-            {/* Premium Feature Container */}
-            <div
-              className="animate-fade-up relative p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-xl"
-              style={{ animationDelay: "0.2s" }}
-            >
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5" />
-              <div className="relative z-10">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
-                      <MessageSquare className="w-5 h-5 text-primary" />
-                    </div>
-                    <span className="text-sm md:text-base text-white/90">Reply 24/7</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center shrink-0">
-                      <User className="w-5 h-5 text-secondary" />
-                    </div>
-                    <span className="text-sm md:text-base text-white/90">Qualify Every Lead</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
-                      <Bell className="w-5 h-5 text-primary" />
-                    </div>
-                    <span className="text-sm md:text-base text-white/90">Auto Follow-ups</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center shrink-0">
-                      <Calendar className="w-5 h-5 text-secondary" />
-                    </div>
-                    <span className="text-sm md:text-base text-white/90">Full Visibility</span>
-                  </div>
-                </div>
-                <p className="mt-4 text-sm text-muted-foreground border-t border-white/10 pt-4">
-                  Focus on delivery and closing — we handle the rest.
-                </p>
-              </div>
-            </div>
-
-            <div
-              className="flex flex-col sm:flex-row gap-4 pt-2 animate-fade-up"
-              style={{ animationDelay: "0.4s" }}
-            >
-
-              <Button
-                variant="outline"
-                className="px-8 py-6 text-lg border-primary/50 hover:bg-white hover:text-cyan-600 hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300"
-                onClick={() =>
-                  window.open("https://cal.com/lumoscale/30min", "_blank")
-                }
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-2xl md:text-3xl font-light text-zinc-400"
+                style={{ fontFamily: "'Outfit', sans-serif" }}
               >
-                Book Free Strategy Call
+                AI agents answer<span className="text-white font-medium border-b border-blue-500/50 pb-0.5"> every call and text </span> 24/7.
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="text-lg text-zinc-500 max-w-lg leading-relaxed font-light"
+              >
+                Every missed call is now a booked appointment. Every late-night inquiry gets qualified. Your AI team works around the clock so your calendar stays full.
+              </motion.p>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-5 pt-4"
+            >
+              {/* Premium Talk to Team Button */}
+              <Button
+                className="group h-auto px-8 py-5 text-lg bg-white text-black font-bold rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:bg-[#10b981] hover:text-white hover:shadow-[0_0_40px_rgba(16,185,129,0.4)] hover:scale-[1.02] transition-all duration-300 border border-transparent hover:border-emerald-400"
+                onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
+              >
+                Talk to our team
+                <Zap className="w-5 h-5 ml-2 fill-black group-hover:fill-white transition-colors" />
               </Button>
-            </div>
-          </div>
 
-          {/* RIGHT */}
-          <div className="relative flex items-center justify-center min-w-0">
-            <div
-              ref={circleRef}
-              className="relative w-full max-w-[480px] aspect-square rounded-full bg-card border border-primary/30 shadow-[0_0_50px_rgba(0,255,255,0.2)] overflow-hidden"
-            >
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <Smartphone className="w-24 h-24 text-primary opacity-80" />
-                <p className="text-lg text-muted-foreground mt-2">
-                  Checking messages...
-                </p>
-              </div>
-
-              {/* Floating cards */}
-              <div ref={(el) => (itemsRef.current[0] = el)} className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 md:w-56 shadow-xl">
-                <div className="flex gap-2">
-                  <MessageSquare className="text-primary h-5 w-5 mt-1" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">AI Response</p>
-                    <p className="text-sm">Hello, whats your pricing?</p>
-                  </div>
-                </div>
-              </div>
-
-              <div ref={(el) => (itemsRef.current[1] = el)} className="absolute left-1/2 top-1/2 bg-card border border-secondary/40 rounded-xl px-4 py-3 md:w-52 shadow-xl">
-                <div className="flex gap-2">
-                  <Calendar className="text-secondary h-5 w-5 mt-1" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Booking Confirmed</p>
-                    <p className="text-sm font-semibold">Thu, 2:00 PM</p>
-                  </div>
-                </div>
-              </div>
-
-              <div ref={(el) => (itemsRef.current[2] = el)} className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 md:w-60 shadow-xl">
-                <div className="flex gap-2">
-                  <Bell className="text-primary h-5 w-5 mt-1" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Slack Alert</p>
-                    <p className="text-sm">New hot lead booked a call</p>
-                  </div>
-                </div>
-              </div>
-
-              <div ref={(el) => (itemsRef.current[3] = el)} className="absolute left-1/2 top-1/2 bg-primary/20 text-primary px-4 py-2 rounded-full shadow">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm">New Lead</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* VIDEO MODAL */}
-      {showVideoModal && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={() => setShowVideoModal(false)}
-        >
-          <div
-            className="relative bg-card rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowVideoModal(false)}
-              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 rounded-full p-2"
-            >
-              <X className="w-6 h-6 text-white" />
-            </button>
-
-            <div className="relative w-full pt-[56.25%]">
-              <video
-                className="absolute inset-0 w-full h-full object-cover rounded-2xl"
-                controls
-                playsInline
-                preload="metadata"
-                autoPlay
-                muted
+              <button
+                onClick={scrollToDemo}
+                className="group h-auto px-8 py-5 text-lg text-white font-medium rounded-2xl flex items-center gap-3 transition-all duration-300 hover:text-green-400"
               >
-                <source src="/Demo1.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors border border-white/10 group-hover:border-green-500">
+                  <Play className="w-4 h-4 ml-0.5" />
+                </div>
+                Watch Demo
+              </button>
+            </motion.div>
+          </div>
 
-            <div className="p-6 bg-card">
-              <h3 className="text-2xl font-bold mb-2">See How It Works</h3>
-              <p className="text-muted-foreground mb-4">
-                Watch how our system responds to DMs, qualifies leads, and books consultations automatically.
-              </p>
+          {/* RIGHT - 3D TWIN CARD VISUAL */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="relative flex items-center justify-center min-w-0 perspective-1000 h-[600px] lg:h-[700px]"
+          >
+            {/* Dynamic Glow Behind Graphic */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none mix-blend-screen" />
 
-              <Button
-                className="w-full bg-gradient-to-r from-primary to-secondary text-black hover:scale-105 transition-all"
-                onClick={() => {
-                  setShowVideoModal(false);
-                  window.open("https://cal.com/lumoscale/30min", "_blank");
+            <div
+              ref={deviceRef}
+              className="relative w-full h-full flex items-center justify-center transition-transform duration-100 ease-out preserve-3d"
+              style={{
+                transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                transformStyle: 'preserve-3d',
+              }}
+            >
+
+              {/* --- CARD 1: TEXT AGENT (Back/Left) --- */}
+              <motion.div
+                animate={{
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="absolute left-0 lg:left-8 top-20 w-[320px] bg-[#0A0A0A]/90 backdrop-blur-xl rounded-[32px] p-6 shadow-2xl z-10 border border-blue-500/20"
+                style={{
+                  transform: 'translateZ(-40px) translateX(-20px)',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.1)'
                 }}
               >
-                Book Your Strategy Call Now
-              </Button>
+                {/* Header */}
+                <div className="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/20">
+                    <MessageSquare className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-bold text-sm">Lumoscale Chat</h3>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-xs text-zinc-500">Active Now</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Messages Sequence */}
+                <div className="space-y-3 h-[200px] overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/90 via-transparent to-transparent z-10 pointer-events-none" />
+
+                  <AnimatePresence mode="popLayout">
+                    {chatMessages.slice(0, Math.min(textStep + 1, chatMessages.length)).map((msg, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: msg.type === 'out' ? 20 : -20, scale: 0.95 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        className={`flex ${msg.type === 'out' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div className={`
+                          max-w-[85%] px-4 py-3 rounded-2xl text-xs font-medium leading-relaxed
+                          ${msg.type === 'out'
+                            ? 'bg-blue-600 text-white rounded-tr-none shadow-lg shadow-blue-900/20'
+                            : 'bg-white/5 text-zinc-300 rounded-tl-none border border-white/5'}
+                        `}>
+                          {msg.text}
+                        </div>
+                      </motion.div>
+                    ))}
+                    {textStep < chatMessages.length && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex gap-1 ml-2 mt-2"
+                      >
+                        <span className="w-1 h-1 bg-zinc-600 rounded-full animate-bounce" />
+                        <span className="w-1 h-1 bg-zinc-600 rounded-full animate-bounce delay-75" />
+                        <span className="w-1 h-1 bg-zinc-600 rounded-full animate-bounce delay-150" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+
+
+              {/* --- CARD 2: VOICE AGENT (Front/Right) --- */}
+              <motion.div
+                animate={{
+                  y: [0, 15, 0],
+                }}
+                transition={{
+                  duration: 7,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 0.5
+                }}
+                className="absolute right-0 lg:right-8 bottom-32 w-[300px] bg-[#0A0A0A] rounded-[32px] p-8 z-20 border border-purple-500/20"
+                style={{
+                  transform: 'translateZ(60px) translateX(20px)',
+                  boxShadow: '0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 50px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255,255,255,0.1)'
+                }}
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <span className="px-2 py-1 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+                    Patient Call
+                  </span>
+                  <span className="text-zinc-500 font-mono text-xs">00:42</span>
+                </div>
+
+                {/* Ringing Visual */}
+                <div className="relative flex items-center justify-center mb-8">
+                  {/* Outer Rings */}
+                  <div className="absolute inset-0 rounded-full border border-purple-500/20 animate-ping" style={{ animationDuration: '3s' }} />
+                  <div className="absolute inset-[-10px] rounded-full border border-purple-500/10 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }} />
+
+                  {/* Glow */}
+                  <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full" />
+
+                  {/* Avatar */}
+                  <div className="relative w-24 h-24 rounded-full bg-gradient-to-b from-zinc-800 to-black border border-white/10 flex items-center justify-center overflow-hidden z-10 shadow-2xl">
+                    <img
+                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150"
+                      alt="Voice Agent"
+                      className="w-full h-full object-cover opacity-80"
+                    />
+                    <div className="absolute inset-0 bg-purple-500/10 mix-blend-overlay" />
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className="absolute -bottom-3 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-black z-20 shadow-lg">
+                    Speaking...
+                  </div>
+                </div>
+
+                {/* Waveform */}
+                <div className="flex items-center justify-center gap-1 h-8 mb-4">
+                  {[...Array(8)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      animate={{
+                        height: [10, 24 + Math.random() * 10, 10],
+                        opacity: [0.3, 1, 0.3]
+                      }}
+                      transition={{
+                        duration: 0.5 + Math.random() * 0.5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      className="w-1.5 bg-purple-400 rounded-full"
+                    />
+                  ))}
+                </div>
+
+                <div className="flex justify-center gap-4 mt-6">
+                  <button className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all border border-red-500/20">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+              </motion.div>
+
             </div>
-          </div>
+          </motion.div>
         </div>
-      )}
+      </section>
     </>
   );
 };
