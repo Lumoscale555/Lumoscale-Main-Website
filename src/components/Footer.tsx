@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
             </div>
 
             <p className="text-sm text-slate-400 leading-relaxed">
-              We turn Instagram DMs into booked consultations automatically,
+              We turn DMs into booked consultations automatically,
               without missed leads or manual follow ups.
             </p>
           </div>
