@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import logo from "@/assets/lumoscale-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import FloatingContact from "./FloatingContact";
 
 /* ---------- Nav Item ---------- */
 const NavItem = ({ href, label }: { href: string; label: string }) => (
@@ -21,7 +22,8 @@ const Header = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="w-full fixed top-0 left-0 z-50 bg-background/60 backdrop-blur-xl border-b border-primary/10">
+    <>
+      <header className="w-full fixed top-0 left-0 z-50 bg-background/60 backdrop-blur-xl border-b border-primary/10">
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
 
         {/* Logo */}
@@ -44,8 +46,6 @@ const Header = () => {
           <NavItem href="#demo" label="Demo" />
           <NavItem href="#beforeafter" label="Results" />
           <NavItem href="#pricing" label="Pricing" />
-          <NavItem href="#testimonials" label="Testimonials" />
-          <NavItem href="#case-study" label="Case Study" />
 
           <Button
             className="
@@ -57,7 +57,7 @@ const Header = () => {
               window.open("https://cal.com/lumoscale/30min", "_blank")
             }
           >
-            Get Started
+            Free System Audit
           </Button>
         </nav>
 
@@ -117,14 +117,16 @@ const Header = () => {
                     window.open("https://cal.com/lumoscale/30min", "_blank");
                   }}
                 >
-                  Get Started
+                  Free System Audit
                 </Button>
               </li>
             </ul>
           </div>
         </div>
       )}
-    </header>
+      </header>
+      <FloatingContact />
+    </>
   );
 };
 
