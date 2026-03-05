@@ -119,6 +119,32 @@ const Header = () => {
             </button>
           </nav>
 
+          {/* Mobile - Talk to AI Button (visible outside hamburger) */}
+          <div className="md:hidden flex-1 flex justify-center">
+            <a
+              href="/#demo-interactive"
+              onClick={(e) => {
+                const targetId = 'demo-interactive';
+                const element = document.getElementById(targetId);
+                
+                if (element) {
+                  e.preventDefault();
+                  const headerOffset = 100;
+                  const elementPosition = element.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                  });
+                }
+              }}
+              className="px-3 py-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors border border-cyan-500/30 rounded-full hover:border-cyan-500/50 whitespace-nowrap"
+            >
+              Talk to AI
+            </a>
+          </div>
+
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
@@ -162,7 +188,7 @@ const Header = () => {
                 {[
                   { href: "/#hero", label: "Home" },
                   { href: "/#beforeafter", label: "Why Lumoscale" },
-                  { href: "/#demo-interactive", label: "Talk to our AI" },
+                  { href: "/#demo-interactive", label: "Talk to AI" },
                   { href: "/#solution", label: "Features" },
                   { href: "/blog", label: "Blogs" },
                   { href: "/#pricing", label: "Pricing" },
