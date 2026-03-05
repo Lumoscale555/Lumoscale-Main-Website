@@ -161,6 +161,7 @@ export default function ChatWidget() {
                                             )}
                                             
                                             {messages.map((msg, idx) => (
+                                                
                                                 <motion.div
                                                     key={idx}
                                                     layout

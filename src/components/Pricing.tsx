@@ -13,31 +13,34 @@ import { useAuditModal } from "../context/AuditModalContext";
 import { useIsMobile } from "../hooks/use-mobile";
 
 // ... (Constants TEXT_FEATURES, VOICE_FEATURES, CUSTOM_FEATURES remain the same: lines 16-40)
-/* ---------- TEXT AGENT FEATURES ---------- */
-const TEXT_FEATURES = [
-  "Instagram, WhatsApp & Website automation",
-  "Instant responses (<60 sec)",
-  "Auto-qualify leads",
-  "Smart follow-ups",
-  "Performance dashboard",
+/* ---------- PLAN 1 FEATURES (AI Messaging Front Desk) ---------- */
+const PLAN1_FEATURES = [
+  "Handles Instagram, WhatsApp, and website chat",
+  "Replies instantly, 24/7",
+  "Qualifies buyers or patients with smart, context-aware questions",
+  "Automated follow-ups until booked or disqualified",
+  "End-to-end visibility in a live dashboard",
+  "Unlimited script revisions"
 ];
 
-/* ---------- VOICE AGENT FEATURES ---------- */
-const VOICE_FEATURES = [
-  "Your voice, perfectly cloned",
-  "Inbound & outbound calling",
-  "Auto-book appointments",
-  "Live human transfer",
-  "Call analytics & CRM sync",
+/* ---------- PLAN 2 FEATURES (AI Call Receptionist) ---------- */
+const PLAN2_FEATURES = [
+  "Answers all inbound calls, 24/7",
+  "Triggers outbound calls automatically when prospects submit forms",
+  "Qualifies callers before booking (saves you time)",
+  "Books appointments directly on your calendar in real-time",
+  "Transfers only callers who actually need a human agent",
+  "Full call history, transcripts, and performance dashboard"
 ];
 
-/* ---------- CUSTOM / ENTERPRISE FEATURES ---------- */
-const CUSTOM_FEATURES = [
-  "Everything above, integrated",
-  "Custom AI training",
-  "Dedicated infrastructure",
-  "White-label dashboard",
-  "Priority support",
+/* ---------- PLAN 3 FEATURES (Complete Front Desk System) ---------- */
+const PLAN3_FEATURES = [
+  "Voice and text working as one seamless front desk",
+  "Unified qualification across calls and messages",
+  "Appointment booking, confirmations, and reminders",
+  "Centralized live dashboard for all conversations and bookings",
+  "Custom workflows based on your business needs",
+  "Weekly optimization and priority support"
 ];
 
 const containerVariants = {
@@ -118,11 +121,11 @@ export default function Pricing() {
         >
 
           <PricingCard
-            title="Text Agent Suite"
-            subtitle="Stop Missing DMs"
-            description="Turn every inquiry into revenue opportunities."
+            title="AI Messaging Front Desk"
+            subtitle="Message → Booking"
+            description="Turns every inbound message into a qualified, followed-up appointment."
             price=""
-            features={TEXT_FEATURES}
+            features={PLAN1_FEATURES}
             icon={MessageSquare}
             gradient="from-blue-500 to-cyan-500"
             glowColor="rgba(59, 130, 246, 0.4)"
@@ -130,11 +133,11 @@ export default function Pricing() {
           />
 
           <PricingCard
-            title="Voice Agent Suite"
-            subtitle="Never Miss Another Call"
-            description="Your calendar fills while you focus on closing."
+            title="AI Call Receptionist"
+            subtitle="Call → appointment "
+            description="Answers every inbound call in your actual voice and converts qualified callers into booked appointments."
             price=""
-            features={VOICE_FEATURES}
+            features={PLAN2_FEATURES}
             icon={Phone}
             isPopular={true}
             gradient="from-emerald-500 to-green-500"
@@ -143,18 +146,87 @@ export default function Pricing() {
           />
 
           <PricingCard
-            title="Custom Pricing"
-            subtitle="Total Lead Domination"
-            description="Scale without hiring. Dominate without limits."
+            title="Complete Front Desk System"
+            subtitle="Calls + Messages → Appointments"
+            description="A single unified system that handles calls and messages together and manages the entire booking workflow."
             price=""
-            features={CUSTOM_FEATURES}
+            features={PLAN3_FEATURES}
             icon={Building2}
             gradient="from-purple-500 to-pink-500"
             glowColor="rgba(168, 85, 247, 0.4)"
-            ctaText="Talk to Growth Team"
+            ctaText="Talk to Our Team"
           />
 
         </motion.div>
+
+        {/* ADD-ONS SECTION */}
+        <div className="mt-32 relative">
+            <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-center mb-16 relative"
+            >
+                <div className="inline-block mb-4">
+                  <span className="py-1 px-3 rounded-full bg-blue-500/5 backdrop-blur-md border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.1)] text-blue-200 text-xs font-bold tracking-widest uppercase">
+                    Optional Add-ons
+                  </span>
+                </div>
+                <motion.h3
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                    className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.1]"
+                >
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">Custom Solutions</span>
+                </motion.h3>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto relative z-10">
+                {/* Add-on 1: Custom AI Agents */}
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 }}
+                    className="group relative p-8 rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all duration-300 overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative z-10">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/5 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                            <Zap className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <h4 className="text-xl font-bold text-white mb-3 group-hover:text-blue-200 transition-colors">Custom AI Agents</h4>
+                        <p className="text-zinc-400 leading-relaxed text-sm">
+                            We build specialized AI agents for any use case. Each one is trained on your specific knowledge base and SOPs.
+                        </p>
+                    </div>
+                </motion.div>
+
+                {/* Add-on 2: Workflows */}
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 }}
+                    className="group relative p-8 rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/5 hover:border-purple-500/30 transition-all duration-300 overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative z-10">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/5 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                            <Sparkles className="w-6 h-6 text-purple-400" />
+                        </div>
+                        <h4 className="text-xl font-bold text-white mb-3 group-hover:text-purple-200 transition-colors">Custom Automation Workflows</h4>
+                        <p className="text-zinc-400 leading-relaxed text-sm">
+                            We build custom automation workflows using no-code platforms.
+                        </p>
+                    </div>
+                </motion.div>
+
+            </div>
+        </div>
 
       </div>
     </section>

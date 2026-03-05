@@ -34,7 +34,7 @@ const NavItem = ({ href, label }: { href: string; label: string }) => {
     <a
       href={href}
       onClick={handleClick}
-      className="relative px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:text-white group"
+      className="relative px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:text-white group whitespace-nowrap"
     >
       {label}
       <span className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-cyan-500/0 via-cyan-500/70 to-cyan-500/0 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -87,7 +87,7 @@ const Header = () => {
           `}
         >
           {/* Logo */}
-          <a href="/" className="flex items-center gap-3 select-none hover:opacity-80 transition-opacity">
+          <div className="flex items-center gap-3 select-none">
             <img
               src={logo}
               alt="Lumoscale AI"
@@ -96,7 +96,7 @@ const Header = () => {
             <span className="text-lg font-bold tracking-tight text-white hidden sm:block">
               LUMOSCALE
             </span>
-          </a>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
@@ -114,7 +114,7 @@ const Header = () => {
               onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
               className="group relative inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black rounded-full font-bold text-xs uppercase tracking-wide hover:bg-zinc-200 transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]"
             >
-              <span>Book a Call</span>
+              <span>Book Appointment</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </nav>
@@ -237,7 +237,7 @@ const Header = () => {
                   }}
                   className="w-full py-4 bg-white text-black rounded-xl font-bold uppercase tracking-wide hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 shadow-lg"
                 >
-                  <span>Book a Call</span>
+                  <span>Book Appointment</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

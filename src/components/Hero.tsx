@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   MessageSquare,
-  Zap,
+  User,
   X,
   Play,
 } from "lucide-react";
@@ -11,9 +11,43 @@ import { motion, AnimatePresence } from "framer-motion";
 const Hero = () => {
   // Voice Agent State for visual loop only - minimal impact
   const [voiceActive, setVoiceActive] = useState(true);
+  const [textStep, setTextStep] = useState(0);
 
   // Text Agent State
-  const [textStep, setTextStep] = useState(0);
+  // Typewriter Effect State
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [loopNum, setLoopNum] = useState(0);
+  const [typingSpeed, setTypingSpeed] = useState(150);
+
+  const words = ["Voice", "Text"];
+
+  useEffect(() => {
+    const handleType = () => {
+      const i = loopNum % words.length;
+      const fullText = words[i];
+
+      setDisplayText(isDeleting 
+        ? fullText.substring(0, displayText.length - 1) 
+        : fullText.substring(0, displayText.length + 1)
+      );
+
+      // Typing Speed Logic
+      setTypingSpeed(isDeleting ? 80 : 150);
+
+      if (!isDeleting && displayText === fullText) {
+        // Finished typing word, pause before deleting
+        setTimeout(() => setIsDeleting(true), 2000);
+      } else if (isDeleting && displayText === "") {
+        // Finished deleting, move to next word
+        setIsDeleting(false);
+        setLoopNum(loopNum + 1);
+      }
+    };
+
+    const timer = setTimeout(handleType, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, loopNum, typingSpeed]);
 
   // Real Estate Chat Sequence
   const chatMessages = [
@@ -60,7 +94,7 @@ const Hero = () => {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
               </span>
               <span className="text-xs font-bold tracking-widest text-blue-200 uppercase whitespace-nowrap">
-                AI for Healthcare & Real Estate
+                Done for You AI Front Desk for<br className="md:hidden" /> Healthcare and Real Estate
               </span>
             </motion.div>
 
@@ -70,27 +104,32 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="space-y-6"
             >
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.05]" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                <span className="block text-white drop-shadow-2xl overflow-hidden pb-2">
+              <h1 className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                <span className="block text-white drop-shadow-2xl">
                   Never Miss Another
                 </span>
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600 drop-shadow-lg pb-2 overflow-hidden">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600 drop-shadow-lg">
                   Patient or Buyer
                 </span>
               </h1>
 
-              <p
-                className="text-2xl md:text-3xl font-light text-zinc-400"
+              <div
+                className="text-xl md:text-2xl font-light text-blue-100/90 flex flex-wrap items-center gap-x-2"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
               >
-                AI Voice & Text Agents<span className="text-white font-medium border-b border-blue-500/50 pb-0.5"> answer every call </span> 24/7.
-              </p>
+                <span>AI</span>
+                <span className="text-white font-semibold inline-flex items-center text-[0.9em]">
+                  {displayText}
+                  <span className="cursor-blink w-0.5 h-6 bg-blue-400 ml-0.5 animate-pulse"></span>
+                </span>
+                <span>Agents that <span className="text-white font-medium pb-1 bg-gradient-to-r from-blue-400 to-emerald-400 bg-[length:100%_2px] bg-no-repeat bg-bottom">answer every call & message</span>, 24/7.</span>
+              </div>
 
-              <p
-                className="text-lg text-zinc-500 max-w-2xl leading-relaxed font-light"
-              >
-                Every missed call is now a booked appointment. Every late-night inquiry gets qualified. Your AI team works around the clock so your calendar stays full.
-              </p>
+              <div className="pt-4">
+                <p className="text-base md:text-lg text-zinc-400 max-w-xl leading-relaxed font-light border-l-2 border-white/10 pl-6">
+                  Every missed call is now a booked appointment. Every late-night inquiry gets qualified. Your AI team works around the clock so your calendar stays full.
+                </p>
+              </div>
             </motion.div>
 
             <motion.div
@@ -99,32 +138,20 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-col sm:flex-row gap-5 pt-4"
             >
-              {/* Premium Talk to Team Button */}
               <div className="relative group">
-
                 <Button
-                  className="relative h-auto px-8 py-5 text-lg bg-white text-black font-bold rounded-2xl shadow-xl hover:scale-[1.02] transition-all duration-300 border border-white/50 overflow-hidden"
+                  className="relative h-auto px-6 py-3 text-base font-semibold rounded-full bg-white text-black hover:text-white shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(34,197,94,0.6)] hover:scale-[1.02] transition-all duration-500 overflow-hidden group/btn"
                   onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
                 >
-                  <span className="relative z-10 flex items-center">
+                  {/* Hover Gradient Background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-emerald-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
+                  
+                  <span className="relative z-10 flex items-center gap-2">
                     Talk to our team
-                    <Zap className="w-5 h-5 ml-2 fill-blue-500 text-blue-500 group-hover:fill-blue-600 group-hover:text-blue-600 transition-colors duration-300" />
+                    <User className="w-4 h-4 text-blue-600 fill-blue-600 group-hover/btn:text-white group-hover/btn:fill-white/20 transition-colors duration-300" />
                   </span>
-
-                  {/* Internal Shimmer */}
-                  <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-zinc-200/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
                 </Button>
               </div>
-
-              <button
-                onClick={scrollToDemo}
-                className="group h-auto px-8 py-5 text-lg text-white font-medium rounded-2xl flex items-center gap-3 transition-all duration-300 hover:text-green-400"
-              >
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors border border-white/10 group-hover:border-green-500">
-                  <Play className="w-4 h-4 ml-0.5" />
-                </div>
-                Watch Demo
-              </button>
             </motion.div>
           </div>
 
