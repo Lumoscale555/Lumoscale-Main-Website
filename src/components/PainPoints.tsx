@@ -26,7 +26,7 @@ const PainPoints = () => {
             </div>
 
             <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold gradient-text shimmer leading-tight">
-              Why You're Losing 80% of Your Instagram Leads
+              Why You're Losing 80% of Your Leads
             </h2>
 
             {/* MOVED: Sound familiar line */}
