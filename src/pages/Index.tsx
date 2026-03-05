@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+﻿import Header from "@/components/Header";
 import Hero from "../components/Hero";   
 import DMDemo from "@/components/DMDemo";
 import Services from "@/components/Services";
@@ -60,8 +60,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <Helmet>
-        <title>Lumoscale | AI Agents for Real Estate</title>
-        <meta name="description" content="AI Receptionist answers calls 24/7, AI Voice SDR follows up with leads instantly, and AI Text Agents handle social media messages. Complete automation for Real Estate businesses." />
+        <title>Lumoscale - Your AI Voice System. Done For You.</title>
+        <meta name="description" content="Every missed call is lost revenue. Lumoscale builds and runs your custom AI voice system - answering calls in your cloned voice within 60 seconds, calling back form leads, and handling every DM 24/7. We build it. We run it. You just take the appointments." />
       </Helmet>
       
       <Header />

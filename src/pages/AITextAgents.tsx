@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+﻿import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Check, MessageCircle, Instagram, Facebook, MessageSquare, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -98,8 +98,18 @@ const AITextAgents = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Helmet>
-        <title>DM Automation - Instagram, Facebook, WhatsApp | Lumoscale</title>
-        <meta name="description" content="Handles all Instagram, Facebook, and WhatsApp messages. Qualifies leads, books appointments - while you sleep." />
+        <title>AI Text Agents - Stop Losing Deals in Your DMs | Lumoscale</title>
+        <meta name="description" content="A lead messages you on Instagram at 11pm. You see it the next morning - they've already booked someone else. Lumoscale's AI Text Agents reply within 15 seconds, qualify the lead, and book the appointment. Across Instagram, Facebook, and WhatsApp. Done for you." />
+        <link rel="canonical" href="https://www.lumoscale.com/ai-text-agents" />
+        <meta property="og:title" content="AI Text Agents - Stop Losing Deals in Your DMs | Lumoscale" />
+        <meta property="og:description" content="Lumoscale's AI Text Agents reply to every DM within 15 seconds across Instagram, Facebook, and WhatsApp - qualifying leads and booking appointments while you sleep. Custom-built. Done for you." />
+        <meta property="og:url" content="https://www.lumoscale.com/ai-text-agents" />
+        <meta property="og:image" content="https://www.lumoscale.com/lumoscale-og.jpg" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Text Agents - Stop Losing Deals in Your DMs | Lumoscale" />
+        <meta name="twitter:description" content="Lumoscale's AI Text Agents reply in 15 seconds across Instagram, Facebook & WhatsApp. Qualify leads. Book appointments. Done for you - 24/7." />
+        <meta name="twitter:image" content="https://www.lumoscale.com/lumoscale-og.jpg" />
       </Helmet>
       
       <Header />

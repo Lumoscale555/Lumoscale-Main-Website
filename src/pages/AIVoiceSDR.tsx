@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+﻿import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Check, PhoneOutgoing, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -75,8 +75,18 @@ const AIVoiceSDR = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Helmet>
-        <title>AI Follow-Up Agent - Outbound Form Calls | Lumoscale</title>
-        <meta name="description" content="Calls everyone who fills your ad forms or website forms. Books meetings before they forget about you." />
+        <title>AI Follow-Up Agent - Call Every Form Lead Before They Forget You | Lumoscale</title>
+        <meta name="description" content="Someone fills your form and moves on. By the time you call back, they've already booked elsewhere. Lumoscale's AI Voice SDR calls every lead within 5 minutes in your voice, qualifies them, and books the meeting - automatically." />
+        <link rel="canonical" href="https://www.lumoscale.com/ai-voice-sdr" />
+        <meta property="og:title" content="AI Follow-Up Agent - Call Every Form Lead Before They Forget You | Lumoscale" />
+        <meta property="og:description" content="Lumoscale's AI Voice SDR calls every form submission within 5 minutes in your voice. Qualifies prospects and books meetings before they find your competitor. Done for you." />
+        <meta property="og:url" content="https://www.lumoscale.com/ai-voice-sdr" />
+        <meta property="og:image" content="https://www.lumoscale.com/lumoscale-og.jpg" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Follow-Up Agent - Call Every Form Lead Before They Forget You | Lumoscale" />
+        <meta name="twitter:description" content="Lumoscale's AI Voice SDR calls every form lead in 5 minutes in your cloned voice. Books meetings before they go to a competitor. Fully done for you." />
+        <meta name="twitter:image" content="https://www.lumoscale.com/lumoscale-og.jpg" />
       </Helmet>
       
       <Header />

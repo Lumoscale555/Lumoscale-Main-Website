@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaInstagram, FaFacebookF, FaLinkedinIn, FaTwitter } from "react-icons/fa";
@@ -28,7 +28,7 @@ const Footer = () => {
                 <span className="text-2xl font-bold text-white tracking-tight">LUMOSCALE</span>
               </div>
               <p className="text-white/60 text-lg leading-relaxed max-w-sm">
-                We build AI Voice & Text Agents that turn missed calls and inquiries into booked appointments. 24/7 coverage for real estate. No manual work.
+                We build it. We run it. You just take the appointments. Custom AI voice systems - answering calls, following up on leads, and handling every DM 24/7.
               </p>
 
               <div className="flex gap-4">
@@ -50,18 +50,16 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* LINKS COLUMN */}
-            <div className="lg:w-1/4 xl:w-1/5">
+            {/* EXPLORE COLUMN */}
+            <div className="lg:w-1/5">
               <h4 className="text-white font-bold mb-6">Explore</h4>
               <ul className="space-y-4">
                 {[
                   { label: "Home", href: "/#hero", external: true },
                   { label: "Why Lumoscale", href: "/#beforeafter", external: true },
                   { label: "Live Demo", href: "/#demo", external: true },
-                  { label: "Services", href: "/#services", external: true },
-                  { label: "Process", href: "/#process", external: true },
-                  { label: "Insights", href: "/blog", external: false },
                   { label: "Pricing", href: "/#pricing", external: true },
+                  { label: "Insights", href: "/blog", external: false },
                   { label: "FAQ", href: "/#faq", external: true },
                   { label: "Privacy Policy", href: "/privacy-policy", external: false }
                 ].map((link) => (
@@ -86,8 +84,29 @@ const Footer = () => {
               </ul>
             </div>
 
+            {/* SERVICES COLUMN */}
+            <div className="lg:w-1/5">
+              <h4 className="text-white font-bold mb-6">Services</h4>
+              <ul className="space-y-4">
+                {[
+                  { label: "AI Receptionist", href: "/ai-receptionist" },
+                  { label: "AI Voice SDR", href: "/ai-voice-sdr" },
+                  { label: "AI Text Agents", href: "/ai-text-agents" },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      to={link.href}
+                      className="text-white/60 hover:text-white hover:translate-x-1 transition-all inline-block"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             {/* CONTACT COLUMN */}
-            <div className="lg:w-1/3 xl:w-2/5">
+            <div className="lg:w-1/3">
               <h4 className="text-white font-bold mb-6">Contact</h4>
               <ul className="space-y-6">
                 <li className="flex items-start gap-4">
@@ -111,8 +130,8 @@ const Footer = () => {
                   </div>
                   <div>
                     <p className="text-xs text-white/40 font-bold uppercase tracking-wider mb-1">Call Us</p>
-                    <p className="text-white">+91 89190 53970</p>
-                    <p className="text-white">+91 80743 28526</p>
+                    <a href="tel:+918919053970" className="block text-white hover:text-blue-400 transition-colors">+91 89190 53970</a>
+                    <a href="tel:+918074328526" className="block text-white hover:text-blue-400 transition-colors">+91 80743 28526</a>
                   </div>
                 </li>
 

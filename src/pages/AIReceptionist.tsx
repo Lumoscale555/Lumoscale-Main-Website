@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+﻿import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Check, PhoneIncoming, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -75,8 +75,18 @@ const AIReceptionist = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Helmet>
-        <title>AI Receptionist - 24/7 Call Answering | Lumoscale</title>
-        <meta name="description" content="Answers every incoming call in your voice. Qualifies leads, books appointments, handles support - 24/7." />
+        <title>AI Receptionist - Never Lose a Lead to Voicemail Again | Lumoscale</title>
+        <meta name="description" content="Your phone rings 24/7 - even when you're busy, in a meeting, or asleep. Lumoscale's AI Receptionist answers in your cloned voice, asks your exact qualifying questions, and books appointments straight to your calendar. Custom-built around your business." />
+        <link rel="canonical" href="https://www.lumoscale.com/ai-receptionist" />
+        <meta property="og:title" content="AI Receptionist - Never Lose a Lead to Voicemail Again | Lumoscale" />
+        <meta property="og:description" content="Your phone rings 24/7 - even when you're busy. Lumoscale's AI Receptionist answers in your voice, qualifies callers with your exact questions, and books appointments to your calendar. Done for you." />
+        <meta property="og:url" content="https://www.lumoscale.com/ai-receptionist" />
+        <meta property="og:image" content="https://www.lumoscale.com/lumoscale-og.jpg" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Receptionist - Never Lose a Lead to Voicemail Again | Lumoscale" />
+        <meta name="twitter:description" content="Your phone rings 24/7. Lumoscale's AI Receptionist answers in your voice, qualifies callers, and books appointments. Custom-built. Always on." />
+        <meta name="twitter:image" content="https://www.lumoscale.com/lumoscale-og.jpg" />
       </Helmet>
       
       <Header />
