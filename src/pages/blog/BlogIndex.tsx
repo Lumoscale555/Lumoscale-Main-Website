@@ -53,17 +53,17 @@ const BlogIndex = () => {
                     asChild
                     className="group text-zinc-400 hover:text-white hover:bg-white/5 rounded-full px-4"
                 >
-                    <a href="/#blog-preview">
-                        <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Blogs
-                    </a>
+                    <Link to="/">
+                        <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
+                    </Link>
                 </Button>
             </motion.div>
 
             {/* Mobile Back Button */}
             <div className="lg:hidden absolute top-6 left-4 z-50">
-                <a href="/#blog-preview" className="p-2 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center">
+                <Link to="/" className="p-2 bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white flex items-center justify-center">
                     <ArrowLeft className="h-5 w-5" />
-                </a>
+                </Link>
             </div>
 
             {/* Background Gradients */}
