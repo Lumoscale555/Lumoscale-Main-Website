@@ -11,7 +11,7 @@ const FAQS = [
     },
     {
         question: "Is this safe? Will my accounts or phone lines get flagged?",
-        answer: "Completely safe. We follow all platform and telephony compliance guidelines. Thousands of conversations run daily without any issues.",
+        answer: "Completely safe. We are fully HIPAA compliant for healthcare and follow all telephony guidelines. Thousands of conversations run daily without any issues.",
         category: "Security"
     },
     {
@@ -26,7 +26,7 @@ const FAQS = [
     },
     {
         question: "How is this different from hiring a VA or receptionist?",
-        answer: "A VA costs $3K-5K/month, works 40 hours, handles one conversation at a time. Our AI works 24/7, handles unlimited conversations simultaneously, and costs a fraction.",
+        answer: "A VA (or Leasing Agent/Receptionist) costs $3K-5K/month, works 40 hours, handles one conversation at a time. Our AI works 24/7, handles unlimited conversations simultaneously, and costs a fraction.",
         category: "Comparison"
     },
     {

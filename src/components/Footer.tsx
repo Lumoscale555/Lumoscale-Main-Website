@@ -33,7 +33,7 @@ const Footer = () => {
               <div className="flex gap-4">
                 {[
                   { icon: FaLinkedinIn, link: "https://www.linkedin.com/company/lumoscale/" },
-                  { icon: FaInstagram, link: "https://www.instagram.com/lumoscale.ai/" },
+                  { icon: FaInstagram, link: "https://www.instagram.com/lumoscale/" },
                   { icon: FaFacebookF, link: "https://www.facebook.com/p/Lumoscale-61562068393631/" }
                 ].map((social, i) => (
                   <a

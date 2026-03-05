@@ -13,7 +13,7 @@ const features = [
   },
   {
     icon: Mic,
-    title: "Human Voice Clone",
+    title: "Real Estate & Healthcare Voice Cloning",
     description: "Indistinguishable from reality. Your tone, your style, perfectly replicated.",
     highlight: "Trust automation that sounds exactly like you.",
     number: "02"
@@ -27,7 +27,7 @@ const features = [
   },
   {
     icon: Globe,
-    title: "Multi-Lingual Support",
+    title: "Multi-Lingual AI Receptionist",
     description: "Fluent in multiple languages. Expand globally without barriers.",
     highlight: "Sell to the world without hiring translators.",
     number: "04"
@@ -78,7 +78,7 @@ export default function Solution() {
           </div>
 
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white tracking-tight leading-tight">
-            Features You Will <br className="hidden md:block" />
+            AI Features You Will <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">
               Never Regret
             </span>
