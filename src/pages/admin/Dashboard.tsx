@@ -53,7 +53,7 @@ const Dashboard = () => {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        window.location.href = '/admin/login';
+        window.location.href = '/login';
     };
 
     return (
@@ -76,7 +76,7 @@ const Dashboard = () => {
                             <LogOut className="mr-2 h-4 w-4" /> Logout
                         </Button>
                         <Button asChild className="bg-blue-600 hover:bg-blue-500 text-white border-none rounded-full px-6">
-                            <Link to="/admin/new">
+                            <Link to="/admin/editor">
                                 <PlusCircle className="mr-2 h-4 w-4" />
                                 Create New Post
                             </Link>
@@ -96,7 +96,7 @@ const Dashboard = () => {
                             <div className="p-20 text-center text-zinc-500 space-y-4">
                                 <p>No posts found.</p>
                                 <Button variant="outline" asChild className="border-white/10 text-white hover:bg-white/5">
-                                    <Link to="/admin/new">Create your first post</Link>
+                                    <Link to="/admin/editor">Create your first post</Link>
                                 </Button>
                             </div>
                         ) : (
@@ -131,7 +131,7 @@ const Dashboard = () => {
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
                                                     <Button variant="ghost" size="icon" asChild className="hover:bg-blue-500/20 hover:text-blue-400 text-zinc-400">
-                                                        <Link to={`/admin/edit/${post.id}`}>
+                                                        <Link to={`/admin/editor/${post.id}`}>
                                                             <Pencil className="h-4 w-4" />
                                                         </Link>
                                                     </Button>

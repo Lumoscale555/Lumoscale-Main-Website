@@ -31,6 +31,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/admin/login" element={<Navigate to="/login" replace />} />
               <Route path="/admin" element={<ProtectedRoute />}>
                 <Route index element={<Dashboard />} />
                 <Route path="editor" element={<Editor />} />
