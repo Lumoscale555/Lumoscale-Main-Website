@@ -42,6 +42,11 @@ async function generateSitemap() {
         '/login',
         '/blog',
         '/privacy-policy',
+        '/pricing',
+        '/ai-receptionist',
+        '/ai-voice-sdr',
+        '/ai-text-agents',
+        '/demo',
     ];
 
     let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
