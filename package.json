@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "generate-sitemap": "node scripts/generate-sitemap.js",
-    "prebuild": "npm run generate-sitemap"
+    "prebuild": "npm run generate-sitemap",
+    "push:choose": "node scripts/git-push.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
