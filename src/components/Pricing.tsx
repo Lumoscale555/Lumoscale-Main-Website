@@ -126,7 +126,7 @@ export default function Pricing() {
           >
             <Sparkles className="w-4 h-4 text-blue-400" />
             <span className="text-xs font-bold uppercase tracking-widest text-white/80">
-              Future-Proof Pricing
+              Simple, Transparent Pricing
             </span>
           </motion.div>
 
@@ -137,7 +137,7 @@ export default function Pricing() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight"
           >
-            Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">Growth System</span>
+            Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">AI Team</span>
           </motion.h2>
 
           <motion.p
@@ -147,7 +147,7 @@ export default function Pricing() {
             transition={{ delay: 0.2 }}
             className="text-zinc-400 text-lg max-w-2xl mx-auto mb-10"
           >
-            Select the perfect AI team to handle every call and message, 24/7.
+            Pick the system your business needs most. Stack them as you scale.
           </motion.p>
         </div>
 
@@ -171,7 +171,7 @@ export default function Pricing() {
 
               {/* Heading */}
               <h3 className="text-3xl font-bold text-white mb-3">
-                Your Complete AI Team
+                One Team. Every Channel.
               </h3>
               
               {/* Bullet List */}
@@ -186,7 +186,7 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-3 text-zinc-300">
                   <Check className="w-5 h-5 text-purple-400 shrink-0" />
-                  <span>AI Text Agents</span>
+                  <span>AI DM Agents</span>
                 </li>
               </ul>
 
@@ -195,13 +195,13 @@ export default function Pricing() {
                 onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
                 className="group/btn inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-xl font-bold text-base uppercase tracking-wide hover:bg-zinc-100 transition-all hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_50px_rgba(255,255,255,0.4)]"
               >
-                Book a Call
+                Get a Free Strategy Call
                 <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
               </button>
 
               {/* Small text */}
               <p className="text-sm text-zinc-500 mt-6">
-                Custom pricing based on your needs
+                Pricing is tailored to your business size and goals.
               </p>
             </div>
           </div>
@@ -221,7 +221,7 @@ export default function Pricing() {
                     <span className="font-semibold text-white">Note:</span> You still need your team. They handle showings, meetings, and in-person interactions. AI doesn't replace them. It picks up the calls and messages when everyone's busy or unavailable. It works around the clock so interested leads get instant responses instead of going to your competitors.
                 </p>
                 <p className="text-white font-medium text-base italic">
-                    "Your team isn't the problem. Missing leads while they're helping other clients is."
+                    "The leads are there. The problem is no one's picking up."
                 </p>
             </div>
         </motion.div>
@@ -237,7 +237,7 @@ export default function Pricing() {
             >
                 <div className="inline-block mb-4">
                   <span className="py-2 px-4 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-md border border-blue-500/20 shadow-[0_0_30px_rgba(59,130,246,0.2)] text-blue-200 text-xs font-bold tracking-widest uppercase">
-                    Premium Add-ons
+                    Power-Ups
                   </span>
                 </div>
                 <motion.h3
@@ -247,10 +247,10 @@ export default function Pricing() {
                     transition={{ delay: 0.2, duration: 0.5 }}
                     className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.1]"
                 >
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-purple-400">Custom Solutions</span>
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-purple-400">Built Around You</span>
                 </motion.h3>
                 <p className="mt-4 text-zinc-400 text-lg max-w-2xl mx-auto">
-                  Go beyond standard AI agents with fully customized solutions
+                  Need something more specific? We build it from scratch.
                 </p>
             </motion.div>
 
@@ -267,9 +267,9 @@ export default function Pricing() {
                         <Zap className="w-5 h-5 text-blue-400" />
                     </div>
                     <div>
-                        <h4 className="text-white font-bold text-lg mb-1">Custom AI Agents</h4>
+                        <h4 className="text-white font-bold text-lg mb-1">Industry-Specific AI Agents</h4>
                         <p className="text-zinc-400 text-sm leading-snug">
-                            Specialized agents trained on your unique data and SOPs.
+                            Trained on your exact SOPs, scripts, and customer types.
                         </p>
                     </div>
                 </motion.div>
@@ -286,9 +286,9 @@ export default function Pricing() {
                         <Sparkles className="w-5 h-5 text-purple-400" />
                     </div>
                     <div>
-                        <h4 className="text-white font-bold text-lg mb-1">Custom Workflows</h4>
+                        <h4 className="text-white font-bold text-lg mb-1">Full Automation Builds</h4>
                         <p className="text-zinc-400 text-sm leading-snug">
-                            End-to-end automation for your specific business logic.
+                            We map and automate your entire lead-to-booking pipeline.
                         </p>
                     </div>
                 </motion.div>

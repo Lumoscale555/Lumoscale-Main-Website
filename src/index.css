@@ -11,9 +11,23 @@
   }
 }
 
+/* Extra zoom for specific sections (on top of global html zoom: 1.12) */
+#beforeafter,
+#faq,
+#footer,
+#services {
+  zoom: 1.05;
+}
+
+
 /* LUMOSCALE AI - Premium Futuristic Design System */
 
 @layer base {
+  html {
+    zoom: 1.08; /* 8% global zoom — scales all sections uniformly */
+    overflow-x: hidden;
+  }
+
   :root {
     /* Core Brand Colors - Cyan to Lime Gradient */
     --background: 0 0% 0%;
@@ -149,6 +163,10 @@
 @layer base {
   * {
     @apply border-border;
+  }
+
+  html, body {
+    @apply overflow-x-hidden;
   }
 
   body {

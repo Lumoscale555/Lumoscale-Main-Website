@@ -6,8 +6,8 @@ const steps = [
   {
     icon: Phone,
     step: "01",
-    title: "Book a Call",
-    description: "Schedule a 30-minute discovery call to discuss your patient or buyer flow challenges and goals.",
+    title: "Strategy Call",
+    description: "Tell us how your leads come in, what slips through the cracks, and what you need fixed.",
     gradient: "from-blue-500/10 to-cyan-500/5",
     iconColor: "text-blue-400",
     accentColor: "bg-blue-400",
@@ -15,8 +15,8 @@ const steps = [
   {
     icon: Target,
     step: "02",
-    title: "Custom Setup",
-    description: "We build your AI receptionist or SDR with your brand voice, scripts, and CRM integrations.",
+    title: "We Build It For You",
+    description: "We custom-build the agent around your exact scripts, services, and booking flow. No templates.",
     gradient: "from-purple-500/10 to-pink-500/5",
     iconColor: "text-purple-400",
     accentColor: "bg-purple-400",
@@ -24,8 +24,8 @@ const steps = [
   {
     icon: Bot,
     step: "03",
-    title: "Test & Refine",
-    description: "We run test calls and messages to ensure your AI agent handles every scenario perfectly.",
+    title: "Live Testing",
+    description: "We run real test calls and DMs until every response is exactly right for your business.",
     gradient: "from-emerald-500/10 to-green-500/5",
     iconColor: "text-emerald-400",
     accentColor: "bg-emerald-400",
@@ -33,8 +33,8 @@ const steps = [
   {
     icon: Rocket,
     step: "04",
-    title: "Go Live",
-    description: "Your AI team starts answering calls and messages 24/7 while we monitor and optimize performance.",
+    title: "You Start Winning",
+    description: "Your AI front desk goes live, answering every call and DM 24/7 - while we keep optimizing weekly.",
     gradient: "from-orange-500/10 to-red-500/5",
     iconColor: "text-orange-400",
     accentColor: "bg-orange-400",
@@ -57,7 +57,7 @@ const Process = () => {
             transition={{ duration: 0.4 }}
           >
             <span className="py-2 px-4 rounded-full bg-white/5 border border-white/10 text-sm text-zinc-400 font-medium">
-              How It Works
+              From Signup to Revenue
             </span>
           </motion.div>
 
@@ -69,7 +69,7 @@ const Process = () => {
             className="mt-6 text-4xl md:text-5xl font-bold text-white"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">
-              Get Started in Days, Not Months
+              Up and Running in Under 2 Weeks.
             </span>
           </motion.h2>
 
@@ -80,7 +80,7 @@ const Process = () => {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="mt-4 text-lg text-zinc-400"
           >
-            From first call to fully operational AI front desk in under 2 weeks.
+            We handle the entire setup. You just show up for the kickoff call.
           </motion.p>
         </div>
 

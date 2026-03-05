@@ -58,7 +58,7 @@ const Index = () => {
   }, [targetId]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <Helmet>
         <title>Lumoscale | AI Agents for Real Estate & Healthcare</title>
         <meta name="description" content="AI Receptionist answers calls 24/7, AI Voice SDR follows up with leads instantly, and AI Text Agents handle social media messages. Complete automation for Real Estate & Healthcare businesses." />

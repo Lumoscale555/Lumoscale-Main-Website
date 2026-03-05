@@ -131,22 +131,22 @@ export default function FAQ() {
             </div>
 
             <div className="container mx-auto px-6 max-w-7xl relative z-10">
-                <div className="flex flex-col lg:flex-row gap-16 items-start">
+                <div className="flex flex-col gap-12">
 
-                    {/* Sticky Header Side */}
-                    <div className="lg:sticky lg:top-32 lg:w-1/3">
+                    {/* Header */}
+                    <div className="w-full">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                         >
                             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-6">
-                                Everything you <br />
+                                Everything you <br className="hidden md:block"/>
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">
                                     need to know.
                                 </span>
                             </h2>
-                            <p className="text-zinc-400 text-lg mb-8 leading-relaxed">
+                            <p className="text-zinc-400 text-lg mb-8 leading-relaxed max-w-xl">
                                 No hidden details. Just clear answers to help you decide.
                             </p>
 
@@ -158,9 +158,9 @@ export default function FAQ() {
                         </motion.div>
                     </div>
 
-                    {/* FAQ Grid Side */}
-                    <div className="lg:w-2/3 w-full">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* FAQ Grid */}
+                    <div className="w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {FAQS.map((faq, index) => (
                                 <FAQItem
                                     key={index}

@@ -46,18 +46,18 @@ const BeforeAfter = () => {
                 <TrendingDown className="w-6 h-6 text-red-500" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">BEFORE <span className="text-lg text-zinc-500 font-medium">— Other Solutions</span></h3>
-                <p className="text-sm text-red-400 font-medium mt-1">Generic Automation Models</p>
+                <h3 className="text-xl font-bold text-white">BEFORE <span className="text-lg text-zinc-500 font-medium">- Other Solutions</span></h3>
+                <p className="text-sm text-red-400 font-medium mt-1">Generic Chatbots & Voicemail</p>
               </div>
             </div>
 
             <div className="space-y-6 flex-1 relative z-10">
               {[
-                { label: "Missed Calls, Lost Revenue", val: "Unanswered calls during busy hours go straight to your competitor." },
-                { label: "Built on Templates", val: "Same generic script used for every business, every industry." },
-                { label: "Slow Follow-Up", val: "Leads go cold before your team even sees the missed call." },
-                { label: "Zero Accountability", val: "No support once the system is live and breaking." },
-                { label: "Short Life Cycle", val: "Systems typically fall apart within the first few weeks." },
+                { label: "Calls Going to Voicemail", val: "Unanswered calls during busy hours go straight to your competitor." },
+                { label: "Generic Call Flows", val: "Same robotic flow for everyone. No customization for your services." },
+                { label: "Hours-Late Follow-Up", val: "By the time a human calls back, the lead has already booked elsewhere." },
+                { label: "Set It and Forget It", val: "Zero ongoing support or optimization after setup." },
+                { label: "Falls Apart in Weeks", val: "Most automations break within the first month. No one fixes them." },
               ].map((item, i) => (
                 <div key={i} className="border-b border-white/5 pb-4 last:border-0">
                   <span className="text-xs text-zinc-500 uppercase tracking-wider font-semibold block mb-1">{item.label}</span>
@@ -91,18 +91,18 @@ const BeforeAfter = () => {
                 <TrendingUp className="w-6 h-6 text-emerald-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">AFTER <span className="text-lg text-zinc-500 font-medium">— Lumoscale Voice Engine</span></h3>
-                <p className="text-sm text-emerald-400 font-medium mt-1">Self-Learning Front Desk System</p>
+                <h3 className="text-xl font-bold text-white">AFTER <span className="text-lg text-zinc-500 font-medium">- Lumoscale Voice Engine</span></h3>
+                <p className="text-sm text-emerald-400 font-medium mt-1">Your Always-On AI Front Desk</p>
               </div>
             </div>
 
             <div className="space-y-6 flex-1 relative z-10">
               {[
-                { label: "Every Call Answered", val: "Instant pickup 24/7, no lead left behind." },
-                { label: "Built Around Your Business", val: "Custom trained on your services, pricing, and booking flow." },
-                { label: "60-Second Response", val: "Every lead heard from immediately, every single time." },
-                { label: "Full Ownership", val: "24/7 dedicated support with complete accountability." },
-                { label: "Gets Smarter Over Time", val: "Continuously trained on real call data from your business." },
+                { label: "Every Call Answered", val: "24/7 pickup. No lead goes to voicemail ever again." },
+                { label: "Built for Your Exact Business", val: "Custom-trained on your services, pricing, objections, and booking flow." },
+                { label: "60-Second Response", val: "Every inbound lead hears from you within 60 seconds, day or night." },
+                { label: "We Own the Results", val: "Dedicated support with weekly reviews and continuous optimization." },
+                { label: "Gets Smarter Every Week", val: "Trained on real call recordings from your business - always improving." },
               ].map((item, i) => (
                 <div key={i} className="border-b border-emerald-500/10 pb-4 last:border-0">
                   <span className="text-xs text-emerald-500/60 uppercase tracking-wider font-semibold block mb-1">{item.label}</span>

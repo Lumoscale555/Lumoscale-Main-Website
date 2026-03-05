@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, Phone, X, Send, Mic, Minimize2, User, Bot, ArrowRight } from "lucide-react";
+import { RetellWebClient } from "retell-client-js-sdk";
+
+const retellWebClient = new RetellWebClient();
 
 type Tab = 'chat' | 'call';
 
@@ -18,8 +21,89 @@ export default function ChatWidget() {
     
     // Call State
     const [isCallActive, setIsCallActive] = useState(false);
+    const [isAgentTalking, setIsAgentTalking] = useState(false);
+    const [isInitializing, setIsInitializing] = useState(false);
+    const [callDuration, setCallDuration] = useState(150);
+    const [dailyCalls, setDailyCalls] = useState(0);
+    const MAX_DAILY_CALLS = 2;
     
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const fetchDailyCalls = () => {
+        try {
+            const stored = localStorage.getItem('lumoscale_voice_calls');
+            if (stored) {
+                const data = JSON.parse(stored);
+                const today = new Date().toDateString();
+                if (data.date === today) {
+                    setDailyCalls(data.count);
+                } else {
+                    localStorage.setItem('lumoscale_voice_calls', JSON.stringify({ date: today, count: 0 }));
+                    setDailyCalls(0);
+                }
+            } else {
+                localStorage.setItem('lumoscale_voice_calls', JSON.stringify({ date: new Date().toDateString(), count: 0 }));
+            }
+        } catch (e) {
+            console.error("Local storage error", e);
+        }
+    };
+
+    // Initialize daily calls from local storage
+    useEffect(() => {
+        fetchDailyCalls();
+        window.addEventListener('storage', fetchDailyCalls);
+        window.addEventListener('lumoscale_voice_calls_updated', fetchDailyCalls);
+        return () => {
+            window.removeEventListener('storage', fetchDailyCalls);
+            window.removeEventListener('lumoscale_voice_calls_updated', fetchDailyCalls);
+        };
+    }, []);
+
+    // Setup Retell Event Listeners
+    useEffect(() => {
+        retellWebClient.on("call_started", () => {
+            setIsCallActive(true);
+            setIsInitializing(false);
+        });
+
+        retellWebClient.on("call_ended", () => {
+            setIsCallActive(false);
+            setIsAgentTalking(false);
+            setIsInitializing(false);
+        });
+
+        retellWebClient.on("agent_start_talking", () => setIsAgentTalking(true));
+        retellWebClient.on("agent_stop_talking", () => setIsAgentTalking(false));
+
+        retellWebClient.on("error", (error) => {
+            console.error("Retell Error:", error);
+            setIsCallActive(false);
+            setIsInitializing(false);
+        });
+
+        // Cleanup
+        return () => {
+            retellWebClient.removeAllListeners();
+            retellWebClient.stopCall();
+        };
+    }, []);
+
+    // Countdown timer for UI (starts at 2:30, counts down to 0:00)
+    useEffect(() => {
+        if (!isCallActive) {
+            setCallDuration(150);
+            return;
+        }
+        setCallDuration(150);
+        const timerInterval = setInterval(() => {
+            setCallDuration(prev => {
+                if (prev <= 1) { clearInterval(timerInterval); return 0; }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => clearInterval(timerInterval);
+    }, [isCallActive]);
 
     // Auto-hide the label after 3 seconds on page load
     useEffect(() => {
@@ -77,8 +161,47 @@ export default function ChatWidget() {
         }
     };
 
-    const toggleCall = () => {
-        setIsCallActive(!isCallActive);
+    const handleStartCall = async () => {
+        if (dailyCalls >= MAX_DAILY_CALLS) {
+            alert(`You have reached the daily limit of ${MAX_DAILY_CALLS} demo calls. Please try again tomorrow!`);
+            return;
+        }
+
+        setIsInitializing(true);
+        try {
+            const YOUR_N8N_WEBHOOK_URL = "https://n8n.srv1011051.hstgr.cloud/webhook/8a593fb4-49b5-4301-8ad2-e64a1ec98f48"; 
+            const response = await fetch(YOUR_N8N_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            });
+            
+            if (!response.ok) throw new Error("Failed to fetch access token from webhook");
+            const data = await response.json();
+            const accessToken = data.access_token || data.accessToken || data.token; 
+            
+            if (!accessToken) throw new Error("No access token found in webhook response");
+
+            try {
+                const newCount = dailyCalls + 1;
+                localStorage.setItem('lumoscale_voice_calls', JSON.stringify({ 
+                    date: new Date().toDateString(), 
+                    count: newCount 
+                }));
+                setDailyCalls(newCount);
+                window.dispatchEvent(new Event('lumoscale_voice_calls_updated'));
+            } catch(e) { console.error(e) }
+
+            await retellWebClient.startCall({ accessToken });
+        } catch (error) {
+            console.error("Failed to start Retell call:", error);
+            setIsInitializing(false);
+            alert("Failed to start the call. Check the console for more details.");
+        }
+    };
+
+    const handleEndCall = () => {
+        retellWebClient.stopCall();
+        setIsCallActive(false);
     };
 
     return (
@@ -259,77 +382,211 @@ export default function ChatWidget() {
                                         initial={{ opacity: 0, x: 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: 20 }}
-                                        className="h-full flex flex-col items-center justify-center p-6 text-center"
+                                        className="h-full flex flex-col relative overflow-hidden bg-black font-sans"
                                     >
-                                        <div className="relative mb-8">
-                                            {/* Ripple Animation */}
-                                            {isCallActive && (
-                                                <>
-                                                    <div className="absolute inset-0 rounded-full bg-blue-500/20 animate-ping" />
-                                                    <div className="absolute -inset-4 rounded-full bg-blue-500/10 animate-pulse delay-75" />
-                                                </>
-                                            )}
+                                        {/* Exact Voice Agent Ethereal UI adapted for widget */}
+                                        <div className="absolute inset-0 bg-black pointer-events-none -z-10" />
 
-                                            <div className="w-24 h-24 rounded-full bg-black border border-blue-500/20 flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(59,130,246,0.1)]">
-                                                <Bot className="w-10 h-10 text-blue-400" />
+                                        {/* Premium Countdown Timer (Only visible when active) */}
+                                        <div className="h-[60px] flex items-end justify-center pb-4 mt-2">
+                                            <AnimatePresence>
+                                                {isCallActive && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.9 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        exit={{ opacity: 0, scale: 0.9 }}
+                                                        className="text-center flex flex-col items-center"
+                                                    >
+                                                        <div className="px-4 py-1.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center gap-2">
+                                                            <div className="flex gap-1">
+                                                                <motion.div
+                                                                    animate={{ opacity: [1, 0.3, 1] }}
+                                                                    transition={{ duration: 2, repeat: Infinity }}
+                                                                    className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                                                                />
+                                                            </div>
+                                                            <span className="text-xl font-mono tracking-widest text-white/90">
+                                                                {Math.floor(callDuration / 60).toString().padStart(2, '0')}:{ (callDuration % 60).toString().padStart(2, '0') }
+                                                            </span>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                        
+                                        {/* The "AI Core" 3D Gyroscope Visualizer */}
+                                        <div className="flex-1 flex flex-col items-center justify-center relative z-10 w-full">
+                                            <div className="relative z-20 flex items-center justify-center w-[160px] h-[160px]" style={{ perspective: '800px' }}>
+                                                <AnimatePresence>
+                                                    {/* Outer Ring */}
+                                                    <motion.div
+                                                        animate={isCallActive ? {
+                                                            rotateX: [0, 360],
+                                                            rotateY: [0, 180],
+                                                            rotateZ: [0, 360],
+                                                            scale: isAgentTalking ? 1.1 : 1
+                                                        } : { rotateX: 60, rotateY: 20, rotateZ: 45, scale: 0.9 }}
+                                                        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                                                        className={`absolute w-[140px] h-[140px] rounded-full border border-white/5 shadow-[0_0_30px_rgba(255,255,255,0.02)]`}
+                                                        style={{ transformStyle: 'preserve-3d' }}
+                                                    />
+                                                    
+                                                    {/* Middle Ring */}
+                                                    <motion.div
+                                                        animate={isCallActive ? {
+                                                            rotateX: [360, 0],
+                                                            rotateY: [180, 0],
+                                                            rotateZ: [360, 0],
+                                                            scale: isAgentTalking ? 1.2 : 1,
+                                                            borderColor: isAgentTalking ? 'rgba(52,211,153,0.3)' : 'rgba(56,189,248,0.2)'
+                                                        } : { rotateX: -40, rotateY: -30, rotateZ: -60, scale: 0.8 }}
+                                                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                                        className="absolute w-[100px] h-[100px] rounded-full border border-white/10 backdrop-blur-[1px]"
+                                                        style={{ transformStyle: 'preserve-3d' }}
+                                                    />
+
+                                                    {/* Inner Core Orb */}
+                                                    <motion.div
+                                                        animate={isCallActive ? {
+                                                            scale: isAgentTalking ? [1, 1.2, 1] : [1, 1.05, 1],
+                                                            boxShadow: isAgentTalking 
+                                                                ? '0 0 40px rgba(52,211,153,0.6), inset 0 0 20px rgba(52,211,153,0.5)' 
+                                                                : '0 0 30px rgba(56,189,248,0.3), inset 0 0 10px rgba(56,189,248,0.2)',
+                                                            background: isAgentTalking 
+                                                                ? 'rgba(16,185,129,0.1)' 
+                                                                : 'rgba(14,165,233,0.05)'
+                                                        } : { scale: 1, boxShadow: '0 0 20px rgba(255,255,255,0.05)', background: 'transparent' }}
+                                                        transition={{ duration: isAgentTalking ? 0.3 : 2, repeat: Infinity, ease: "easeInOut" }}
+                                                        className="absolute w-[60px] h-[60px] rounded-full flex items-center justify-center border border-white/20 backdrop-blur-md"
+                                                    >
+                                                        {!isCallActive ? (
+                                                            <Mic className="w-4 h-4 text-white/50" strokeWidth={1} />
+                                                        ) : (
+                                                            <div className="flex gap-1 items-center justify-center h-full">
+                                                                {[1, 2, 3].map((i) => (
+                                                                    <motion.div
+                                                                        key={i}
+                                                                        animate={{
+                                                                            height: isAgentTalking ? [3, 12 + Math.random() * 6, 3] : 3,
+                                                                            opacity: isAgentTalking ? 1 : 0.6,
+                                                                            backgroundColor: isAgentTalking ? '#a7f3d0' : '#bae6fd' 
+                                                                        }}
+                                                                        transition={{ duration: 0.2 + (i * 0.1), repeat: Infinity, repeatType: 'reverse' }}
+                                                                        className="w-1 rounded-full"
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </motion.div>
+                                                </AnimatePresence>
                                             </div>
 
-                                            {isCallActive && (
-                                                <div className="absolute bottom-0 right-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center border-4 border-[#09090b] z-20">
-                                                    <Mic className="w-4 h-4 text-white animate-pulse" />
-                                                </div>
-                                            )}
+                                            {/* Cinematic Typography */}
+                                            <div className="text-center z-20 relative w-full px-4 mt-6">
+                                                <AnimatePresence mode="wait">
+                                                    <motion.h2 
+                                                        key={isCallActive ? (isAgentTalking ? 'analyzing' : 'awaiting') : 'initiate'}
+                                                        initial={{ opacity: 0, letterSpacing: '0.05em' }}
+                                                        animate={{ opacity: 1, letterSpacing: '0.15em' }}
+                                                        exit={{ opacity: 0, letterSpacing: '0.2em' }}
+                                                        transition={{ duration: 0.6, ease: "easeOut" }}
+                                                        className="text-[13px] font-bold text-white mb-1 uppercase"
+                                                    >
+                                                        {!isCallActive ? "Awaiting Initiation" : (isAgentTalking ? "Analyzing Input" : "Listening")}
+                                                    </motion.h2>
+                                                </AnimatePresence>
+                                                
+                                                {/* Subtitle / Transcript Peek */}
+                                                <motion.div 
+                                                    className="h-6 flex items-center justify-center overflow-hidden"
+                                                    animate={{ opacity: isCallActive ? 1 : 0.8 }}
+                                                >
+                                                    <p className="text-[11px] text-zinc-400 font-medium tracking-wide">
+                                                        {!isCallActive ? "Establish Neural Link" : (isAgentTalking ? "Agent dictates..." : "Signal received...")}
+                                                    </p>
+                                                </motion.div>
+                                            </div>
                                         </div>
 
-                                        <h3 className="text-lg font-semibold text-white mb-2">
-                                            {isCallActive ? "Talking with AI..." : "Start Voice Call"}
-                                        </h3>
-                                        <p className="text-xs text-zinc-400 max-w-[240px] mx-auto mb-8 leading-relaxed">
-                                            {isCallActive
-                                                ? "Ask about our services, pricing, or technical details."
-                                                : "Experience our ultra-low latency voice AI agent."
-                                            }
-                                        </p>
-
-                                        {isCallActive ? (
-                                            <div className="w-full space-y-6">
-                                                {/* Waveform Visualization */}
-                                                <div className="flex items-center justify-center gap-1 h-8">
-                                                    {[...Array(6)].map((_, i) => (
-                                                        <motion.div
-                                                            key={i}
-                                                            animate={{
-                                                                height: [8, 24, 8],
-                                                                opacity: [0.3, 1, 0.3]
-                                                            }}
-                                                            transition={{
-                                                                duration: 0.8,
-                                                                repeat: Infinity,
-                                                                delay: i * 0.1,
-                                                                ease: "easeInOut"
-                                                            }}
-                                                            className="w-1 bg-blue-400 rounded-full"
-                                                        />
-                                                    ))}
-                                                </div>
-
-                                                <button
-                                                    onClick={toggleCall}
-                                                    className="w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl font-medium flex items-center justify-center gap-2 transition-all text-sm"
-                                                >
-                                                    <Phone className="w-4 h-4 fill-current" />
-                                                    End Call
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <button
-                                                onClick={toggleCall}
-                                                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/20 text-sm"
-                                            >
-                                                <Phone className="w-4 h-4 fill-current" />
-                                                Start Call
-                                            </button>
-                                        )}
+                                        {/* Bottom Action Area */}
+                                        <div className="w-full px-6 pb-6 mt-auto relative z-20 flex justify-center">
+                                            <AnimatePresence mode="wait">
+                                                {!isCallActive ? (
+                                                    <motion.div 
+                                                        key="start-btn"
+                                                        initial={{ opacity: 0, y: 20 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                                                        className="w-full flex flex-col gap-4 items-center"
+                                                    >
+                                                        <div className="flex items-center gap-2 opacity-80">
+                                                            <div className="w-3 h-3 rounded-full border border-white/50 flex items-center justify-center">
+                                                                <div className="w-1 h-1 bg-white rounded-full" />
+                                                            </div>
+                                                            <span className="text-[9px] font-semibold text-zinc-300 uppercase tracking-widest">Mic Permission Auth</span>
+                                                        </div>
+                                                        <button
+                                                            onClick={handleStartCall}
+                                                            disabled={isInitializing || dailyCalls >= MAX_DAILY_CALLS}
+                                                            className={`relative w-full group overflow-hidden ${
+                                                                dailyCalls >= MAX_DAILY_CALLS 
+                                                                ? 'bg-zinc-800 border border-zinc-700 cursor-not-allowed opacity-70' 
+                                                                : 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 border border-emerald-400/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                                                            } transition-all duration-500 py-3 rounded-full flex items-center justify-center gap-2`}
+                                                        >
+                                                            {dailyCalls >= MAX_DAILY_CALLS ? (
+                                                                <div className="w-2 h-2 rounded-full bg-zinc-500" />
+                                                            ) : isInitializing ? (
+                                                                <div className="w-3 h-3 rounded-full border-t-2 border-white animate-spin" />
+                                                            ) : (
+                                                                <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_10px_white]" />
+                                                            )}
+                                                            <span className={`font-bold text-[11px] tracking-[0.1em] ${dailyCalls >= MAX_DAILY_CALLS ? 'text-zinc-400' : 'text-white'}`}>
+                                                                {dailyCalls >= MAX_DAILY_CALLS ? "LIMIT REACHED" : isInitializing ? "CONNECTING..." : "TALK TO AI"}
+                                                            </span>
+                                                            {dailyCalls < MAX_DAILY_CALLS && (
+                                                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                                                            )}
+                                                        </button>
+                                                        
+                                                        {dailyCalls > 0 && dailyCalls < MAX_DAILY_CALLS && (
+                                                            <p className="text-[9px] text-zinc-500 font-mono absolute -bottom-5">
+                                                                {MAX_DAILY_CALLS - dailyCalls} calls remaining today
+                                                            </p>
+                                                        )}
+                                                    </motion.div>
+                                                ) : (
+                                                    <motion.div
+                                                        key="end-btn"
+                                                        initial={{ opacity: 0, scale: 0.8 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        exit={{ opacity: 0, scale: 0.8 }}
+                                                        className="w-full flex flex-col gap-4 items-center"
+                                                    >
+                                                        <div className="flex items-center gap-2 opacity-80">
+                                                            <div className="w-3 h-3 rounded-full border border-red-500/50 flex items-center justify-center">
+                                                                <motion.div
+                                                                    animate={{ opacity: [1, 0.5, 1] }}
+                                                                    transition={{ duration: 1.5, repeat: Infinity }}
+                                                                    className="w-1 h-1 bg-red-500 rounded-full"
+                                                                />
+                                                            </div>
+                                                            <span className="text-[9px] font-semibold text-red-400 uppercase tracking-widest">Active Link</span>
+                                                        </div>
+                                                        <button
+                                                            onClick={handleEndCall}
+                                                            className="relative w-full group overflow-hidden bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 border border-red-400/50 transition-all duration-500 py-3 rounded-full flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(239,68,68,0.2)] hover:shadow-[0_0_30px_rgba(239,68,68,0.4)]"
+                                                        >
+                                                            <div className="w-2.5 h-2.5 rounded-sm bg-white shadow-[0_0_10px_white]" />
+                                                            <span className="font-bold text-[11px] tracking-[0.1em] text-white">
+                                                                END CALL
+                                                            </span>
+                                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                                                        </button>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
