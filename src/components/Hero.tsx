@@ -226,7 +226,7 @@ const Hero = () => {
             <div className="relative w-full pt-[56.25%]">
               <video
                 className="absolute inset-0 w-full h-full object-cover rounded-2xl"
-                src="/Demo1.mp4"
+                src="/Demo.mp4"
                 controls
                 autoPlay
                 muted
