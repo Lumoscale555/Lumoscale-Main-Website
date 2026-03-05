@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { ArrowRight, TrendingDown, TrendingUp } from "lucide-react";
+import { useIsMobile } from "../hooks/use-mobile";
 
 const BeforeAfter = () => {
+  const isMobile = useIsMobile();
   return (
     <section id="beforeafter" className="py-28 relative overflow-hidden">
       {/* Premium Background */}
@@ -38,13 +40,19 @@ const BeforeAfter = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={!isMobile ? "hover" : undefined}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
             className="group"
           >
             <div className="relative h-full rounded-3xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/[0.08] backdrop-blur-xl p-8 overflow-hidden">
               {/* Gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <motion.div
+                variants={{ hover: { opacity: 1 } }}
+                whileInView={isMobile ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0"
+              />
 
               {/* Header */}
               <div className="relative flex items-center justify-between mb-8">
@@ -94,13 +102,19 @@ const BeforeAfter = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={!isMobile ? "hover" : undefined}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="group"
           >
             <div className="relative h-full rounded-3xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/[0.08] backdrop-blur-xl p-8 overflow-hidden">
               {/* Gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <motion.div
+                variants={{ hover: { opacity: 1 } }}
+                whileInView={isMobile ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0"
+              />
 
               {/* Glow effect */}
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-emerald-500/20 blur-[80px] rounded-full" />

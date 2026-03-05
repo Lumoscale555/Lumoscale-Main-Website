@@ -485,31 +485,127 @@ export default function FinalCTA() {
                   </motion.div>
                 ) : (
                   <motion.div
-                    className="p-16 text-center flex flex-col items-center justify-center h-full"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    className="relative p-8 md:p-12 text-center flex flex-col items-center justify-center h-full max-w-lg mx-auto overflow-hidden"
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                    }}
                   >
-                    <div className="w-20 h-20 bg-gradient-to-tr from-cyan-400 to-green-400 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-cyan-500/20">
-                      <Check className="w-10 h-10 text-black stroke-[3px]" />
+                    {/* Background Glows */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-[400px] pointer-events-none">
+                      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-[100px] animate-pulse" />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-48 h-48 bg-emerald-500/10 rounded-full blur-[80px]" />
                     </div>
-                    <h3 className="text-3xl font-black text-white mb-4">
-                      Audit Request Sent
-                    </h3>
-                    <p className="text-zinc-400 text-lg leading-relaxed mb-10">
-                      Thank you,{" "}
-                      <span className="text-white font-bold">
-                        {form.name.split(" ")[0]}
-                      </span>
-                      . We are analyzing your current bottleneck. Expect a custom
-                      automation roadmap in your inbox within{" "}
-                      <span className="text-cyan-400 font-bold">24 hours</span>.
-                    </p>
-                    <button
-                      onClick={closeModal}
-                      className="px-10 py-3 rounded-full border border-white/10 text-zinc-500 hover:text-white hover:border-white transition-all text-[10px] font-black uppercase tracking-[0.3em]"
+
+                    {/* Animated Checkmark */}
+                    <motion.div
+                      variants={{ hidden: { scale: 0, opacity: 0 }, visible: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 200, damping: 15 } } }}
+                      className="relative w-24 h-24 mb-6 flex items-center justify-center"
                     >
-                      Close Portal
-                    </button>
+                      <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20 rounded-full blur-xl animate-pulse" />
+                      <div className="relative w-full h-full bg-gradient-to-tr from-cyan-500 to-emerald-500 rounded-full flex items-center justify-center shadow-2xl shadow-cyan-500/30 ring-1 ring-white/20">
+                        <motion.svg
+                          className="w-10 h-10 text-white drop-shadow-md"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <motion.path
+                            d="M20 6L9 17l-5-5"
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
+                          />
+                        </motion.svg>
+                      </div>
+                    </motion.div>
+
+                    <motion.h3
+                      variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                      className="text-2xl md:text-3xl font-black text-white mb-2 leading-tight relative z-10"
+                    >
+                      Audit Request <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">Received</span>
+                    </motion.h3>
+
+                    <motion.p
+                      variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+                      className="text-lg text-zinc-300 font-medium mb-8 relative z-10"
+                    >
+                      We're on it, <span className="text-white font-bold">{form.name.split(" ")[0]}</span>.
+                    </motion.p>
+
+                    {/* Status Card */}
+                    <motion.div
+                      variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1 } }}
+                      className="w-full text-left bg-white/[0.03] backdrop-blur-md rounded-2xl p-6 border border-white/10 mb-8 relative z-10 shadow-xl overflow-hidden group"
+                    >
+                      {/* Shimmer overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-full group-hover:animate-shine pointer-events-none" />
+
+                      <div className="space-y-6">
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+                            <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Active Analysis</p>
+                          </div>
+                          <p className="text-sm text-zinc-300 leading-relaxed">
+                            Our team is reviewing your <span className="text-white font-bold">{form.dmVolume}</span> weekly volume to identify exactly where you're losing revenue.
+                          </p>
+                        </div>
+
+                        <div className="h-px bg-white/5 w-full" />
+
+                        <div>
+                          <p className="text-sm text-zinc-400 mb-2">Next Step (24-48 Hours):</p>
+                          <div className="space-y-3">
+                            <div className="flex items-start gap-3">
+                              <Target className="w-4 h-4 text-emerald-400 mt-1 shrink-0" />
+                              <p className="text-sm text-white font-medium">
+                                You'll receive a calendar link at <span className="underline decoration-white/30 underline-offset-2">{form.email}</span> for your custom strategy reveal.
+                              </p>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                              <div className="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-0.5 text-[10px] text-zinc-400 font-bold">OR</div>
+                              <p className="text-sm text-zinc-300">
+                                You can also <span className="text-white font-bold">book your preferred time slot immediately</span> using the button below.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    {/* Footer Actions */}
+                    <motion.div
+                      variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                      className="flex flex-col-reverse md:flex-row gap-3 w-full relative z-10"
+                    >
+                      <button
+                        onClick={closeModal}
+                        className="px-6 py-4 rounded-xl border border-white/10 text-zinc-500 hover:text-white hover:bg-white/5 transition-all text-sm font-bold tracking-wide"
+                      >
+                        Close
+                      </button>
+                      <button
+                        onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
+                        className="group relative flex-1 overflow-hidden px-6 py-4 bg-white text-black rounded-xl font-bold text-sm uppercase tracking-wider hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-[0.98]"
+                      >
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                          Book Strategy Call Now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </span>
+
+                        {/* Button Shine */}
+                        <div className="absolute inset-0">
+                          <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -skew-x-12 -translate-x-full animate-[shine_3s_infinite]" />
+                        </div>
+                      </button>
+                    </motion.div>
                   </motion.div>
                 )}
               </AnimatePresence>

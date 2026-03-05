@@ -192,10 +192,10 @@ const Hero = () => {
                 variant="outline"
                 className="px-8 py-6 text-lg border-primary/50 hover:bg-white hover:text-cyan-600 hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300"
                 onClick={() =>
-                  document.getElementById("finalcta")?.scrollIntoView({ behavior: "smooth" })
+                  window.open("https://cal.com/lumoscale/30min", "_blank")
                 }
               >
-                Get Free System Audit
+                Book Free Strategy Call
               </Button>
             </div>
           </div>

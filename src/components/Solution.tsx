@@ -1,4 +1,6 @@
 import { Zap, Target, RefreshCw, Brain, Smartphone, BarChart3, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { useIsMobile } from "../hooks/use-mobile";
 
 const features = [
   {
@@ -46,6 +48,7 @@ const features = [
 ];
 
 export default function Solution() {
+  const isMobile = useIsMobile();
   return (
     <section id="solution" className="relative py-32 bg-[#050505] overflow-hidden">
       {/* Background Grid */}
@@ -79,22 +82,42 @@ export default function Solution() {
         {/* Minimalist Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div
+            <motion.div
               key={index}
-              className="group relative p-8 rounded-3xl bg-[#0a0a0a] border border-white/5 hover:border-white/20 transition-all duration-500 hover:shadow-[0_0_50px_-12px_rgba(74,222,128,0.1)] overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={!isMobile ? "hover" : undefined}
+              className="group relative p-8 rounded-3xl bg-[#0a0a0a] border border-white/5 overflow-hidden"
             >
               {/* Green Bottom Highlight */}
-              <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#4ade80] to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+              <motion.div
+                variants={{ hover: { scaleX: 1 } }}
+                whileInView={isMobile ? { scaleX: 1 } : undefined}
+                transition={{ duration: 0.5 }}
+                className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#4ade80] to-transparent scale-x-0 origin-center"
+              />
 
               {/* Hover Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none" />
+              <motion.div
+                variants={{ hover: { opacity: 1 } }}
+                whileInView={isMobile ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 rounded-3xl pointer-events-none"
+              />
 
               <div className="relative z-10">
                 {/* Header: Icon + Number */}
                 <div className="flex justify-between items-start mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500 group-hover:border-[#4ade80]/20">
+                  <motion.div
+                    variants={{ hover: { scale: 1.1, borderColor: "rgba(74,222,128,0.2)" } }}
+                    whileInView={isMobile ? { scale: 1.1, borderColor: "rgba(74,222,128,0.2)" } : undefined}
+                    transition={{ duration: 0.5 }}
+                    className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"
+                  >
                     <feature.icon className="w-6 h-6 text-white/80 group-hover:text-[#4ade80] transition-colors" />
-                  </div>
+                  </motion.div>
                   <span className="text-4xl font-bold text-white/5 group-hover:text-white/10 transition-colors" style={{ fontFamily: "'Outfit', sans-serif" }}>
                     {feature.number}
                   </span>
@@ -114,7 +137,7 @@ export default function Solution() {
                   <span className="text-xs font-bold tracking-wide uppercase group-hover:text-[#4ade80]">{feature.highlight}</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

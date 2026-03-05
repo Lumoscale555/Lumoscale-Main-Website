@@ -64,11 +64,12 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             <NavItem href="#hero" label="Home" />
-            <NavItem href="#painpoints" label="Challenges" />
+            <NavItem href="#painpoints" label="Pain Points" />
             <NavItem href="#solution" label="How It Works" />
             <NavItem href="#demo" label="Demo" />
-            <NavItem href="#beforeafter" label="Results" />
+            <NavItem href="#beforeafter" label="Comparisons" />
             <NavItem href="#pricing" label="Pricing" />
+            <NavItem href="#faq" label="Questions" />
 
             <div className="w-px h-4 bg-white/10 mx-2" />
 
@@ -76,7 +77,7 @@ const Header = () => {
               onClick={scrollToCTA}
               className="group relative inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black rounded-full font-bold text-xs uppercase tracking-wide hover:bg-zinc-200 transition-all active:scale-95"
             >
-              <span>Get Audit</span>
+              <span>Get Free System Audit</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
 
               {/* Shine effect */}
@@ -128,11 +129,12 @@ const Header = () => {
               <div className="space-y-2">
                 {[
                   { label: "Home", href: "#hero" },
-                  { label: "Challenges", href: "#painpoints" },
+                  { label: "Pain Points", href: "#painpoints" },
                   { label: "How It Works", href: "#solution" },
                   { label: "Live Demo", href: "#demo" },
-                  { label: "Results", href: "#beforeafter" },
+                  { label: "Comparisons", href: "#beforeafter" },
                   { label: "Pricing", href: "#pricing" },
+                  { label: "Questions", href: "#faq" },
                 ].map((item) => (
                   <a
                     key={item.label}

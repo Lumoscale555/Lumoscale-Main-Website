@@ -9,14 +9,18 @@ const AVATARS = {
 };
 
 const messages = [
-    { sender: "lead", text: "Hey, I saw your case study. I have 100+ leads sitting in my DMs right now and I can't get to them.", delay: 0 },
-    { sender: "ai", text: "That's a good problem, but expensive if they go cold. Are you manually replying to all of them yourself?", delay: 2000 },
-    { sender: "lead", text: "My VA tries, but she's too slow and misses the qualified ones. I'm definitely losing revenue.", delay: 4500 },
-    { sender: "ai", text: "Speed is everything. We build AI setters that reply in seconds, qualify the budget, and book calls directly into your calendar. No human needed.", delay: 7000 },
-    { sender: "lead", text: "I'm interested, but I don't want it to sound like a generic bot. My brand is premium.", delay: 9500 },
-    { sender: "ai", text: "Understood. We train the model on *your* specific tone and past successful chats. It feels 100% human. Want to see a live demo of how it handles objections?", delay: 12000 },
-    { sender: "lead", text: "Yeah, let's see it.", delay: 14000 },
-    { sender: "ai", text: "Awesome. Here's the link to the private demo: https://cal.com/lumoscale/30min. Let's get those 100 leads converted. 🚀", delay: 15500 }
+    { sender: "lead", text: "Hey, I have 100+ leads sitting in my DMs right now and I can't get to them.", delay: 0 },
+    { sender: "ai", text: "Oof, that's a great problem to have... but also painful if they go cold. Are you handling all those yourself or do you have someone helping?", delay: 2500 },
+    { sender: "lead", text: "My VA tries, but she's too slow and misses the qualified ones. I'm definitely losing revenue.", delay: 5500 },
+    { sender: "ai", text: "Yeah, I hear that a lot. Speed kills in DMs, by the time someone replies 6 hours later, the lead's already talking to 3 other people. How much time are you spending managing this daily?", delay: 8500 },
+    { sender: "lead", text: "Honestly? Too much. And the VA still needs me to step in constantly.", delay: 11500 },
+    { sender: "ai", text: "Makes sense. That's exactly why we built this—takes the whole thing off your plate. Replies in under a minute, sorts who's serious vs who's browsing, and only sends you people ready to buy. No VA needed.", delay: 15000 },
+    { sender: "lead", text: "I'm interested, but I don't want it to sound like a generic bot. My brand is premium.", delay: 18000 },
+    { sender: "ai", text: "Totally get it. That's why we don't use templates, we actually train it on your past conversations. Your tone, your style, how you handle objections. It sounds like you, not a robot. Want to see how it works with a quick demo?", delay: 22000 },
+    { sender: "lead", text: "Yeah, let's see it.", delay: 25000 },
+    { sender: "ai", text: "Perfect. Here's the link: https://cal.com/lumoscale/30min. We can walk through exactly how it'd handle your 100 leads and get them moving again. Sound good?", delay: 27500 },
+    { sender: "lead", text: "Sounds good, booked.", delay: 30000 },
+    { sender: "ai", text: "Awesome. Talk soon! 🚀", delay: 31500 }
 ];
 
 // The 5 specific steps requested
@@ -103,9 +107,9 @@ const DMDemo = () => {
                 if (!mounted) return;
 
                 // Update Checkpoint based on message index
-                if (index >= 2 && index < 4) setActiveCheckpoint(0); // Reply
-                if (index >= 4 && index < 7) setActiveCheckpoint(1); // Pitch
-                if (index >= 7) setActiveCheckpoint(2); // Booking Link
+                if (index >= 1 && index < 5) setActiveCheckpoint(0); // Reply
+                if (index >= 5 && index < 9) setActiveCheckpoint(1); // Pitch
+                if (index >= 9) setActiveCheckpoint(2); // Booking Link
 
                 if (index > messages.length) {
                     // Chat done, wait a bit then go to booking screen

@@ -18,6 +18,7 @@ import {
   Workflow,
   Globe,
 } from "lucide-react";
+import { useIsMobile } from "../hooks/use-mobile";
 
 /* ---------- OUTCOMES ---------- */
 
@@ -82,6 +83,7 @@ const ADDONS = [
 ];
 
 export default function PricingToggle() {
+  const isMobile = useIsMobile();
 
   return (
     <section id="pricing" className="relative w-full bg-[#030303] py-32 px-6 overflow-hidden">
@@ -136,18 +138,29 @@ export default function PricingToggle() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -8 }}
+              variants={{ hover: { y: -8 } }}
+              whileHover={!isMobile ? "hover" : undefined}
               className="group relative"
             >
               {/* Card glow on hover */}
-              <div className={`absolute inset-0 rounded-3xl bg-${o.color}-500/10 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500`} />
+              <motion.div
+                variants={{ hover: { opacity: 1 } }}
+                whileInView={isMobile ? { opacity: 1 } : undefined}
+                transition={{ duration: 0.5 }}
+                className={`absolute inset-0 rounded-3xl bg-${o.color}-500/10 opacity-0 blur-2xl`}
+              />
 
               <div className="relative h-full p-8 rounded-3xl bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/10 group-hover:border-white/20 backdrop-blur-sm transition-all duration-300">
                 {/* Top row with icon and stat */}
                 <div className="flex items-start justify-between mb-6">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br from-${o.color}-500/20 to-${o.color}-500/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                  <motion.div
+                    variants={{ hover: { scale: 1.1 } }}
+                    whileInView={isMobile ? { scale: 1.1 } : undefined}
+                    transition={{ duration: 0.3 }}
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br from-${o.color}-500/20 to-${o.color}-500/5 flex items-center justify-center`}
+                  >
                     <o.icon className={`w-6 h-6 text-${o.color}-400`} />
-                  </div>
+                  </motion.div>
                   <div className="text-right">
                     <div className={`text-3xl font-bold text-${o.color}-400`}>{o.stat}</div>
                     <div className="text-xs uppercase tracking-wider text-white/50">{o.statLabel}</div>
@@ -241,20 +254,35 @@ export default function PricingToggle() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -6, scale: 1.02 }}
+                variants={{ hover: { y: -6, scale: 1.02 } }}
+                whileHover={!isMobile ? "hover" : undefined}
                 className="group relative"
               >
                 {/* Hover glow */}
-                <div className={`absolute inset-0 ${a.bgGlow} rounded-2xl blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500`} />
+                <motion.div
+                  variants={{ hover: { opacity: 0.5 } }}
+                  whileInView={isMobile ? { opacity: 0.5 } : undefined}
+                  transition={{ duration: 0.5 }}
+                  className={`absolute inset-0 ${a.bgGlow} rounded-2xl blur-2xl opacity-0`}
+                />
 
                 <div className="relative h-full p-6 rounded-2xl bg-white/[0.05] border border-white/10 group-hover:border-white/20 transition-all duration-300 overflow-hidden">
                   {/* Gradient top line */}
-                  <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${a.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                  <motion.div
+                    variants={{ hover: { opacity: 1 } }}
+                    whileInView={isMobile ? { opacity: 1 } : undefined}
+                    className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${a.gradient} opacity-0`}
+                  />
 
                   {/* Icon */}
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${a.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                  <motion.div
+                    variants={{ hover: { scale: 1.1 } }}
+                    whileInView={isMobile ? { scale: 1.1 } : undefined}
+                    transition={{ duration: 0.3 }}
+                    className={`w-12 h-12 rounded-xl bg-gradient-to-br ${a.gradient} flex items-center justify-center mb-5`}
+                  >
                     <a.icon className="w-5 h-5 text-white" />
-                  </div>
+                  </motion.div>
 
                   <h4 className="text-lg font-bold text-white mb-2">
                     {a.title}
