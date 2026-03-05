@@ -355,7 +355,7 @@ const Hero = () => {
                   <div className="relative w-24 h-24 rounded-full bg-gradient-to-b from-zinc-800 to-black border border-white/10 flex items-center justify-center overflow-hidden z-10 shadow-2xl">
                     <img
                       src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150"
-                      alt="Voice Agent"
+                      alt="AI Voice Agent for Real Estate and Healthcare"
                       className="w-full h-full object-cover opacity-80"
                     />
                     <div className="absolute inset-0 bg-purple-500/10 mix-blend-overlay" />

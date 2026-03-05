@@ -41,6 +41,7 @@ async function generateSitemap() {
         '',
         '/login',
         '/blog',
+        '/privacy-policy',
     ];
 
     let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>

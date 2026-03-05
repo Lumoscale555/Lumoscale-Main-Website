@@ -65,6 +65,7 @@ const BlogPostPage = () => {
             <Helmet>
                 <title>{post.title} | Lumoscale</title>
                 <meta name="description" content={post.excerpt} />
+                <link rel="canonical" href={`https://www.lumoscale.com/blog/${post.slug}`} />
                 <meta property="og:title" content={post.title} />
                 <meta property="og:description" content={post.excerpt} />
                 <meta property="og:image" content={post.image_url} />

@@ -14,6 +14,7 @@ import Footer from "@/components/Footer";
 import BlogPreview from "@/components/BlogPreview";
 import { useLayoutEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   const location = useLocation();
@@ -70,6 +71,11 @@ const Index = () => {
       className="min-h-screen bg-background text-foreground overflow-x-hidden"
       style={{ opacity: isScrolled ? 1 : 0 }}
     >
+      <Helmet>
+        <title>Lumoscale - AI Voice & Text Agents for Real Estate & Healthcare</title>
+        <meta name="description" content="Never miss a lead again. Lumoscale builds AI Voice & Text agents that handle calls, DMs, and bookings 24/7 in YOUR cloned voice. Built for Real Estate & Healthcare." />
+        <link rel="canonical" href="https://www.lumoscale.com" />
+      </Helmet>
       <ScrollProgress />
       <Header />
       <Hero />
