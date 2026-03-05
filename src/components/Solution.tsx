@@ -1,76 +1,153 @@
-import { Bot, Sparkles, Zap } from "lucide-react";
+import { Bot, Sparkles, Zap, MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
 
 const features = [
   {
     icon: Bot,
     title: "AI Qualification Agent",
-    description: "Automatically captures and qualifies every incoming lead with intelligent conversation"
+    description:
+      "AI talks to every lead in real time, understands intent, and filters buyers automatically so you only speak with serious prospects.",
   },
   {
     icon: Sparkles,
     title: "Smart Booking System",
-    description: "Sends calendar links only to hot leads, filtering out tire-kickers automatically"
+    description:
+      "Your calendar is protected by AI. Only high intent leads are allowed through, saving hours every week.",
   },
   {
     icon: Zap,
     title: "Instant Notifications",
-    description: "Get Slack alerts with pre-call briefs so you're always prepared"
-  }
+    description:
+      "Before each call you get a briefing with goals, urgency, and context so you never walk in blind.",
+  },
+  {
+    icon: MessageSquare,
+    title: "AI Auto Messaging",
+    description:
+      "Every inbox runs on autopilot. Website chat, Instagram, and Facebook replies happen instantly and intelligently.",
+  },
 ];
 
-const Solution = () => {
+const container = {
+  show: {
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const card = {
+  hidden: { opacity: 0, y: 40, scale: 0.96 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+const float = {
+  hover: {
+    y: -12,
+    scale: 1.02,
+    transition: { type: "spring", stiffness: 120, damping: 15 },
+  },
+};
+
+const iconAnim = {
+  hover: {
+    rotate: 8,
+    scale: 1.15,
+    transition: { type: "spring", stiffness: 200 },
+  },
+};
+
+export default function Solution() {
   return (
-    <section className="py-32 relative">
-      <div className="container mx-auto px-6">
-        <div className="max-w-7xl mx-auto">
-          {/* Heading */}
-          <div className="text-center mb-20 space-y-6">
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold gradient-text shimmer">
-              What if AI handled everything for you?
-            </h2>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto">
-              Lumoscale captures, qualifies, and sends booking links to hot leads so you only talk to buyers
-            </p>
-          </div>
-          
-          {/* Feature Cards */}
-          <div className="grid md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group relative p-8 rounded-3xl bg-card border border-primary/20 hover:border-primary/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_0_50px_hsl(var(--primary)/0.4)]"
-                style={{ 
-                  animation: "scale-in 0.6s ease-out forwards",
-                  animationDelay: `${index * 0.2}s`,
-                  opacity: 0
-                }}
-              >
-                {/* Glow Effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                <div className="relative z-10 space-y-6">
-                  {/* Icon */}
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-500">
-                    <feature.icon className="w-8 h-8 text-primary" />
-                  </div>
-                  
-                  {/* Title */}
-                  <h3 className="text-2xl font-bold text-foreground">
-                    {feature.title}
-                  </h3>
-                  
-                  {/* Description */}
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+    <section className="relative py-40 bg-[#050607]">
+
+      {/* BACKGROUND GLOW (NOT CUT ANYMORE) */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-[15%] w-[36rem] h-[36rem] bg-[#6AF2E1]/20 blur-[160px] rounded-full" />
+        <div className="absolute bottom-1/3 right-[15%] w-[26rem] h-[26rem] bg-[#9BFF9C]/20 blur-[160px] rounded-full" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-6">
+
+        {/* HEADING FIXED */}
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75 }}
+          viewport={{ once: true }}
+          className="text-center mb-28"
+        >
+          <h2
+            className="text-5xl md:text-6xl lg:text-7xl font-bold 
+              leading-[1.2]
+              bg-gradient-to-r from-[#6AF2E1] to-[#9BFF9C] 
+              bg-clip-text text-transparent 
+              drop-shadow-[0_0_25px_rgba(106,242,225,0.35)]
+              mx-auto max-w-[90%]"
+          >
+            Your Entire Lead System, Fully Automated
+          </h2>
+
+          <p className="mt-6 text-lg text-[#A3B6B2] max-w-3xl mx-auto leading-relaxed">
+            Every message, every lead, and every booking is handled by AI from the first hello to confirmed call.
+          </p>
+        </motion.div>
+
+        {/* CARDS */}
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-12"
+        >
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              variants={card}
+              whileHover="hover"
+              className="relative group rounded-3xl p-12 
+                bg-[#0E1416]/85 backdrop-blur-xl 
+                border border-[#1C2A2B] overflow-hidden"
+            >
+
+              {/* SOFT HOVER GLOW */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 
+                bg-gradient-to-br from-[#6AF2E1]/10 to-[#9BFF9C]/10" />
+
+              {/* CONTENT */}
+              <motion.div variants={float} className="relative">
+
+                {/* ICON */}
+                <motion.div
+                  variants={iconAnim}
+                  className="w-16 h-16 mb-8 rounded-xl 
+                    bg-gradient-to-br from-[#6AF2E1]/20 to-[#9BFF9C]/20 
+                    flex items-center justify-center
+                    shadow-[0_0_28px_rgba(106,242,225,0.4)]"
+                >
+                  <feature.icon className="w-8 h-8 text-[#EFFFFA]" />
+                </motion.div>
+
+                <h3 className="text-2xl font-semibold text-[#EFFFFA] mb-4">
+                  {feature.title}
+                </h3>
+
+                <p className="text-[#A3B6B2] leading-relaxed">
+                  {feature.description}
+                </p>
+
+              </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
+
       </div>
     </section>
   );
-};
-
-export default Solution;
+}

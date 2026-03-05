@@ -31,6 +31,41 @@ const DMDemo = () => {
 
   const timerRef = useRef(null);
 
+  // NEW: section in view detection
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  // NEW: chat scroll ref
+  const dmScrollRef = useRef(null);
+
+  // observe section visibility
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+        }
+      },
+      { threshold: 0.4 } // trigger when about 40 percent of section is visible
+    );
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
+  // clear timers helper
+  const clearTimers = () => {
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  // autoplay logic, but only when section is in view
   useEffect(() => {
     clearTimers();
     setVisibleMessages(0);
@@ -38,20 +73,23 @@ const DMDemo = () => {
     setSlackFired(false);
     setBriefReady(false);
 
+    if (!inView) return; // do not start until user has scrolled to this section
+
     if (activeTab === "dm") playDMSequence();
     if (activeTab === "booking") playBookingSequence();
     if (activeTab === "slack") playSlackSequence();
     if (activeTab === "brief") playBriefSequence();
 
     return () => clearTimers();
-  }, [activeTab]);
+  }, [activeTab, inView]);
 
-  const clearTimers = () => {
-    if (timerRef.current) {
-      window.clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-  };
+  // NEW: auto scroll DM box to bottom when messages change
+  useEffect(() => {
+    if (activeTab !== "dm") return;
+    const container = dmScrollRef.current;
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
+  }, [visibleMessages, activeTab]);
 
   const playDMSequence = () => {
     const step = (index = 0) => {
@@ -108,7 +146,7 @@ const DMDemo = () => {
   };
 
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section ref={sectionRef} className="py-24 relative overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="max-w-7xl mx-auto">
 
@@ -143,7 +181,7 @@ const DMDemo = () => {
 
           <div className="grid md:grid-cols-2 gap-12 items-start">
 
-            {/* LEFT SIDE */}
+            {/* LEFT SIDE, INSTAGRAM DM BOX */}
             <div className="relative">
               <div className="bg-card border-2 border-primary/30 rounded-3xl p-6 shadow-[0_0_50px_hsl(var(--primary)/0.12)] max-w-md mx-auto">
 
@@ -157,11 +195,16 @@ const DMDemo = () => {
 
                 {/* DM VIEW */}
                 {activeTab === "dm" && (
-                  <div className="space-y-4 h-[420px] overflow-y-auto">
+                  <div
+                    ref={dmScrollRef}
+                    className="space-y-4 h-[420px] overflow-y-auto"
+                  >
                     {messages.slice(0, visibleMessages).map((msg, i) => (
                       <div
                         key={i}
-                        className={`flex ${msg.sender === "lead" ? "justify-start" : "justify-end"} animate-fade-up`}
+                        className={`flex ${
+                          msg.sender === "lead" ? "justify-start" : "justify-end"
+                        } animate-fade-up`}
                       >
                         <div
                           className={`max-w-[80%] p-4 rounded-2xl ${
@@ -180,8 +223,14 @@ const DMDemo = () => {
                         <div className="bg-primary/20 px-4 py-3 rounded-2xl">
                           <div className="flex gap-1">
                             <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
-                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.2s" }} />
-                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.4s" }} />
+                            <div
+                              className="w-2 h-2 bg-primary rounded-full animate-bounce"
+                              style={{ animationDelay: "0.2s" }}
+                            />
+                            <div
+                              className="w-2 h-2 bg-primary rounded-full animate-bounce"
+                              style={{ animationDelay: "0.4s" }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -192,7 +241,9 @@ const DMDemo = () => {
                 {/* BOOKING VIEW */}
                 {activeTab === "booking" && (
                   <div className="space-y-6">
-                    <p className="text-sm text-muted-foreground">Example Booking Message AI Sends</p>
+                    <p className="text-sm text-muted-foreground">
+                      Example Booking Message AI Sends
+                    </p>
 
                     <div className="p-4 rounded-xl border bg-muted/5 space-y-3">
                       <p className="text-sm font-medium">AI Message:</p>
@@ -201,7 +252,9 @@ const DMDemo = () => {
                         <p className="text-sm">
                           You seem like a great fit. Here is your booking link for a 15 minute strategy call.
                         </p>
-                        <p className="mt-2 font-semibold text-primary">https://cal.com/lumoscale/strategy-call</p>
+                        <p className="mt-2 font-semibold text-primary">
+                          https://cal.com/lumoscale/strategy-call
+                        </p>
                       </div>
 
                       <div>
@@ -216,19 +269,31 @@ const DMDemo = () => {
                         ) : (
                           <div className="bg-secondary/10 border border-secondary/40 p-4 rounded-xl">
                             <p className="text-sm">Booked for</p>
-                            <p className="font-semibold">{bookingState.when?.toLocaleString()}</p>
+                            <p className="font-semibold">
+                              {bookingState.when?.toLocaleString()}
+                            </p>
                           </div>
                         )}
                       </div>
                     </div>
 
                     <div className="p-4 rounded-xl border bg-muted/5">
-                      <p className="text-sm font-medium mb-2">Sample Calendar Event</p>
+                      <p className="text-sm font-medium mb-2">
+                        Sample Calendar Event
+                      </p>
                       <div className="bg-muted/10 p-3 rounded-lg text-sm space-y-1">
-                        <p><strong>Title:</strong> Strategy Call with Mike</p>
-                        <p><strong>Duration:</strong> 15 minutes</p>
-                        <p><strong>Location:</strong> Zoom</p>
-                        <p><strong>Notes:</strong> Automations and scaling requirements</p>
+                        <p>
+                          <strong>Title:</strong> Strategy Call with Mike
+                        </p>
+                        <p>
+                          <strong>Duration:</strong> 15 minutes
+                        </p>
+                        <p>
+                          <strong>Location:</strong> Zoom
+                        </p>
+                        <p>
+                          <strong>Notes:</strong> Automations and scaling requirements
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -237,7 +302,9 @@ const DMDemo = () => {
                 {/* SLACK VIEW */}
                 {activeTab === "slack" && (
                   <div className="space-y-6">
-                    <p className="text-sm text-muted-foreground">This is the Slack alert you will receive</p>
+                    <p className="text-sm text-muted-foreground">
+                      This is the Slack alert you will receive
+                    </p>
 
                     <div className="rounded-xl border bg-muted/5 p-4 space-y-3">
                       <div className="flex items-center gap-3">
@@ -247,19 +314,29 @@ const DMDemo = () => {
 
                         <div>
                           <p className="font-semibold">New Hot Lead Booked</p>
-                          <p className="text-sm text-muted-foreground">Mike booked for Thu 3 pm</p>
+                          <p className="text-sm text-muted-foreground">
+                            Mike booked for Thu 3 pm
+                          </p>
                         </div>
                       </div>
 
                       <div className="bg-primary/10 p-3 rounded-lg text-sm">
-                        <p><strong>Lead Name:</strong> Mike</p>
-                        <p><strong>Service:</strong> Agency automation</p>
-                        <p><strong>Status:</strong> Qualified and booked</p>
+                        <p>
+                          <strong>Lead Name:</strong> Mike
+                        </p>
+                        <p>
+                          <strong>Service:</strong> Agency automation
+                        </p>
+                        <p>
+                          <strong>Status:</strong> Qualified and booked
+                        </p>
                       </div>
 
                       <button
                         onClick={() => setSlackFired(true)}
-                        className={`px-3 py-2 rounded-lg ${slackFired ? "bg-secondary/20" : "bg-muted/10"}`}
+                        className={`px-3 py-2 rounded-lg ${
+                          slackFired ? "bg-secondary/20" : "bg-muted/10"
+                        }`}
                       >
                         {slackFired ? "Slack Delivered" : "Simulate Slack"}
                       </button>
@@ -270,25 +347,47 @@ const DMDemo = () => {
                 {/* PRE CALL BRIEF VIEW */}
                 {activeTab === "brief" && (
                   <div className="space-y-6">
-                    <p className="text-sm text-muted-foreground">This is the pre call brief you receive</p>
+                    <p className="text-sm text-muted-foreground">
+                      This is the pre call brief you receive
+                    </p>
 
                     <div className="p-4 rounded-xl border bg-muted/5 space-y-3">
                       <p className="font-bold text-lg">Pre Call Brief</p>
 
                       <div className="text-sm space-y-2">
-                        <p><strong>Lead Name:</strong> Mike</p>
-                        <p><strong>Business:</strong> Digital Marketing Agency</p>
-                        <p><strong>Main Pain:</strong> Low lead quality, inconsistent delivery</p>
-                        <p><strong>Urgency:</strong> High, losing client</p>
-                        <p><strong>Budget Level:</strong> Medium to high</p>
-                        <p><strong>Desired Outcomes:</strong> Increase lead quality, automate qualification</p>
-                        <p><strong>Objections Found:</strong> Timeline concerns</p>
-                        <p><strong>Recommended Approach:</strong> Intro automation flow to fix bottleneck and reduce workload</p>
+                        <p>
+                          <strong>Lead Name:</strong> Mike
+                        </p>
+                        <p>
+                          <strong>Business:</strong> Digital Marketing Agency
+                        </p>
+                        <p>
+                          <strong>Main Pain:</strong> Low lead quality, inconsistent delivery
+                        </p>
+                        <p>
+                          <strong>Urgency:</strong> High, losing client
+                        </p>
+                        <p>
+                          <strong>Budget Level:</strong> Medium to high
+                        </p>
+                        <p>
+                          <strong>Desired Outcomes:</strong> Increase lead quality, automate qualification
+                        </p>
+                        <p>
+                          <strong>Objections Found:</strong> Timeline concerns
+                        </p>
+                        <p>
+                          <strong>Recommended Approach:</strong> Intro automation flow to fix bottleneck and reduce workload
+                        </p>
                       </div>
 
                       <button
                         onClick={() => setBriefReady(true)}
-                        className={`px-4 py-2 rounded-lg ${briefReady ? "bg-secondary/20" : "bg-gradient-to-r from-primary to-secondary text-black"}`}
+                        className={`px-4 py-2 rounded-lg ${
+                          briefReady
+                            ? "bg-secondary/20"
+                            : "bg-gradient-to-r from-primary to-secondary text-black"
+                        }`}
                       >
                         {briefReady ? "Brief Ready" : "Generate Brief"}
                       </button>
@@ -303,11 +402,15 @@ const DMDemo = () => {
             <div className="space-y-6">
               {checkpoints.map((checkpoint, i) => {
                 const progressIndex = Math.min(
-                  Math.floor((visibleMessages - 1) / (messages.length / checkpoints.length)),
+                  Math.floor(
+                    (visibleMessages - 1) /
+                      (messages.length / checkpoints.length)
+                  ),
                   checkpoints.length
                 );
 
-                const active = activeTab === "dm" ? i < progressIndex : false;
+                const active =
+                  activeTab === "dm" ? i < progressIndex : false;
 
                 return (
                   <div
@@ -320,10 +423,14 @@ const DMDemo = () => {
                   >
                     <CheckCircle2
                       className={`w-7 h-7 transition-colors duration-500 ${
-                        active ? "text-secondary" : "text-muted-foreground"
+                        active
+                          ? "text-secondary"
+                          : "text-muted-foreground"
                       }`}
                     />
-                    <p className="text-lg font-medium text-foreground">{checkpoint}</p>
+                    <p className="text-lg font-medium text-foreground">
+                      {checkpoint}
+                    </p>
                   </div>
                 );
               })}
