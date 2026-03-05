@@ -5,53 +5,53 @@ import { useIsMobile } from "../hooks/use-mobile";
 
 const FAQS = [
     {
-        question: "Will this sound robotic or is it actually human-like?",
-        answer: "We clone your voice and train the AI on your actual conversations—tone, style, language. Most people can't tell it's AI.",
+        question: "Does it actually sound like me or will people know it's AI?",
+        answer: "We clone your exact voice in 30 seconds. 95% accuracy. Most people genuinely can't tell the difference. It sounds like you, talks like you, even pauses like you.",
         category: "Quality"
     },
     {
-        question: "Is this safe? Will my accounts or phone lines get flagged?",
-        answer: "Completely safe. We are fully HIPAA compliant for healthcare and follow all telephony guidelines. Thousands of conversations run daily without any issues.",
+        question: "Is this legal? Will my Instagram, WhatsApp, or phone number get banned?",
+        answer: "100% safe and compliant. We use official Meta API for Instagram and WhatsApp (verified business accounts). Fully HIPAA compliant for healthcare. Follow all telephony regulations. Zero risk of bans or flags.",
         category: "Security"
     },
     {
-        question: "How much setup time do I need to invest?",
-        answer: "Zero. We handle everything—setup, training, integrations, voice cloning. You're live in 5-7 days with under 2 hours of your time.",
+        question: "How much of my time does this actually take?",
+        answer: "Under 2 hours total. Record a 30-second voice sample, one feedback call, done. We handle everything else. Live in 3 days, not weeks.",
         category: "Onboarding"
     },
     {
-        question: "What happens to my existing leads during the transition?",
-        answer: "Nothing changes for them—they just get faster responses. We import your data so the AI continues seamlessly where you left off.",
-        category: "Transition"
-    },
-    {
-        question: "How is this different from hiring a VA or receptionist?",
-        answer: "A VA (or Leasing Agent/Receptionist) costs $3K-5K/month, works 40 hours, handles one conversation at a time. Our AI works 24/7, handles unlimited conversations simultaneously, and costs a fraction.",
+        question: "Why wouldn't I just hire someone instead?",
+        answer: "A VA or receptionist at $500-800/month works 8 hours a day, 5 days a week, handles one call at a time, takes sick days, needs training, and quits. Our AI costs similar or less, works 24/7/365, handles 100+ conversations simultaneously, never calls in sick, and gets better every week.",
         category: "Comparison"
     },
     {
-        question: "How do you qualify leads? What stops unqualified people from booking?",
-        answer: "The AI asks YOUR qualifying questions (budget, timeline, needs) and uses intent detection. Only serious, pre-qualified prospects get booked into your calendar.",
+        question: "How do you stop random people or tire-kickers from booking my calendar?",
+        answer: "The AI asks your exact qualifying questions: budget, timeline, decision-making authority, specific needs, whatever matters to you. Only pre-qualified, serious prospects get through. Time-wasters get politely filtered out automatically.",
         category: "Process"
     },
     {
-        question: "What if I want to handle a conversation myself?",
-        answer: "The AI transfers calls to you instantly or flags messages for your review. You stay in control and only handle what truly needs your attention.",
+        question: "What if the AI doesn't know how to answer something?",
+        answer: "It transfers to you instantly with the full conversation summary. You never start from scratch. You stay in control and only handle what actually needs you.",
         category: "Control"
     },
     {
-        question: "How is this different from ManyChat, chatbots, or call center software?",
-        answer: "Those are DIY tools you manage. We're a done-for-you service—we build, train, optimize, and monitor everything. You get a growth partner, not just software.",
+        question: "How is this different from ManyChat, chatbots, Dialpad, or other tools?",
+        answer: "Those are DIY platforms. You build it, manage it, fix it, optimize it. We're done-for-you. We build your custom AI, clone your voice, write the scripts, integrate everything, monitor performance, and optimize weekly. You get a dedicated growth partner, not software you have to figure out.",
         category: "Service"
     },
     {
         question: "Do I need to manage or monitor the system daily?",
-        answer: "Nope. It runs on autopilot. Check your custom dashboard whenever you want, but we handle all monitoring, updates, and optimization in the background.",
+        answer: "Zero daily management. It runs completely on autopilot. Check your dashboard for insights whenever you want. We handle all monitoring, script updates, performance optimization, and technical maintenance in the background.",
         category: "Management"
     },
     {
-        question: "How do I know if this is right for my business?",
-        answer: "Book a 15-minute strategy call. We'll review your current process, show you a live demo tailored to your business, and you'll know immediately if this is your growth unlock.",
+        question: "What if I want to change how the AI responds or add new services?",
+        answer: "Just tell us. We update scripts, add new services, or change responses within 24-48 hours. Unlimited revisions. As your business evolves, your AI evolves with it.",
+        category: "Flexibility"
+    },
+    {
+        question: "How do I know this will actually work for MY specific business?",
+        answer: "Book a free 15-minute strategy call. We'll review your current lead flow, show you a custom demo for your industry, and you'll see exactly how it works for your business. No pitch, just honest assessment.",
         category: "Next Steps"
     }
 ];
