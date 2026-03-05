@@ -66,7 +66,7 @@ const DMDemo = () => {
     setSlackFired(false);
     setBriefReady(false);
 
-    if (!inView) return;
+    // if (!inView) return;
 
     if (activeTab === "dm") playDMSequence();
     if (activeTab === "booking") playBookingSequence();

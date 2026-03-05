@@ -51,7 +51,7 @@ const Hero = () => {
         pos.y += vel.dy;
 
         const dist = Math.sqrt(pos.x * pos.x + pos.y * pos.y);
-        const maxDist = radius - 90;
+        const maxDist = Math.max(40, radius - 90);
 
         if (dist > maxDist) {
           const nx = pos.x / dist;
@@ -81,15 +81,15 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 animate-glow-pulse" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15),transparent_60%)]" />
 
-        <div className="container mx-auto grid lg:grid-cols-2 gap-12 relative z-10 mt-6">
-          <div className="flex flex-col justify-center space-y-8 mt-6">
+        <div className="container mx-auto grid lg:grid-cols-2 gap-12 relative z-10 mt-6 min-w-0">
+          <div className="flex flex-col justify-center space-y-8 mt-6 min-w-0">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full w-fit animate-fade-up">
               <span className="text-sm font-medium text-primary">
                 FOR B2B and B2C Business Owners
               </span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-tight gradient-text shimmer animate-fade-up pb-3">
+            <h1 className="hero-h1 text-5xl md:text-7xl font-black tracking-tight leading-tight gradient-text shimmer animate-fade-up pb-3">
               Turn your DMs Into Booked Consultations While You Sleep
             </h1>
 
@@ -119,17 +119,17 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="relative flex items-center justify-center">
+          <div className="relative flex items-center justify-center min-w-0">
             <div
               ref={circleRef}
-              className="relative w-[480px] h-[480px] rounded-full bg-card border border-primary/30 shadow-[0_0_50px_rgba(0,255,255,0.2)] overflow-hidden"
+              className="relative w-full max-w-[480px] aspect-square rounded-full bg-card border border-primary/30 shadow-[0_0_50px_rgba(0,255,255,0.2)] overflow-hidden"
             >
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <Smartphone className="w-24 h-24 text-primary opacity-80" />
                 <p className="text-lg text-muted-foreground mt-2">Checking messages...</p>
               </div>
 
-              <div ref={(el) => (itemsRef.current[0] = el)} className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 w-56 shadow-xl" style={{ transform: "translate(-50%, -50%)" }}>
+              <div ref={(el) => (itemsRef.current[0] = el)} className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 max-w-[85%] md:w-56 shadow-xl" style={{ transform: "translate(-50%, -50%)" }}>
                 <div className="flex items-start gap-2">
                   <MessageSquare className="text-primary h-5 w-5 mt-1" />
                   <div>
@@ -139,7 +139,7 @@ const Hero = () => {
                 </div>
               </div>
 
-              <div ref={(el) => (itemsRef.current[1] = el)} className="absolute left-1/2 top-1/2 bg-card border border-secondary/40 rounded-xl px-4 py-3 w-52 shadow-xl" style={{ transform: "translate(-50%, -50%)" }}>
+              <div ref={(el) => (itemsRef.current[1] = el)} className="absolute left-1/2 top-1/2 bg-card border border-secondary/40 rounded-xl px-4 py-3 max-w-[80%] md:w-52 shadow-xl" style={{ transform: "translate(-50%, -50%)" }}>
                 <div className="flex items-start gap-2">
                   <Calendar className="text-secondary h-5 w-5 mt-1" />
                   <div>
@@ -149,7 +149,7 @@ const Hero = () => {
                 </div>
               </div>
 
-              <div ref={(el) => (itemsRef.current[2] = el)} className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 w-60 shadow-xl" style={{ transform: "translate(-50%, -50%)" }}>
+              <div ref={(el) => (itemsRef.current[2] = el)} className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 max-w-[90%] md:w-60 shadow-xl" style={{ transform: "translate(-50%, -50%)" }}>
                 <div className="flex items-start gap-2">
                   <Bell className="text-primary h-5 w-5 mt-1" />
                   <div>

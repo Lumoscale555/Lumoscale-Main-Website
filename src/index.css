@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Make hero h1 slightly smaller on very small screens (<400px) */
+@media (max-width: 399px) {
+  .hero-h1 {
+    font-size: 42px !important;
+    line-height: 1.05;
+  }
+}
+
 /* LUMOSCALE AI - Premium Futuristic Design System */
 
 @layer base {

@@ -9,7 +9,7 @@ const painPoints = [
 
 const PainPoints = () => {
   return (
-    <section className="py-32 relative overflow-hidden bg-background">
+    <section className="py-16 relative overflow-hidden bg-background">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-destructive/5 to-transparent pointer-events-none" />
 

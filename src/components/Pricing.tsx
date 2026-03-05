@@ -87,7 +87,7 @@ export default function PricingToggle() {
 
         {/* 3. THE TOGGLE SWITCH */}
         <div className="flex justify-center mb-10">
-            <div className="bg-zinc-900/80 p-1.5 rounded-full border border-white/10 flex relative shadow-lg">
+            <div className="bg-zinc-900/80 p-1.5 rounded-full border border-white/10 flex relative shadow-lg min-w-[500px]">
                 {/* Background Sliding Pill */}
                 <motion.div 
                     layout
@@ -102,13 +102,13 @@ export default function PricingToggle() {
                 
                 <button 
                     onClick={() => setBilling("monthly")}
-                    className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-colors duration-300 ${billing === "monthly" ? "text-white" : "text-slate-500 hover:text-slate-300"}`}
+                    className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-colors w-1/2 duration-300 ${billing === "monthly" ? "text-white" : "text-slate-500 hover:text-slate-300"}`}
                 >
                     Monthly Pay
                 </button>
                 <button 
                     onClick={() => setBilling("quarterly")}
-                    className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-colors duration-300 flex items-center gap-2 ${billing === "quarterly" ? "text-white" : "text-slate-500 hover:text-slate-300"}`}
+                    className={`relative z-10 px-8 py-2.5 rounded-full text-sm font-bold transition-colors duration-300 flex items-center gap-2 w-1/2 ${billing === "quarterly" ? "text-white" : "text-slate-500 hover:text-slate-300"}`}
                 >
                     3-Month Bundle
                     <span className="bg-green-500 text-black text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase">Save $1k+</span>
