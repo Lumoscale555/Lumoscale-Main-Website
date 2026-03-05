@@ -20,6 +20,7 @@ import { AuditModalProvider } from "./context/AuditModalContext";
 
 import { HelmetProvider } from 'react-helmet-async';
 
+import PricingPage from "./pages/PricingPage";
 import ChatWidget from "./components/ChatWidget";
 
 const App = () => (
@@ -34,6 +35,7 @@ const App = () => (
             <AuditModal />
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/pricing" element={<PricingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin/login" element={<Navigate to="/login" replace />} />
               <Route path="/admin" element={<ProtectedRoute />}>
