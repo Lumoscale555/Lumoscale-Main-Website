@@ -208,7 +208,7 @@ const DMDemo = () => {
                             </div>
                             <div>
                                 <p className="font-bold text-sm">
-                                    {activeTab === "dm" && "Instagram DM"}
+                                    {activeTab === "dm" && "DM Automation"}
                                     {activeTab === "booking" && "Calendar Booking"}
                                     {activeTab === "slack" && "Slack Team Alert"}
                                     {activeTab === "brief" && "Pre-Call Brief"}

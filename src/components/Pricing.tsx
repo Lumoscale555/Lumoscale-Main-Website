@@ -14,7 +14,7 @@ import {
 /* ---------- CONFIG ---------- */
 
 const FEATURES = [
-  "Instagram DM automation with instant responses",
+  "DM automation with instant responses",
   "Smart lead qualification and filtering",
   "Automated follow up triggers based on user intent",
   "Calendar based booking system",
