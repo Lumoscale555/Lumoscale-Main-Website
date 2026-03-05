@@ -114,11 +114,11 @@ const Hero = () => {
               </h1>
 
               <div
-                className="text-xl md:text-2xl font-light text-blue-100/90 flex flex-wrap items-center gap-x-2"
+                className="text-xl md:text-2xl font-light text-blue-100/90 items-center block"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
               >
                 <span>AI</span>
-                <span className="text-white font-semibold inline-flex items-center text-[0.9em]">
+                <span className="text-white font-semibold inline-flex items-center text-[0.9em] mx-2">
                   {displayText}
                   <span className="cursor-blink w-0.5 h-6 bg-blue-400 ml-0.5 animate-pulse"></span>
                 </span>
