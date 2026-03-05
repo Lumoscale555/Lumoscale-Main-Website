@@ -7,6 +7,8 @@ type Tab = 'chat' | 'call';
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<Tab>('chat');
+    const [isButtonHovered, setIsButtonHovered] = useState(false);
+    const [showLabelOnLoad, setShowLabelOnLoad] = useState(true);
     
     // Chat State
     const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai', text: string }>>([]);
@@ -18,6 +20,14 @@ export default function ChatWidget() {
     const [isCallActive, setIsCallActive] = useState(false);
     
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Auto-hide the label after 3 seconds on page load
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowLabelOnLoad(false);
+        }, 3000);
+        return () => clearTimeout(timer);
+    }, []);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -328,30 +338,61 @@ export default function ChatWidget() {
                 )}
             </AnimatePresence>
 
-            {/* Floating Action Button */}
-            <motion.button
-                onClick={() => setIsOpen(!isOpen)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`
-                    w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 relative group pointer-events-auto
-                    ${isOpen
-                        ? 'bg-zinc-800 text-white rotate-90'
-                        : 'bg-blue-600 text-white hover:bg-blue-500 shadow-blue-500/30'
-                    }
-                `}
-            >
-                {/* Pulse ring when closed */}
-                {!isOpen && (
-                    <span className="absolute inset-0 rounded-full border border-blue-400/50 animate-ping [animation-duration:2s]" />
-                )}
+            {/* Floating Action Button with Hover Label */}
+            <div className="relative pointer-events-auto flex items-center gap-3">
+                {/* Hover Label - Smooth & Simple */}
+                <AnimatePresence>
+                    {!isOpen && isButtonHovered && (
+                        <motion.div
+                            initial={{ opacity: 0, x: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            exit={{ opacity: 0, x: 5, scale: 0.95 }}
+                            transition={{ duration: 0.2, ease: "easeOut" }}
+                            className="absolute right-full mr-4 pointer-events-none flex items-center"
+                        >
+                            <div className="relative flex items-center gap-3 px-4 py-2.5 bg-black/90 border border-white/10 rounded-xl shadow-lg backdrop-blur-md">
+                                
+                                {/* Status Dot */}
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                
+                                {/* Simple Text */}
+                                <span className="text-sm font-medium text-white whitespace-nowrap">
+                                    Need help?
+                                </span>
 
-                {isOpen ? (
-                    <X className="w-6 h-6" />
-                ) : (
-                    <MessageSquare className="w-6 h-6 fill-current" />
-                )}
-            </motion.button>
+                                {/* Connector Arrow */}
+                                <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-3 h-3 bg-black/90 border-r border-t border-white/10 rotate-45 transform"></div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <motion.button
+                    onClick={() => setIsOpen(!isOpen)}
+                    onMouseEnter={() => setIsButtonHovered(true)}
+                    onMouseLeave={() => setIsButtonHovered(false)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`
+                        w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 relative
+                        ${isOpen
+                            ? 'bg-zinc-800 text-white rotate-90'
+                            : 'bg-blue-600 text-white hover:bg-blue-500 shadow-blue-500/30'
+                        }
+                    `}
+                >
+                    {/* Pulse ring when closed */}
+                    {!isOpen && (
+                        <span className="absolute inset-0 rounded-full border border-blue-400/50 animate-ping [animation-duration:2s]" />
+                    )}
+
+                    {isOpen ? (
+                        <X className="w-6 h-6" />
+                    ) : (
+                        <MessageSquare className="w-6 h-6 fill-current" />
+                    )}
+                </motion.button>
+            </div>
         </div>
     );
 }
