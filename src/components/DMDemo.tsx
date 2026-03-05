@@ -341,6 +341,26 @@ const TextAgentDemo = () => {
 
 
 
+const AnimatedMessage = ({ text, isSarah }: { text: string; isSarah: boolean }) => {
+    const words = text.split(/(\s+)/);
+
+    return (
+        <p className={`text-[13px] leading-relaxed font-medium ${isSarah ? 'text-white' : 'text-zinc-300'}`}>
+            {words.map((word, i) => (
+                <motion.span
+                    key={i}
+                    initial={{ opacity: 0, filter: 'blur(4px)', y: 2 }}
+                    animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                    transition={{ duration: 0.15, ease: 'easeOut' }}
+                    className="inline-block"
+                >
+                    {word === ' ' ? '\u00A0' : word}
+                </motion.span>
+            ))}
+        </p>
+    );
+};
+
 const VoiceAgentDemo = () => {
     const [isCallActive, setIsCallActive] = useState(false);
     const [isAgentTalking, setIsAgentTalking] = useState(false);
@@ -385,14 +405,23 @@ const VoiceAgentDemo = () => {
         };
     }, []);
     const [transcript, setTranscript] = useState<{ id: string, speaker: 'User' | 'Sarah', text: string }[]>([]);
+    const transcriptRef = useRef<{ id: string, speaker: 'User' | 'Sarah', text: string }[]>([]);
+
+    // Sync ref with state for the webhook
+    useEffect(() => {
+        transcriptRef.current = transcript;
+    }, [transcript]);
 
     // Auto-scroll transcript to bottom
+    const prevTranscriptLengthRef = useRef(0);
     useEffect(() => {
         if (transcriptContainerRef.current) {
+            const isNewMessage = transcript.length > prevTranscriptLengthRef.current;
             transcriptContainerRef.current.scrollTo({
                 top: transcriptContainerRef.current.scrollHeight,
-                behavior: "smooth"
+                behavior: isNewMessage ? "smooth" : "auto"
             });
+            prevTranscriptLengthRef.current = transcript.length;
         }
     }, [transcript]);
 
@@ -404,10 +433,30 @@ const VoiceAgentDemo = () => {
             setTranscript([]); // reset on new call
         });
 
-        retellWebClient.on("call_ended", () => {
+        retellWebClient.on("call_ended", async () => {
             setIsCallActive(false);
             setIsAgentTalking(false);
             setIsInitializing(false);
+
+            // Send Post-Call Analysis to Webhook
+            const finalTranscript = transcriptRef.current;
+            if (finalTranscript.length > 0) {
+                try {
+                    fetch("https://n8n.srv1011051.hstgr.cloud/webhook/Website", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            submissionType: "voice_demo_analysis",
+                            transcript: finalTranscript,
+                            timestamp: new Date().toISOString(),
+                            duration: 150 - callDuration // Approximate duration
+                        })
+                    }).catch(err => console.error("Post-analysis webhook failed:", err));
+                } catch (e) {
+                    console.error("Webhook error:", e);
+                }
+            }
+
             setTimeout(() => setTranscript([]), 1000); // fade out after a sec
         });
 
@@ -468,6 +517,18 @@ const VoiceAgentDemo = () => {
 
         setIsInitializing(true);
         try {
+            // Explicitly ask for microphone permissions BEFORE doing anything else
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                // We only need permission, so stop the tracks immediately
+                stream.getTracks().forEach(track => track.stop());
+            } catch (micError) {
+                console.error("Microphone access denied or error:", micError);
+                setIsInitializing(false);
+                alert("Microphone access is required to use the voice demo. Please allow access and try again.");
+                return;
+            }
+
             // ==============================================================================
             // 🚨 ACTION REQUIRED: CONFIGURE YOUR N8N WEBHOOK URL HERE 🚨
             // ==============================================================================
@@ -697,12 +758,15 @@ const VoiceAgentDemo = () => {
                                                     transition={{ duration: 0.4, ease: "easeOut" }}
                                                     className={`flex w-full ${isSarah ? 'justify-start' : 'justify-end'}`}
                                                 >
-                                                    <div className={`max-w-[80%] rounded-2xl px-4 py-3 backdrop-blur-md border ${
+                                                    <div className={`max-w-[85%] rounded-2xl px-4 py-3 backdrop-blur-md border ${
                                                         isSarah
                                                             ? 'bg-emerald-500/10 border-emerald-500/20 rounded-tl-sm shadow-[0_4px_20px_rgba(16,185,129,0.1)]'
-                                                            : 'bg-white/5 border-white/10 rounded-tr-sm'
+                                                            : 'bg-[#2a2a2a]/80 border-white/5 rounded-tr-sm shadow-md'
                                                     }`}>
-                                                        <p className="text-[13px] leading-relaxed text-white font-medium">{msg.text}</p>
+                                                        <div className={`text-[10px] font-bold tracking-widest uppercase mb-1.5 ${isSarah ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                                                            {isSarah ? 'SARAH' : 'YOU'}
+                                                        </div>
+                                                        <AnimatedMessage text={msg.text} isSarah={isSarah} />
                                                     </div>
                                                 </motion.div>
                                             );

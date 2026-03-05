@@ -25,7 +25,6 @@ import AIReceptionist from "./pages/AIReceptionist";
 import AIVoiceSDR from "./pages/AIVoiceSDR";
 import AITextAgents from "./pages/AITextAgents";
 import Demo from "./pages/Demo";
-import ChatWidget from "./components/ChatWidget";
 import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => (
@@ -35,7 +34,6 @@ const App = () => (
         <AuditModalProvider>
           <Toaster />
           <Sonner />
-          <ChatWidget />
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <ScrollToTop />
             <AuditModal />

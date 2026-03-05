@@ -98,10 +98,14 @@ export default function AuditModal() {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            await fetch("https://n8n.srv1011051.hstgr.cloud/webhook/Form", {
+            await fetch("https://n8n.srv1011051.hstgr.cloud/webhook/Website", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+                body: JSON.stringify({
+                    ...form,
+                    submissionType: "system_audit",
+                    timestamp: new Date().toISOString()
+                }),
             });
             setSubmitted(true);
         } catch {

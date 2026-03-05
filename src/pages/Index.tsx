@@ -71,9 +71,6 @@ const Index = () => {
 
       <DMDemo />
       <Services />
-
-
-
       <Process />
       <Pricing />
 
