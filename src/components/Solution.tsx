@@ -172,7 +172,7 @@ export default function Solution() {
           className="text-center mt-16"
         >
           <button
-            onClick={() => window.open("https://cal.com/vamsivk/30min", "_blank")}
+            onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
             className="px-10 py-5 text-lg font-semibold rounded-full
               bg-gradient-to-r from-[#6AF2E1] to-[#9BFF9C]
               text-[#050607]
