@@ -10,27 +10,10 @@ const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { ch
     const isMobile = useIsMobile();
 
     useEffect(() => {
-        // Disable auto-sway on mobile to prevent performance lag
-        if (isMobile) {
-            setRotateX(0);
-            setRotateY(0);
-            return;
-        }
-
-        let animationFrameId: number;
-        let startTime = Date.now();
-
-        const animate = () => {
-            const elapsed = Date.now() - startTime;
-            // Gentle figure-8 sway
-            setRotateX(Math.sin(elapsed * 0.001) * 3); // Slightly reduced range for phone
-            setRotateY(Math.cos(elapsed * 0.0015) * 3);
-            animationFrameId = requestAnimationFrame(animate);
-        };
-
-        animate();
-        return () => cancelAnimationFrame(animationFrameId);
-    }, [isMobile]);
+        // Entirely disable auto-sway loop as it impacts performance across all devices
+        setRotateX(0);
+        setRotateY(0);
+    }, []);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (isMobile) return;
@@ -260,7 +243,6 @@ const TextAgentDemo = () => {
                                         key={idx}
                                         initial={{ opacity: 0, y: -20, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        layout={!isMobile}
                                         className={`flex gap-2 ${msg.sender === 'lead' ? 'justify-end' : ''}`}
                                     >
                                         {msg.sender === 'ai' && (
@@ -649,11 +631,11 @@ const VoiceAgentDemo = () => {
             {/* Content Area */}
             <div className={`flex-1 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 bg-zinc-950`}>
 
-                {/* Premium Animated Background */}
+                {/* Optimized Premium Background */}
                 <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-900/20 blur-[120px] rounded-full mix-blend-screen opacity-50" />
-                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-900/10 blur-[120px] rounded-full mix-blend-screen opacity-50" />
-                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay" />
+                    <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-900/10 blur-[80px] rounded-full mix-blend-screen opacity-40" />
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-900/5 blur-[80px] rounded-full mix-blend-screen opacity-40" />
+                    <div className="absolute inset-0 bg-black/60" />
                 </div>
 
                 <AnimatePresence mode="wait">
