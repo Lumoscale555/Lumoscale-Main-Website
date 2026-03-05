@@ -6,7 +6,7 @@ import {
   Sparkles,
   Phone,
   MessageSquare,
-  Building2,
+
   Zap
 } from "lucide-react";
 import { useAuditModal } from "../context/AuditModalContext";
@@ -33,15 +33,7 @@ const PLAN2_FEATURES = [
   "Full call history, transcripts, and performance dashboard"
 ];
 
-/* ---------- PLAN 3 FEATURES (Complete Front Desk System) ---------- */
-const PLAN3_FEATURES = [
-  "Voice and text working as one seamless front desk",
-  "Unified qualification across calls and messages",
-  "Appointment booking, confirmations, and reminders",
-  "Centralized live dashboard for all conversations and bookings",
-  "Custom workflows based on your business needs",
-  "Weekly optimization and priority support"
-];
+
 
 const containerVariants = {
   hidden: { opacity: 1 },
@@ -117,7 +109,7 @@ export default function Pricing() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 max-w-5xl mx-auto"
         >
 
           <PricingCard
@@ -145,17 +137,7 @@ export default function Pricing() {
             ctaText="Contact for Pricing"
           />
 
-          <PricingCard
-            title="Complete Front Desk System"
-            subtitle="Calls + Messages → Appointments"
-            description="A single unified system that handles calls and messages together and manages the entire booking workflow."
-            price=""
-            features={PLAN3_FEATURES}
-            icon={Building2}
-            gradient="from-purple-500 to-pink-500"
-            glowColor="rgba(168, 85, 247, 0.4)"
-            ctaText="Talk to Our Team"
-          />
+
 
         </motion.div>
 
