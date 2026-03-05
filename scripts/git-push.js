@@ -96,10 +96,18 @@ rl.question('Enter 1 or 2: ', (answer) => {
 
 // ── Push logic ────────────────────────────────────────────────
 function doPush(account, rl) {
-  const repoUrl = `https://${account.username}:${account.token}@github.com/${account.username}/${account.repoName}.git`;
+  // Use token if available, otherwise fall back to credential manager
+  const auth = account.token && !account.token.includes('_token_here') && !account.token.includes('your_')
+    ? `${account.username}:${account.token}`
+    : account.username;
+  
+  const repoUrl = `https://${auth}@github.com/${account.username}/${account.repoName}.git`;
 
   try {
     console.log(`\n🔗 Setting remote to github.com/${account.username}/${account.repoName}`);
+    if (!account.token || account.token.includes('_token_here')) {
+      console.log("   ℹ️  No token set — browser login may appear (only once, then cached)");
+    }
 
     try { execSync('git remote remove origin', { stdio: 'ignore' }); } catch (_) {}
     execSync(`git remote add origin ${repoUrl}`, { stdio: 'ignore' });
@@ -112,8 +120,8 @@ function doPush(account, rl) {
   } catch (err) {
     console.error("\n❌ Push failed. Make sure:");
     console.error(`   • The repo '${account.repoName}' exists on GitHub under '${account.username}'`);
-    console.error("   • Your token has 'repo' scope permissions");
-    console.error("   • The token in .env.push is correct");
+    console.error("   • You completed the login if a browser window appeared");
+    console.error("   • Or add a token to .env.push to skip login prompts entirely");
   }
 
   rl.close();
