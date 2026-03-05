@@ -33,6 +33,54 @@ const PLAN2_FEATURES = [
   "Full call history, transcripts, and performance dashboard"
 ];
 
+/* ---------- PLAN 3 FEATURES (AI Voice SDR) ---------- */
+const PLAN3_FEATURES = [
+  "Cold calling & lead reactivation",
+  "Filters out voicemails & bad numbers",
+  "Transfers interested prospects instantly",
+  "Books meetings directly on calendar",
+  "Detailed call analytics & recordings",
+  "Customizable scripts & objections"
+];
+
+const plans = [
+  {
+    title: "AI Text Agents",
+    subtitle: "Capture Every Message",
+    description: "Instant responses across Instagram, Facebook, and WhatsApp.",
+    price: "$297/mo",
+    features: PLAN1_FEATURES,
+    icon: MessageSquare,
+    gradient: "from-emerald-500 to-teal-500",
+    glowColor: "rgba(16, 185, 129, 0.15)",
+    ctaText: "Get Started"
+  },
+  {
+    title: "AI Receptionist",
+    subtitle: "Never Miss a Call",
+    description: "24/7 inbound call handling, booking, and qualification.",
+    price: "$497/mo",
+    features: PLAN2_FEATURES,
+    icon: Phone,
+    isPopular: true,
+    gradient: "from-blue-500 to-indigo-500",
+    glowColor: "rgba(59, 130, 246, 0.15)",
+    ctaText: "Get Started"
+  },
+  {
+    title: "AI Voice SDR",
+    subtitle: "Scale Your Sales",
+    description: "Outbound calling to qualify leads and book meetings automatically.",
+    price: "$597/mo",
+    features: PLAN3_FEATURES,
+    icon: Zap,
+    gradient: "from-purple-500 to-pink-500",
+    glowColor: "rgba(168, 85, 247, 0.15)",
+    ctaText: "Get Started"
+  }
+];
+
+
 
 
 const containerVariants = {
@@ -60,7 +108,7 @@ const cardVariants = {
 export default function Pricing() {
   // ... (Pricing component render logic remains the same: lines 65-160)
   return (
-    <section id="pricing" className="relative w-full bg-black py-24 px-6 overflow-hidden">
+    <section id="pricing" className="relative w-full bg-black py-12 px-6 overflow-hidden">
       {/* Background Gradients/Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10" />
@@ -103,43 +151,62 @@ export default function Pricing() {
           </motion.p>
         </div>
 
-        {/* PRICING GRID */}
+
+
+        {/* SINGLE PRICING CTA CARD */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 max-w-5xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-2xl mx-auto mb-20"
         >
+          <div className="relative group">            
+            {/* Card */}
+            <div className="relative bg-gradient-to-br from-zinc-900 to-black border border-transparent rounded-3xl p-10 text-center">
+              {/* Icon */}
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/10 mb-6">
+                <Sparkles className="w-7 h-7 text-blue-400" />
+              </div>
 
-          <PricingCard
-            title="AI Messaging Front Desk"
-            subtitle="Message → Booking"
-            description="Turns every inbound message into a qualified, followed-up appointment."
-            price=""
-            features={PLAN1_FEATURES}
-            icon={MessageSquare}
-            gradient="from-blue-500 to-cyan-500"
-            glowColor="rgba(59, 130, 246, 0.4)"
-            ctaText="Contact for Pricing"
-          />
+              {/* Heading */}
+              <h3 className="text-3xl font-bold text-white mb-3">
+                Your Complete AI Team
+              </h3>
+              
+              {/* Bullet List */}
+              <ul className="text-left max-w-md mx-auto mb-8 space-y-3">
+                <li className="flex items-center gap-3 text-zinc-300">
+                  <Check className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <span>AI Voice SDR</span>
+                </li>
+                <li className="flex items-center gap-3 text-zinc-300">
+                  <Check className="w-5 h-5 text-blue-400 shrink-0" />
+                  <span>AI Receptionist</span>
+                </li>
+                <li className="flex items-center gap-3 text-zinc-300">
+                  <Check className="w-5 h-5 text-purple-400 shrink-0" />
+                  <span>AI Text Agents</span>
+                </li>
+              </ul>
 
-          <PricingCard
-            title="AI Call Receptionist"
-            subtitle="Call → appointment "
-            description="Answers every inbound call in your actual voice and converts qualified callers into booked appointments."
-            price=""
-            features={PLAN2_FEATURES}
-            icon={Phone}
-            isPopular={true}
-            gradient="from-emerald-500 to-green-500"
-            glowColor="rgba(34, 197, 94, 0.4)"
-            ctaText="Contact for Pricing"
-          />
+              {/* CTA Button */}
+              <button
+                onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
+                className="group/btn inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-xl font-bold text-base uppercase tracking-wide hover:bg-zinc-100 transition-all hover:scale-105 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_50px_rgba(255,255,255,0.4)]"
+              >
+                Book a Call
+                <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+              </button>
 
-
-
+              {/* Small text */}
+              <p className="text-sm text-zinc-500 mt-6">
+                Custom pricing based on your needs
+              </p>
+            </div>
+          </div>
         </motion.div>
+
 
         {/* NOTE SECTION */}
         <motion.div
@@ -169,8 +236,8 @@ export default function Pricing() {
                 className="text-center mb-16 relative"
             >
                 <div className="inline-block mb-4">
-                  <span className="py-1 px-3 rounded-full bg-blue-500/5 backdrop-blur-md border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.1)] text-blue-200 text-xs font-bold tracking-widest uppercase">
-                    Optional Add-ons
+                  <span className="py-2 px-4 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-md border border-blue-500/20 shadow-[0_0_30px_rgba(59,130,246,0.2)] text-blue-200 text-xs font-bold tracking-widest uppercase">
+                    Premium Add-ons
                   </span>
                 </div>
                 <motion.h3
@@ -180,53 +247,54 @@ export default function Pricing() {
                     transition={{ delay: 0.2, duration: 0.5 }}
                     className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.1]"
                 >
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">Custom Solutions</span>
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-purple-400">Custom Solutions</span>
                 </motion.h3>
+                <p className="mt-4 text-zinc-400 text-lg max-w-2xl mx-auto">
+                  Go beyond standard AI agents with fully customized solutions
+                </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto relative z-10">
-                {/* Add-on 1: Custom AI Agents */}
+            <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto relative z-10">
+                {/* Add-on 1 */}
                 <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.1 }}
-                    className="group relative p-8 rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all duration-300 overflow-hidden"
+                    className="flex items-start gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
                 >
-                    <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative z-10">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/5 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                            <Zap className="w-6 h-6 text-blue-400" />
-                        </div>
-                        <h4 className="text-xl font-bold text-white mb-3 group-hover:text-blue-200 transition-colors">Custom AI Agents</h4>
-                        <p className="text-zinc-400 leading-relaxed text-sm">
-                            We build specialized AI agents for any use case. Each one is trained on your specific knowledge base and SOPs.
+                    <div className="shrink-0 w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                        <Zap className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                        <h4 className="text-white font-bold text-lg mb-1">Custom AI Agents</h4>
+                        <p className="text-zinc-400 text-sm leading-snug">
+                            Specialized agents trained on your unique data and SOPs.
                         </p>
                     </div>
                 </motion.div>
 
-                {/* Add-on 2: Workflows */}
+                {/* Add-on 2 */}
                 <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    className="group relative p-8 rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/5 hover:border-purple-500/30 transition-all duration-300 overflow-hidden"
+                    className="flex items-start gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
                 >
-                    <div className="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative z-10">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/5 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                            <Sparkles className="w-6 h-6 text-purple-400" />
-                        </div>
-                        <h4 className="text-xl font-bold text-white mb-3 group-hover:text-purple-200 transition-colors">Custom Automation Workflows</h4>
-                        <p className="text-zinc-400 leading-relaxed text-sm">
-                            We build custom automation workflows using no-code platforms.
+                    <div className="shrink-0 w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                        <Sparkles className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <div>
+                        <h4 className="text-white font-bold text-lg mb-1">Custom Workflows</h4>
+                        <p className="text-zinc-400 text-sm leading-snug">
+                            End-to-end automation for your specific business logic.
                         </p>
                     </div>
                 </motion.div>
-
             </div>
         </div>
+
 
       </div>
     </section>

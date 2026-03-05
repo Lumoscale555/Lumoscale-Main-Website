@@ -10,7 +10,7 @@ import { Helmet } from 'react-helmet-async';
 
 const BlogIndex = () => {
     const [posts, setPosts] = useState<BlogPost[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -28,11 +28,6 @@ const BlogIndex = () => {
     };
 
     useEffect(() => {
-        // Always scroll to top first unless there's a specific hash to a section
-        if (!window.location.hash) {
-            window.scrollTo(0, 0);
-        }
-        
         fetchPosts();
     }, []);
 
@@ -51,13 +46,6 @@ const BlogIndex = () => {
             setTimeout(scrollToElement, 100);
         }
     }, [window.location.hash, posts]);
-
-    useEffect(() => {
-        // Always scroll to top first unless there's a specific hash to a section
-        if (!window.location.hash) {
-            window.scrollTo(0, 0);
-        }
-    }, [location.pathname]);
 
     const fetchPosts = async () => {
         const { data, error } = await supabase
@@ -132,15 +120,32 @@ const BlogIndex = () => {
                     </p>
                 </div>
 
-                {loading ? null : posts.length === 0 ? (
+                {loading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <div key={i} className="bg-[#0A0A0A] border border-white/5 rounded-3xl overflow-hidden h-[400px] animate-pulse">
+                                <div className="h-56 bg-white/5" />
+                                <div className="p-6 space-y-4">
+                                    <div className="h-4 w-24 bg-white/5 rounded" />
+                                    <div className="h-8 w-full bg-white/5 rounded" />
+                                    <div className="h-4 w-full bg-white/5 rounded" />
+                                    <div className="h-4 w-2/3 bg-white/5 rounded" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : posts.length === 0 ? (
                     <div className="text-center py-20 text-zinc-500 border border-white/5 rounded-3xl bg-white/[0.02]">
                         <p>No articles published yet. Check back soon!</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {posts.map((post, index) => (
-                            <article
+                            <motion.article
                                 key={post.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
                                 className="group relative flex flex-col h-full"
                             >
                                 <Link
@@ -199,7 +204,7 @@ const BlogIndex = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </article>
+                            </motion.article>
                         ))}
                     </div>
                 )}

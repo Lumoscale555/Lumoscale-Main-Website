@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaInstagram, FaFacebookF, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
@@ -18,7 +19,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-7xl mx-auto p-8 md:p-12 md:pb-8 overflow-hidden relative">
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-9 gap-8 mb-16">
 
             {/* BRAND COLUMN - col-span-4 */}
             <div className="lg:col-span-4 space-y-8">
@@ -54,22 +55,32 @@ const Footer = () => {
               <h4 className="text-white font-bold mb-6">Explore</h4>
               <ul className="space-y-4">
                 {[
-                  { label: "Home", href: "/#hero" },
-                  { label: "Why Lumoscale", href: "/#beforeafter" },
-                  { label: "Live Demo", href: "/#demo" },
-                  { label: "Features", href: "/#solution" },
-                  { label: "Blogs", href: "/blog" },
-                  { label: "Pricing", href: "/#pricing" },
-                  { label: "FAQ", href: "/#faq" },
-                  { label: "Privacy Policy", href: "/privacy-policy" }
+                  { label: "Home", href: "/#hero", external: true },
+                  { label: "Why Lumoscale", href: "/#beforeafter", external: true },
+                  { label: "Live Demo", href: "/#demo", external: true },
+                  { label: "Services", href: "/#services", external: true },
+                  { label: "Process", href: "/#process", external: true },
+                  { label: "Insights", href: "/blog", external: false },
+                  { label: "Pricing", href: "/#pricing", external: true },
+                  { label: "FAQ", href: "/#faq", external: true },
+                  { label: "Privacy Policy", href: "/privacy-policy", external: false }
                 ].map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-white/60 hover:text-white hover:translate-x-1 transition-all inline-block"
-                    >
-                      {link.label}
-                    </a>
+                    {link.external ? (
+                      <a
+                        href={link.href}
+                        className="text-white/60 hover:text-white hover:translate-x-1 transition-all inline-block"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        to={link.href}
+                        className="text-white/60 hover:text-white hover:translate-x-1 transition-all inline-block"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -85,8 +96,11 @@ const Footer = () => {
                   </div>
                   <div>
                     <p className="text-xs text-white/40 font-bold uppercase tracking-wider mb-1">Email Us</p>
-                    <a href="mailto:contact@lumoscale.com" className="text-white hover:text-blue-400 transition-colors">
+                    <a href="mailto:contact@lumoscale.com" className="block text-white hover:text-blue-400 transition-colors mb-1">
                       contact@lumoscale.com
+                    </a>
+                    <a href="mailto:vamsi@lumoscale.com" className="block text-white hover:text-blue-400 transition-colors">
+                      vamsi@lumoscale.com
                     </a>
                   </div>
                 </li>
@@ -112,22 +126,6 @@ const Footer = () => {
                   </div>
                 </li>
               </ul>
-            </div>
-
-            {/* LINKEDIN POST COLUMN - col-span-3 */}
-            <div className="lg:col-span-3">
-              <h4 className="text-white font-bold mb-6">Latest Update</h4>
-              <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/5 shadow-2xl">
-                <iframe
-                  src="https://www.linkedin.com/embed/feed/update/urn:li:share:7407429716019896320"
-                  height="380"
-                  width="100%"
-                  frameBorder="0"
-                  allowFullScreen
-                  title="Lumoscale LinkedIn Post"
-                  className="w-full"
-                ></iframe>
-              </div>
             </div>
 
           </div>

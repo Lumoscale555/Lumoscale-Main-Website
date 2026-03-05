@@ -1,18 +1,16 @@
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-
-
-import Solution from "@/components/Solution";
-
+import Hero from "../components/Hero";   
 import DMDemo from "@/components/DMDemo";
+import Services from "@/components/Services";
 import BeforeAfter from "@/components/BeforeAfter";
 import ScrollProgress from "@/components/ScrollProgress";
 import Pricing from "@/components/Pricing";
-import FAQ from "@/components/FAQ";
+import FAQs from "@/components/FAQ";
+import Process from "@/components/Process";
 
 import Footer from "@/components/Footer";
 import BlogPreview from "@/components/BlogPreview";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
@@ -21,75 +19,66 @@ const Index = () => {
   const scrollToTarget = location.state?.scrollTo;
   const hash = location.hash;
   
-  // Use state (priority) or hash (fallback) for determining if we should hide
+  // Use state (priority) or hash (fallback) for determining target
   const targetId = scrollToTarget || (hash ? hash.replace('#', '') : null);
-  const [isScrolled, setIsScrolled] = useState(!targetId);
 
   useLayoutEffect(() => {
-    // Prevent browser from messing with scroll
+    if (!targetId) return;
+
+    // Disable scroll restoration for precise control
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
 
     const scrollToSection = () => {
-      if (targetId) {
-        const element = document.getElementById(targetId);
-        if (element) {
-          const headerOffset = 100;
-          const y = element.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-          window.scrollTo(0, y);
-        }
-      } else {
-        window.scrollTo(0, 0);
-      }
-      // Reveal content after scroll is set
-      setIsScrolled(true);
+      const element = document.getElementById(targetId);
+      if (element) {
+        const headerOffset = 100;
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - headerOffset;
 
-      // Clean URL hash after scroll
-      if (hash) {
-        window.history.replaceState(null, '', window.location.pathname);
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "auto"
+        });
+        return true;
       }
+      return false;
     };
 
-    // Run immediately
-    // Force instant scroll by temporarily disabling CSS smooth scroll
-    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = 'auto';
-    
-    scrollToSection();
-    
-    // Restore smooth scroll after a small tick
-    const timer = setTimeout(() => {
-        document.documentElement.style.scrollBehavior = originalScrollBehavior;
-    }, 50);
-
-    return () => clearTimeout(timer);
-  }, [hash, scrollToTarget, targetId]);
+    // Try immediate scroll
+    if (!scrollToSection()) {
+      // One retry after DOM settles
+      const timer = setTimeout(() => {
+        scrollToSection();
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [targetId]);
 
   return (
-    <div 
-      className="min-h-screen bg-background text-foreground overflow-x-hidden"
-      style={{ opacity: isScrolled ? 1 : 0 }}
-    >
+    <div className="min-h-screen bg-black text-white">
       <Helmet>
-        <title>Lumoscale - AI Voice & Text Agents for Real Estate & Healthcare</title>
-        <meta name="description" content="Never miss a lead again. Lumoscale builds AI Voice & Text agents that handle calls, DMs, and bookings 24/7 in YOUR cloned voice. Built for Real Estate & Healthcare." />
-        <link rel="canonical" href="https://www.lumoscale.com" />
+        <title>Lumoscale | AI Agents for Med Spas & Salons</title>
+        <meta name="description" content="24/7 AI receptionists and sales agents for med spas, salons, and wellness businesses. Never miss a booking again." />
       </Helmet>
-      <ScrollProgress />
+      
       <Header />
+      <ScrollProgress />
       <Hero />
       <BeforeAfter />
+
       <DMDemo />
+      <Services />
 
 
-      <Solution />
-      <BlogPreview />
+
+      <Process />
       <Pricing />
 
-      <FAQ />
+      <FAQs />
       <Footer />
-      {/* <ChatWidget /> */}
     </div>
   );
 };

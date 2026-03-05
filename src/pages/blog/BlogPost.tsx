@@ -37,7 +37,43 @@ const BlogPostPage = () => {
     };
 
     if (loading) return (
-        <div className="min-h-screen bg-black"></div>
+        <div className="min-h-screen bg-black text-white pt-24 pb-12 px-4 selection:bg-purple-500/30">
+            {/* Nav Skeleton */}
+            <div className="fixed top-24 left-4 z-50 md:left-8 hidden lg:block">
+                <div className="h-10 w-32 bg-zinc-900 rounded-full border border-white/5 animate-pulse" />
+            </div>
+
+            <div className="container mx-auto max-w-4xl relative z-10 animate-pulse space-y-8">
+                {/* Meta Skeleton */}
+                <div className="flex items-center gap-4 mb-4">
+                    <div className="h-4 w-32 bg-zinc-800 rounded" />
+                    <div className="h-4 w-24 bg-zinc-800 rounded" />
+                </div>
+
+                {/* Title Skeleton */}
+                <div className="space-y-4">
+                    <div className="h-12 w-3/4 bg-zinc-800 rounded-lg" />
+                    <div className="h-12 w-1/2 bg-zinc-800 rounded-lg" />
+                </div>
+
+                {/* Excerpt Skeleton */}
+                <div className="space-y-3 pt-4">
+                    <div className="h-6 w-full bg-zinc-800/50 rounded" />
+                    <div className="h-6 w-5/6 bg-zinc-800/50 rounded" />
+                </div>
+
+                {/* Image Skeleton */}
+                <div className="aspect-video w-full bg-zinc-900 rounded-2xl border border-white/5 mt-10" />
+
+                {/* Content Skeleton */}
+                <div className="space-y-4 max-w-3xl mx-auto pt-10">
+                    <div className="h-4 w-full bg-zinc-800/30 rounded" />
+                    <div className="h-4 w-full bg-zinc-800/30 rounded" />
+                    <div className="h-4 w-5/6 bg-zinc-800/30 rounded" />
+                    <div className="h-4 w-full bg-zinc-800/30 rounded" />
+                </div>
+            </div>
+        </div>
     );
 
     if (!post) return (
@@ -97,71 +133,77 @@ const BlogPostPage = () => {
                 </Link>
             </div>
 
-            {/* Hero Header */}
-            <div className="relative pt-10 pb-0 px-4">
-                <div className="container mx-auto max-w-4xl relative z-10">
-                    <div>
-                        <div className="flex items-center gap-4 text-sm text-emerald-400 font-medium mb-4">
-                            <span className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4" />
-                                {new Date(post.created_at).toLocaleDateString(undefined, {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                })}
-                            </span>
-                            <span className="w-1 h-1 rounded-full bg-zinc-600" />
-                            <span>5 min read</span>
-                        </div>
-
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4 leading-tight">
-                            {post.title}
-                        </h1>
-
-                        {post.excerpt && (
-                            <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed max-w-3xl mb-10">
-                                {post.excerpt}
-                            </p>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {/* Featured Image */}
-            {post.image_url && (
-                <div
-                    className="container mx-auto max-w-5xl px-4 mb-10"
-                >
-                    <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-                        <img
-                            src={post.image_url}
-                            alt={post.title}
-                            className="object-cover w-full h-full"
-                        />
-                    </div>
-                </div>
-            )}
-
-            {/* Content */}
-            <article className="container mx-auto max-w-3xl px-4 pb-32">
-                <div
-                    className="premium-blog-content"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                />
-
-                {/* Tags */}
-                {post.tags && post.tags.length > 0 && (
-                    <div className="mt-16 pt-8 border-t border-white/10">
-                        <div className="flex flex-wrap gap-2">
-                            {post.tags.map(tag => (
-                                <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-sm text-zinc-400">
-                                    #{tag}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                {/* Hero Header */}
+                <div className="relative pt-10 pb-0 px-4">
+                    <div className="container mx-auto max-w-4xl relative z-10">
+                        <div>
+                            <div className="flex items-center gap-4 text-sm text-emerald-400 font-medium mb-4">
+                                <span className="flex items-center gap-2">
+                                    <Calendar className="h-4 w-4" />
+                                    {new Date(post.created_at).toLocaleDateString(undefined, {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                    })}
                                 </span>
-                            ))}
+                                <span className="w-1 h-1 rounded-full bg-zinc-600" />
+                                <span>5 min read</span>
+                            </div>
+
+                            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4 leading-tight">
+                                {post.title}
+                            </h1>
+
+                            {post.excerpt && (
+                                <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed max-w-3xl mb-10">
+                                    {post.excerpt}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Featured Image */}
+                {post.image_url && (
+                    <div
+                        className="container mx-auto max-w-5xl px-4 mb-10"
+                    >
+                        <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
+                            <img
+                                src={post.image_url}
+                                alt={post.title}
+                                className="object-cover w-full h-full"
+                            />
                         </div>
                     </div>
                 )}
-            </article>
+
+                {/* Content */}
+                <article className="container mx-auto max-w-3xl px-4 pb-32">
+                    <div
+                        className="premium-blog-content"
+                        dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
+
+                    {/* Tags */}
+                    {post.tags && post.tags.length > 0 && (
+                        <div className="mt-16 pt-8 border-t border-white/10">
+                            <div className="flex flex-wrap gap-2">
+                                {post.tags.map(tag => (
+                                    <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-sm text-zinc-400">
+                                        #{tag}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </article>
+            </motion.div>
 
             {/* Footer */}
             <div className="border-t border-white/10 py-12 bg-zinc-900/30">
