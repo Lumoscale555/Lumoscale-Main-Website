@@ -53,7 +53,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="inline-flex items-center gap-3 px-4 py-2 bg-blue-500/5 rounded-full w-fit backdrop-blur-md border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
+              className="flex items-center gap-3 px-4 py-2 bg-blue-500/5 rounded-full w-fit backdrop-blur-md border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
             >
               <span className="flex h-2 w-2 relative">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
@@ -87,7 +87,7 @@ const Hero = () => {
               </p>
 
               <p
-                className="text-lg text-zinc-500 max-w-lg leading-relaxed font-light"
+                className="text-lg text-zinc-500 max-w-2xl leading-relaxed font-light"
               >
                 Every missed call is now a booked appointment. Every late-night inquiry gets qualified. Your AI team works around the clock so your calendar stays full.
               </p>
