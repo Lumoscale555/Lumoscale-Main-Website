@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Wifi, Battery, Video, CheckCircle2, Bell, Clock, Volume2, Plus } from "lucide-react";
+import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Wifi, Battery, Video, CheckCircle2, Bell, Clock, Volume2, Plus, ArrowRight } from "lucide-react";
 import { useIsMobile } from "../hooks/use-mobile";
 
 // Helper for Mouse-following spotlight effect
@@ -101,12 +101,12 @@ const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { ch
 };
 
 const TextAgentDemo = () => {
-    const [step, setStep] = useState(0); // 0: Chat, 1: Booking, 2: Slack, 3: Brief
-    const [visibleMessages, setVisibleMessages] = useState<any[]>([]);
-    const [typingState, setTypingState] = useState<{ type: 'user' | 'ai' | null }>({ type: null });
-    const [isBooked, setIsBooked] = useState(false);
+    const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai', text: string }>>([]);
+    const [isChatActive, setIsChatActive] = useState(false);
+    const [inputValue, setInputValue] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
+    const sessionId = useRef(`session-${Math.random().toString(36).substring(7)}`).current;
     const chatContainerRef = useRef<HTMLDivElement>(null);
-    const isMobile = useIsMobile();
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
@@ -119,470 +119,191 @@ const TextAgentDemo = () => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [visibleMessages, typingState]);
+    }, [messages, isTyping]);
 
-    // The script provided by the user
-    const script = [
-        { sender: "lead", text: "Hey, I have 100+ leads sitting in my DMs right now and I can't get to them.", delay: 500 },
-        { sender: "ai", text: "Oof, that's a great problem to have... but also painful if they go cold. Are you handling all those yourself or do you have someone helping?", delay: 3500 },
-        { sender: "lead", text: "My VA tries, but she's too slow and misses the qualified ones. I'm definitely losing revenue.", delay: 6500 },
-        { sender: "ai", text: "Yeah, I hear that a lot. Speed kills in DMs, by the time someone replies 6 hours later, the lead's already talking to 3 other people. How much time are you spending managing this daily?", delay: 10500 },
-        { sender: "lead", text: "Honestly? Too much. And the VA still needs me to step in constantly.", delay: 13500 },
-        { sender: "ai", text: "Makes sense. That's exactly why we built this—takes the whole thing off your plate. Replies in under a minute, sorts who's serious vs who's browsing, and only sends you people ready to buy. No VA needed.", delay: 18000 },
-        { sender: "lead", text: "I'm interested, but I don't want it to sound like a generic bot. My brand is premium.", delay: 21500 },
-        { sender: "ai", text: "Totally get it. That's why we don't use templates, we actually train it on your past conversations. Your tone, your style, how you handle objections. It sounds like you, not a robot. Want to see how it works with a quick demo?", delay: 26000 },
-        { sender: "lead", text: "Yeah, let's see it.", delay: 29000 },
-        { sender: "ai", text: "Perfect. Here's the link: https://cal.com/lumoscale/30min. We can walk through exactly how it'd handle your 100 leads and get them moving again. Sound good?", delay: 33000 },
-        { sender: "lead", text: "Sounds good, booked.", delay: 36000 },
-        { sender: "ai", text: "Awesome. Talk soon! 🚀", delay: 38500 }
-    ];
+    const handleSendMessage = async () => {
+        if (!inputValue.trim()) return;
 
-    // Chat Sequence Controller
-    useEffect(() => {
-        if (step !== 0) return;
+        const userMsg = inputValue.trim();
 
-        let timeouts: NodeJS.Timeout[] = [];
-        let startTime = Date.now();
+        setMessages(prev => [...prev, { sender: 'user', text: userMsg }]);
+        setInputValue("");
+        setIsTyping(true);
 
-        // clear previous state
-        setVisibleMessages([]);
-        setTypingState({ type: null });
+        try {
+            // Updated webhook URL based on user context
+            const response = await fetch("https://n8n.srv1011051.hstgr.cloud/webhook/website-text%20agent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    entry: [
+                        {
+                            messaging: [
+                                {
+                                    sender: { id: sessionId },
+                                    message: { text: userMsg }
+                                }
+                            ]
+                        }
+                    ]
+                })
+            });
 
-        // Schedule messages and typing indicators
-        script.forEach((msg, index) => {
-            // Schedule Message Appearance
-            timeouts.push(setTimeout(() => {
-                setVisibleMessages(prev => [...prev, msg]);
-                setTypingState({ type: null }); // Stop typing when msg appears
-
-                // If this is the last message, schedule transition
-                if (index === script.length - 1) {
-                    setTimeout(() => setStep(1), 3000);
-                }
-            }, msg.delay));
-
-            // Schedule Typing Indicator (1.5s before message, except first one if too fast)
-            const typingStart = msg.delay - 1500;
-            if (typingStart > 0) {
-                timeouts.push(setTimeout(() => {
-                    setTypingState({ type: msg.sender === 'lead' ? 'user' : 'ai' });
-                }, typingStart));
-            } else if (index === 0) {
-                // Special case for first message if needed, or just let it pop
-                timeouts.push(setTimeout(() => {
-                    setTypingState({ type: msg.sender === 'lead' ? 'user' : 'ai' });
-                }, 0));
+            const data = await response.json();
+            
+            if (data.reply) {
+                setMessages(prev => [...prev, { sender: 'ai', text: data.reply }]);
+            } else {
+                 // Fallback if no reply structure key matches
+                 console.error("Unexpected response format:", data);
             }
-        });
 
-        return () => timeouts.forEach(clearTimeout);
-    }, [step]);
-
-    // App Sequence (Booking -> Slack -> Brief -> Reset)
-    useEffect(() => {
-        if (step === 0) return;
-
-        const stepTimers = [
-            { step: 1, duration: 8000 }, // Booking (Simulated Interaction)
-            { step: 2, duration: 5000 }, // Slack
-            { step: 3, duration: 6000 }  // Brief
-        ];
-
-        const currentTimer = stepTimers.find(s => s.step === step);
-        if (currentTimer) {
-            const timer = setTimeout(() => {
-                setStep(prev => (prev + 1) > 3 ? 0 : prev + 1);
-            }, currentTimer.duration);
-            return () => clearTimeout(timer);
+        } catch (error) {
+            console.error("Error sending message:", error);
+            // Optional: Add error message to chat
+        } finally {
+            setIsTyping(false);
         }
-    }, [step]);
+    };
+
+
+
+    const handleStartChat = () => {
+        setIsChatActive(true);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
+    };
 
     return (
         <PhoneMockup time="10:23" accentColor="blue">
             {/* Header */}
             <div className="px-5 py-3.5 border-b border-zinc-900/50 flex justify-between items-center bg-black sticky top-0 z-20">
                 <div className="flex items-center gap-3">
-                    {step === 0 && (
-                        <>
-                            <div className="relative">
-                                <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-blue-400/20">
-                                    <img
-                                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150"
-                                        alt="AI Avatar"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-blue-400 rounded-full border-2 border-black"></div>
-                            </div>
-                            <div>
-                                <h3 className="text-white font-semibold text-sm">Lumoscale AI</h3>
-                                <div className="flex items-center gap-1.5">
-                                    <span className="text-blue-400 text-[10px] font-bold">ONLINE</span>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    {step === 1 && (
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-blue-400/10 rounded-lg"><Calendar className="w-4 h-4 text-blue-400" /></div>
-                            <span className="text-white font-bold">Booking</span>
+                    <div className="relative">
+                        <div className="w-10 h-10 rounded-full overflow-hidden border border-blue-500/20 bg-transparent flex items-center justify-center">
+                            <Bot className="w-6 h-6 text-blue-400" />
                         </div>
-                    )}
-                    {step === 2 && (
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-[#4A154B]/20 rounded-lg"><Slack className="w-4 h-4 text-white" /></div>
-                            <span className="text-white font-bold">Slack</span>
+                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 rounded-full border-2 border-black"></div>
+                    </div>
+                    <div>
+                        <h3 className="text-white font-semibold text-sm">Lumoscale AI</h3>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-blue-500 text-[10px] font-bold">ONLINE</span>
                         </div>
-                    )}
-                    {step === 3 && (
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-blue-500/10 rounded-lg"><FileText className="w-4 h-4 text-blue-400" /></div>
-                            <span className="text-white font-bold">Brief</span>
-                        </div>
-                    )}
+                    </div>
                 </div>
-                {step === 0 && (
-                    <button className="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:bg-zinc-800 transition-colors">
-                        <Video className="w-4 h-4 text-zinc-400" />
-                    </button>
-                )}
             </div>
 
             {/* Content Area */}
             <div className="flex-1 bg-black relative overflow-hidden flex flex-col">
-                <AnimatePresence mode="wait">
-
-                    {/* STEP 0: CHAT */}
-                    {step === 0 && (
+                {!isChatActive ? (
+                    <div className="flex-1 flex flex-col items-center justify-center p-6 bg-gradient-to-b from-black to-zinc-950">
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="flex flex-col items-center"
+                        >
+                            <div className="w-20 h-20 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(59,130,246,0.1)] relative">
+                                <div className="absolute inset-0 rounded-full bg-blue-500/5 animate-ping" />
+                                <Bot className="w-8 h-8 text-blue-400" />
+                            </div>
+                            <h3 className="text-white font-semibold text-lg mb-3">Start Conversation</h3>
+                            <p className="text-zinc-500 text-xs text-center mb-8 max-w-[220px] leading-relaxed">
+                                Experience how our AI agent handles leads and qualifies them automatically.
+                            </p>
+                            <button
+                                onClick={handleStartChat}
+                                className="group relative px-6 py-3 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-400 font-medium text-sm hover:bg-blue-600/20 hover:border-blue-500/40 transition-all flex items-center gap-2 overflow-hidden"
+                            >
+                                <MessageSquare className="w-4 h-4" />
+                                <span>Chat with AI</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                            </button>
+                        </motion.div>
+                    </div>
+                ) : (
+                    <>
                         <div
                             ref={chatContainerRef}
-                            className="flex-1 p-5 flex flex-col justify-start space-y-4 pb-8 overflow-y-auto no-scrollbar scroll-smooth"
+                            className="flex-1 p-5 flex flex-col justify-start space-y-6 pb-6 overflow-y-auto no-scrollbar scroll-smooth bg-gradient-to-b from-black to-zinc-950"
                         >
+                            <div className="flex-1" />
                             <AnimatePresence mode="popLayout" initial={false}>
-                                {visibleMessages.map((msg, idx) => (
+                                {messages.map((msg, idx) => (
                                     <motion.div
                                         key={idx}
-                                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                        initial={{ opacity: 0, y: 10, scale: 0.98 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        className={`flex gap-2 ${msg.sender === 'lead' ? 'justify-end' : ''}`}
+                                        className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}
                                     >
                                         {msg.sender === 'ai' && (
-                                            <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-zinc-800 shrink-0">
-                                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150" className="w-full h-full object-cover" />
+                                            <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-zinc-900 shadow-sm relative top-1">
+                                                <Bot className="w-4 h-4 text-blue-400" />
                                             </div>
                                         )}
 
-                                        <div className={`${msg.sender === 'lead'
-                                            ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-sm shadow-md shadow-blue-500/10'
-                                            : 'bg-zinc-900/80 backdrop-blur-sm text-zinc-200 border border-white/5 rounded-bl-sm'
-                                            } px-4 py-3 rounded-2xl max-w-[80%] shadow-sm`}
+                                        <div className={`${msg.sender === 'user'
+                                            ? 'bg-blue-600/10 text-blue-50 border border-blue-500/20 rounded-2xl rounded-tr-sm shadow-[0_0_15px_rgba(37,99,235,0.05)]'
+                                            : 'bg-white/5 backdrop-blur-md text-zinc-200 border border-white/5 rounded-2xl rounded-tl-sm shadow-sm'
+                                            } px-5 py-3.5 max-w-[85%]`}
                                         >
-                                            <p className="text-[13px] leading-relaxed font-normal tracking-wide">
-                                                {/* Render links if present */}
+                                            <p className="text-xs leading-relaxed font-normal tracking-wide whitespace-pre-wrap">
                                                 {msg.text.includes('https://') ? (
-                                                    <span dangerouslySetInnerHTML={{ __html: msg.text.replace(/(https:\/\/[^\s]+)/g, '<span class="underline decoration-black/30 font-bold">$1</span>') }} />
+                                                    <span dangerouslySetInnerHTML={{ __html: msg.text.replace(/(https:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-blue-400 hover:text-blue-300 underline underline-offset-4 decoration-blue-500/30 transition-colors font-medium">$1</a>') }} />
                                                 ) : msg.text}
                                             </p>
                                         </div>
-
-                                        {msg.sender === 'lead' && (
-                                            <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-zinc-700 shrink-0">
-                                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150" alt="User" className="w-full h-full object-cover" />
-                                            </div>
-                                        )}
                                     </motion.div>
                                 ))}
 
-                                {/* Typing Indicators (Always at bottom) */}
-                                {typingState.type === 'user' && (
+                                {isTyping && (
                                     <motion.div
-                                        key="typing-user"
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        layout
-                                        className="flex justify-end gap-2"
+                                        className="flex gap-3 items-center"
                                     >
-                                        <div className="bg-zinc-800 px-4 py-3 rounded-2xl rounded-br-sm">
-                                            <div className="flex gap-1"><span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" /><span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce delay-75" /><span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce delay-150" /></div>
+                                        <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-zinc-900 top-1 relative">
+                                             <Bot className="w-4 h-4 text-blue-400" />
                                         </div>
-                                        <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-zinc-700 shrink-0">
-                                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150&h=150" alt="User" className="w-full h-full object-cover" />
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                {typingState.type === 'ai' && (
-                                    <motion.div
-                                        key="typing-ai"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        layout
-                                        className="flex flex-col gap-1"
-                                    >
-                                        <div className="flex gap-2 items-center">
-                                            <div className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-zinc-800 shrink-0">
-                                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150" className="w-full h-full object-cover" />
-                                            </div>
-                                            <div className="bg-zinc-900 px-4 py-3 rounded-2xl rounded-bl-sm border border-zinc-800">
-                                                <div className="flex gap-1"><span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" /><span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce delay-75" /><span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce delay-150" /></div>
+                                        <div className="bg-white/5 px-4 py-3 rounded-2xl rounded-tl-sm border border-white/5 backdrop-blur-sm">
+                                            <div className="flex gap-1.5 opacity-60">
+                                                <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" />
+                                                <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce delay-75" />
+                                                <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce delay-150" />
                                             </div>
                                         </div>
-                                        <span className="text-[10px] text-zinc-500 font-medium ml-11">AI is generating response...</span>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
-                    )}
 
-                    {/* STEP 1: BOOKING */}
-                    {step === 1 && (
-                        <motion.div
-                            key="booking"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0, x: -50 }}
-                            className="h-full flex flex-col justify-center px-4"
-                        >
-                            <AnimatePresence mode="wait">
-                                {!isBooked ? (
-                                    <motion.div
-                                        key="selection"
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        className="bg-[#1a1d21] rounded-3xl p-6 shadow-xl relative overflow-hidden border border-white/5"
-                                    >
-                                        <div className="flex justify-between items-center mb-6">
-                                            <h5 className="font-bold text-white text-base">Select a Time</h5>
-                                            <div className="bg-[#2d3339] text-white px-3 py-1 rounded-full text-[10px] font-bold border border-white/10">30 min</div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-3 mb-6">
-                                            <div className="bg-blue-500 text-white font-bold text-center py-4 rounded-xl text-xs shadow-lg transform scale-105 relative ring-2 ring-white/10">
-                                                <div className="absolute -top-2 -right-2 w-6 h-6 bg-black rounded-full border-2 border-blue-500 flex items-center justify-center">
-                                                    <CheckCircle2 className="w-3 h-3 text-blue-500" />
-                                                </div>
-                                                2:00 PM
-                                            </div>
-                                            <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-xs border border-white/5">
-                                                2:30 PM
-                                            </div>
-                                            <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-xs border border-white/5">
-                                                3:00 PM
-                                            </div>
-                                            <div className="bg-[#22262b] text-white/40 text-center py-4 rounded-xl text-xs border border-white/5">
-                                                3:30 PM
-                                            </div>
-                                        </div>
-
-                                        <button
-                                            onClick={() => setIsBooked(true)}
-                                            className="w-full py-4 rounded-xl bg-white text-black font-bold text-sm shadow-xl flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
-                                        >
-                                            <Calendar className="w-4 h-4" />
-                                            Confirm Booking
-                                            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse ml-2" />
-                                        </button>
-                                    </motion.div>
-                                ) : (
-                                    <motion.div
-                                        key="confirmed"
-                                        initial={{ scale: 0.9, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        className="bg-[#111316] rounded-3xl p-6 border border-white/10 relative overflow-hidden"
-                                    >
-                                        {/* Top Green Bar */}
-                                        <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500" />
-
-                                        <div className="flex items-center gap-4 mb-6 mt-2">
-                                            <div className="w-12 h-12 rounded-full bg-[#1a2e22] flex items-center justify-center">
-                                                <CheckCircle2 className="w-6 h-6 text-blue-500" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-lg font-bold text-white leading-tight">Booking Confirmed</h3>
-                                                <p className="text-white/40 text-[10px]">Check your email for details</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-[#1a1d21] rounded-2xl p-4 border border-white/5 space-y-4">
-                                            <div>
-                                                <p className="text-[10px] text-white/30 font-bold uppercase tracking-wider mb-1">EVENT</p>
-                                                <p className="text-white font-bold text-sm">Strategy Session: Scale AI</p>
-                                            </div>
-
-                                            <div className="flex items-start gap-3">
-                                                <Calendar className="w-4 h-4 text-blue-500 mt-0.5" />
-                                                <div>
-                                                    <p className="text-white text-[10px] font-medium">Tomorrow (Oct 25th)</p>
-                                                    <p className="text-white/40 text-[10px]">2:00 PM - 2:30 PM EST</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-start gap-3">
-                                                <Video className="w-4 h-4 text-blue-500 mt-0.5" />
-                                                <div>
-                                                    <p className="text-white text-[10px] font-medium">Google Meet</p>
-                                                    <p className="text-blue-400 text-[10px] underline">meet.google.com/abc-xyz</p>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-start gap-3">
-                                                <FileText className="w-4 h-4 text-blue-500 mt-0.5" />
-                                                <div>
-                                                    <p className="text-white text-[10px] font-medium">Agenda</p>
-                                                    <p className="text-white/40 text-[10px]">Lead Flow Analysis & Automation Demo</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </motion.div>
-                    )}
-
-                    {/* STEP 2: SLACK */}
-                    {step === 2 && (
-                        <motion.div
-                            key="slack"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, x: -50 }}
-                            className="h-full flex flex-col justify-center px-2"
-                        >
-                            <div className="bg-[#1a1d21] rounded-lg overflow-hidden shadow-2xl relative border border-white/10">
-                                <div className="bg-[#2d3339] px-4 py-3 flex items-center justify-between border-b border-white/5">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-white/70 font-bold text-xs"># closed-deals</span>
-                                    </div>
-                                    <Bell className="w-4 h-4 text-white/50" />
-                                </div>
-
-                                <div className="p-5 bg-[#111316]">
-                                    <div className="flex gap-3">
-                                        <div className="w-9 h-9 rounded bg-blue-500 flex items-center justify-center text-white shrink-0 mt-1">
-                                            <Bot className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-white font-bold text-sm">Lumoscale Bot</span>
-                                                <span className="bg-white/10 text-white/60 text-[10px] px-1 rounded uppercase font-bold">APP</span>
-                                                <span className="text-white/30 text-xs">10:48 AM</span>
-                                            </div>
-
-                                            <div className="mt-1 text-white/90 text-xs">
-                                                <p className="font-bold mb-1">🔥 NEW DEMO BOOKED!</p>
-                                                <p className="text-white/70">A high-value lead just booked a time slot.</p>
-                                            </div>
-
-                                            <div className="mt-3 pl-3 border-l-2 border-blue-500 bg-blue-500/10 p-3 rounded-r-lg">
-                                                <div className="grid grid-cols-2 gap-y-2 text-[10px]">
-                                                    <div><span className="text-white/40 block text-[10px] uppercase">Name</span> <span className="font-bold text-white">Mike Chen</span></div>
-                                                    <div><span className="text-white/40 block text-[10px] uppercase">Value</span> <span className="font-bold text-blue-400">$5k - $10k</span></div>
-                                                    <div className="col-span-2"><span className="text-white/40 block text-[10px] uppercase">Context</span> <span className="text-white/80 italic">"Losing revenue, VA is too slow..."</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        {/* Input Area */}
+                        <div className="p-4 bg-zinc-950/80 backdrop-blur-xl border-t border-white/5">
+                            <div className="flex gap-3 items-center bg-white/5 border border-white/5 rounded-full px-2 py-1.5 focus-within:bg-white/10 focus-within:border-white/10 transition-all duration-300 shadow-inner">
+                                <input
+                                    type="text"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="Type a message..."
+                                    className="flex-1 bg-transparent px-4 py-2.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none"
+                                />
+                                <button
+                                    onClick={handleSendMessage}
+                                    disabled={!inputValue.trim() || isTyping}
+                                    className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white hover:bg-blue-400 transition-all disabled:opacity-20 disabled:scale-95 disabled:hover:bg-blue-500 shadow-lg shadow-blue-500/20"
+                                >
+                                    <ArrowRight className="w-4 h-4" />
+                                </button>
                             </div>
-                        </motion.div>
-                    )}
-
-                    {/* STEP 3: BRIEF */}
-                    {step === 3 && (
-                        <motion.div
-                            key="brief"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="h-full flex flex-col justify-center px-4"
-                        >
-                            <div className="bg-[#0f1115] rounded-3xl p-6 shadow-2xl relative border border-white/10 h-full max-h-[600px] overflow-hidden">
-                                {/* Header */}
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
-                                        <FileText className="w-6 h-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-white font-bold text-base leading-none mb-1">Pre-Call Brief</h4>
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                                            <span className="text-white/40 text-[10px]">System Active</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Main Card */}
-                                <div className="bg-[#16191d] rounded-2xl p-5 border border-white/5 relative overflow-hidden">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <div className="flex items-center gap-2">
-                                            <FileText className="w-3 h-3 text-blue-500" />
-                                            <span className="text-blue-500 text-xs font-bold tracking-widest uppercase">Pre-Call Brief</span>
-                                        </div>
-                                        <span className="text-[10px] text-white/20 font-mono">DELIVERED 1HR BEFORE CALL</span>
-                                    </div>
-
-                                    {/* Core Problem */}
-                                    <div className="bg-[#1f2329] rounded-xl p-3 mb-3 border border-white/5">
-                                        <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Core Problem</span>
-                                        <p className="text-white text-xs font-medium leading-relaxed">
-                                            Manual follow-up is broken. Drowning in 100+ unread leads/week.
-                                        </p>
-                                    </div>
-
-                                    {/* Grid: Urgency & Style */}
-                                    <div className="grid grid-cols-2 gap-3 mb-3">
-                                        <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5">
-                                            <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Urgency Level</span>
-                                            <p className="text-[#f87171] text-xs font-bold">HIGH - Ready to act</p>
-                                        </div>
-                                        <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5">
-                                            <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Comm Style</span>
-                                            <p className="text-white text-[10px] font-bold">Direct, Frustrated</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Opening Approach */}
-                                    <div className="bg-[#1f2329] rounded-xl p-3 mb-3 border border-white/5">
-                                        <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">Opening Approach</span>
-                                        <p className="text-white/80 text-xs italic">
-                                            "I can see you're leaving money on the table. Let's fix that today."
-                                        </p>
-                                    </div>
-
-                                    {/* What They Need */}
-                                    <div className="bg-[#1f2329] rounded-xl p-3 border border-white/5 mb-4">
-                                        <span className="text-blue-500/60 text-[10px] font-bold uppercase tracking-wider block mb-1">What They Need</span>
-                                        <p className="text-white text-xs font-bold">
-                                            Automation that feels human + Immediate ROI
-                                        </p>
-                                    </div>
-
-                                    {/* Footer */}
-                                    <div className="border-t border-white/5 pt-3 flex items-center justify-between">
-                                        <div className="text-[10px] text-white/50">
-                                            <span className="text-white font-bold">Why this matters:</span> Know exactly how to close.
-                                        </div>
-                                        <span className="bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded">
-                                            +50% Close Rate
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Restart Indicator */}
-                                <div className="mt-4 flex items-center justify-center gap-2 text-blue-500 opacity-80">
-                                    <div className="w-5 h-5 rounded-full border border-blue-500 flex items-center justify-center">
-                                        <CheckCircle2 className="w-3 h-3" />
-                                    </div>
-                                    <span className="text-sm font-bold">Brief Sent to You</span>
-                                </div>
-                            </div>
-                        </motion.div>
-                    )}
-
-                </AnimatePresence>
+                        </div>
+                    </>
+                )}
             </div>
         </PhoneMockup>
     );
@@ -874,7 +595,7 @@ export default function DMDemo() {
                     </div>
                 </div>
 
-                <div className="flex flex-col items-center relative min-h-[800px]">
+                <div id="demo-interactive" className="flex flex-col items-center relative min-h-[800px]">
                     {/* Demos */}
                     <div className="w-full max-w-[500px] mb-12">
                         <AnimatePresence mode="wait">

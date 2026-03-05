@@ -102,7 +102,7 @@ const Header = () => {
           <nav className="hidden md:flex items-center gap-1">
             <NavItem href="/#hero" label="Home" />
             <NavItem href="/#beforeafter" label="Why Lumoscale" />
-            <NavItem href="/#demo" label="Talk to AI" />
+            <NavItem href="/#demo-interactive" label="Talk to AI" />
             <NavItem href="/#solution" label="Features" />
             <NavItem href="/blog" label="Blogs" />
             <NavItem href="/#pricing" label="Pricing" />
@@ -162,7 +162,7 @@ const Header = () => {
                 {[
                   { href: "/#hero", label: "Home" },
                   { href: "/#beforeafter", label: "Why Lumoscale" },
-                  { href: "/#demo", label: "Talk to our AI" },
+                  { href: "/#demo-interactive", label: "Talk to our AI" },
                   { href: "/#solution", label: "Features" },
                   { href: "/blog", label: "Blogs" },
                   { href: "/#pricing", label: "Pricing" },

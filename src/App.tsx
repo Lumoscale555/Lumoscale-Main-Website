@@ -20,6 +20,8 @@ import { AuditModalProvider } from "./context/AuditModalContext";
 
 import { HelmetProvider } from 'react-helmet-async';
 
+import ChatWidget from "./components/ChatWidget";
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -27,6 +29,7 @@ const App = () => (
         <AuditModalProvider>
           <Toaster />
           <Sonner />
+          <ChatWidget />
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AuditModal />
             <Routes>
