@@ -101,7 +101,7 @@ const Hero = () => {
             >
               {/* Premium Talk to Team Button */}
               <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+
                 <Button
                   className="relative h-auto px-8 py-5 text-lg bg-white text-black font-bold rounded-2xl shadow-xl hover:scale-[1.02] transition-all duration-300 border border-white/50 overflow-hidden"
                   onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
@@ -130,7 +130,7 @@ const Hero = () => {
 
           {/* RIGHT - STATIC CARD VISUAL (No Tilt) */}
           <div
-            className="relative flex items-center justify-center min-w-0 h-[640px] lg:h-[700px]"
+            className="hidden lg:flex relative items-center justify-center min-w-0 h-[640px] lg:h-[700px]"
           >
             {/* Dynamic Glow Behind Graphic */}
             {/* Dynamic Glow Behind Graphic - Hidden on mobile (black bg), visible on desktop */}
