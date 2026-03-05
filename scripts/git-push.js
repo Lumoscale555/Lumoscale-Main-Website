@@ -1,17 +1,21 @@
 import readline from 'readline';
 import { execSync } from 'child_process';
 
-// User: Configure your two GitHub repository URLs here
+// ⚠️ User: Configure your two GitHub repository URLs here!
+// To push as a different user, add your GitHub username with an '@' before "github.com".
+// Example: If your URL is https://github.com/lumoscale555/repo.git
+// Change it to: https://lumoscale555@github.com/lumoscale555/repo.git
+
 const accounts = {
   1: {
     name: "GitHub Account 1 (e.g., Personal)",
-    // Replace with the repository URL for Account 1
-    repoUrl: "https://github.com/Account1Username/Lumoscale-Main-Website-main.git" 
+    // Replace with: https://YOUR_USERNAME@github.com/...
+    repoUrl: "https://vamsi1465@github.com/vamsi1465/Lumoscale-Main-Website-main.git" 
   },
   2: {
-    name: "GitHub Account 2 (e.g., Work)",
-    // Replace with the repository URL for Account 2
-    repoUrl: "https://github.com/Account2Username/Lumoscale-Main-Website-main.git" 
+    name: "GitHub Account 2 (e.g., Work / lumoscale555)",
+    // Replace with: https://YOUR_USERNAME@github.com/...
+    repoUrl: "https://lumoscale555@github.com/lumoscale555/Lumoscale-Main-Website-main.git" 
   }
 };
 
@@ -36,7 +40,7 @@ rl.question('Enter 1 or 2: ', (answer) => {
     return;
   }
 
-  if (selected.repoUrl.includes("Account1Username") || selected.repoUrl.includes("Account2Username")) {
+  if (selected.repoUrl.includes("YOUR_USERNAME")) {
     console.log("⚠️  Wait! You haven't updated the repository URLs in the script yet.");
     console.log("Please open 'scripts/git-push.js' and replace the placeholder URLs with your actual GitHub repository URLs.");
     rl.close();
