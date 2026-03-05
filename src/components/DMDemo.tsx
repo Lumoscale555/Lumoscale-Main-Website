@@ -350,7 +350,7 @@ const VoiceAgentDemo = () => {
     const isMobile = useIsMobile();
     const MAX_DAILY_CALLS = 2;
 
-    const callContainerRef = useRef<HTMLDivElement>(null);
+    const transcriptContainerRef = useRef<HTMLDivElement>(null);
 
     const fetchDailyCalls = () => {
         try {
@@ -385,6 +385,16 @@ const VoiceAgentDemo = () => {
         };
     }, []);
     const [transcript, setTranscript] = useState<{ id: string, speaker: 'User' | 'Sarah', text: string }[]>([]);
+
+    // Auto-scroll transcript to bottom
+    useEffect(() => {
+        if (transcriptContainerRef.current) {
+            transcriptContainerRef.current.scrollTo({
+                top: transcriptContainerRef.current.scrollHeight,
+                behavior: "smooth"
+            });
+        }
+    }, [transcript]);
 
     useEffect(() => {
         // Setup Retell Event Listeners
@@ -743,15 +753,18 @@ const VoiceAgentDemo = () => {
                         exit={{ opacity: 0, x: isMobile ? 0 : 20, y: isMobile ? 20 : 0 }}
                         className={`${
                             isMobile 
-                            ? "w-full max-w-[380px] h-[300px] mt-4" 
+                            ? "w-full max-w-[380px] h-[400px] mt-2" 
                             : "absolute left-[calc(50%+220px)] top-[10%] bottom-[10%] w-[350px]"
-                        } flex flex-col justify-end pointer-events-none z-30 overflow-hidden`}
+                        } flex flex-col justify-end z-30 overflow-hidden group`}
                     >
                         {!isMobile && <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10" />}
 
-                        <div className={`flex flex-col justify-end gap-3 pb-4 ${isMobile ? 'overflow-y-auto no-scrollbar max-h-full' : ''}`}>
+                        <div 
+                            ref={transcriptContainerRef}
+                            className={`flex flex-col gap-3 pb-4 overflow-y-auto no-scrollbar max-h-full scroll-smooth ${isMobile ? 'pointer-events-auto px-4' : 'pointer-events-none'}`}
+                        >
                             <AnimatePresence initial={false}>
-                                {transcript.slice(isMobile ? -10 : -6).map((msg, idx, arr) => {
+                                {transcript.slice(isMobile ? -15 : -10).map((msg, idx, arr) => {
                                     const isSarah = msg.speaker !== 'User';
                                     const dist = arr.length - 1 - idx; 
                                     return (
