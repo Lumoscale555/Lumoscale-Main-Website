@@ -3,6 +3,60 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Wifi, Battery, Video, CheckCircle2, Bell } from "lucide-react";
 import { useIsMobile } from "../hooks/use-mobile";
 
+// Helper for Mouse-following spotlight effect
+const SpotlightCard = ({ color, title, subtitle }: { color: "emerald" | "blue", title: string, subtitle: string }) => {
+    const divRef = useRef<HTMLDivElement>(null);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [opacity, setOpacity] = useState(0);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!divRef.current) return;
+        const rect = divRef.current.getBoundingClientRect();
+        setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    };
+
+    const handleMouseEnter = () => setOpacity(1);
+    const handleMouseLeave = () => setOpacity(0);
+
+    const colorClass = color === "emerald" ? "74, 222, 128" : "96, 165, 250"; // Tailwind emerald-400 vs blue-400
+
+    return (
+        <div
+            ref={divRef}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="text-center mb-10 w-full max-w-sm p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl relative overflow-hidden group cursor-crosshair"
+        >
+            {/* Spotlight Gradient */}
+            <div
+                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
+                style={{
+                    opacity,
+                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(${colorClass}, 0.15), transparent 40%)`,
+                }}
+            />
+
+            {/* Spotlight Border */}
+            <div
+                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 rounded-2xl z-10"
+                style={{
+                    opacity,
+                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(${colorClass}, 0.4), transparent 40%)`,
+                    maskImage: "linear-gradient(black, black) content-box, linear-gradient(black, black)",
+                    WebkitMaskImage: "linear-gradient(black, black) content-box, linear-gradient(black, black)",
+                    maskComposite: "exclude",
+                    WebkitMaskComposite: "xor",
+                    padding: "1px",
+                }}
+            />
+
+            <h3 className="text-xl font-bold text-white mb-2 relative z-20">{title}</h3>
+            <p className="text-zinc-400 text-sm font-medium relative z-20">{subtitle}</p>
+        </div>
+    );
+};
+
 // Premium Phone Mockup Component with 3D Tilt and Glass Reflections
 const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { children: React.ReactNode, time?: string, accentColor?: "emerald" | "blue" | "purple" }) => {
     const [rotateX, setRotateX] = useState(0);
@@ -844,23 +898,27 @@ export default function DMDemo() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start relative">
                     {/* Center Divider Line - Only visible on large screens */}
-                    <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-zinc-800 to-transparent" />
+                    {/* Center Divider Line - Only visible on large screens */}
+                    <div className="hidden lg:block absolute left-1/2 top-40 h-[750px] w-[2px] bg-white/20 -translate-x-1/2 overflow-hidden shadow-[0_0_15px_rgba(255,255,255,0.1)] rounded-full">
+                        <motion.div
+                            animate={{ y: ["-100%", "100%"] }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-x-0 h-1/2 bg-gradient-to-b from-transparent via-emerald-400 to-transparent blur-[2px] opacity-75"
+                        />
+                        <motion.div
+                            animate={{ y: ["-100%", "100%"] }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "linear", delay: 1.5 }}
+                            className="absolute inset-x-0 h-1/2 bg-gradient-to-b from-transparent via-blue-400 to-transparent blur-[2px] opacity-75"
+                        />
+                    </div>
 
                     <div className="flex flex-col items-center">
-                        <div className="text-center mb-10 w-full max-w-sm p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <h3 className="text-xl font-bold text-white mb-2 relative z-10">Voice Intelligence</h3>
-                            <p className="text-zinc-400 text-sm font-medium relative z-10">Human-like latency with emotional intelligence.</p>
-                        </div>
+                        <SpotlightCard color="emerald" title="Voice Intelligence" subtitle="Human-like latency with emotional intelligence." />
                         <VoiceAgentDemo />
                     </div>
 
                     <div className="flex flex-col items-center">
-                        <div className="text-center mb-10 w-full max-w-sm p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <h3 className="text-xl font-bold text-white mb-2 relative z-10">Conversation Engine</h3>
-                            <p className="text-zinc-400 text-sm font-medium relative z-10">Instant lead qualification and booking.</p>
-                        </div>
+                        <SpotlightCard color="blue" title="Conversation Engine" subtitle="Instant lead qualification and booking." />
                         <TextAgentDemo />
                     </div>
                 </div>
