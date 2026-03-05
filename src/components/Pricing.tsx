@@ -14,39 +14,49 @@ import {
 /* ---------- CONFIG ---------- */
 
 const FEATURES = [
-  "24/7 Instagram DM automation",
-  "Lead qualification (Hot, Warm, Cold)",
-  "Auto-booking via Cal.com",
-  "3x reminder system (WhatsApp + Email)",
-  "Pre-call intelligence briefs",
-  "Live Dashboard to track leads",
-  "Monthly performance report",
+  "Instagram DM automation with instant responses",
+  "Smart lead qualification and filtering",
+  "Automated follow up triggers based on user intent",
+  "Calendar based booking system",
+  "Multi channel meeting reminders via WhatsApp and Email",
+  "Pre call intelligence brief before every meeting",
+  "Post call summary and lead insights",
+  "Live dashboard to track leads and conversions",
+  "Monthly performance and growth report",
 ];
 
 const ADDONS = [
   {
-    title: "Omni-Channel Expansion",
-    desc: "Facebook, LinkedIn, Email and Website chat in one unified flow.",
-    icon: MessageSquare,
-    color: "text-cyan-400",
-    bg: "bg-cyan-500/10",
-    border: "border-cyan-500/20",
+    title: "Custom AI Agents",
+    desc: "Dedicated AI agents built for your exact business logic, sales flow, and decision making.",
+    icon: Sparkles,
+    color: "text-purple-400",
+    bg: "bg-purple-500/10",
+    border: "border-purple-500/20",
   },
   {
-    title: "Native Polyglot",
-    desc: "Fluent conversations across 30+ global languages.",
-    icon: Globe,
-    color: "text-green-400",
-    bg: "bg-green-500/10",
-    border: "border-green-500/20",
-  },
-  {
-    title: "Voice Call Automation",
-    desc: "Inbound calls answered and meetings booked automatically.",
+    title: "Voice Agent Automation",
+    desc: "AI voice agents that answer inbound calls, qualify leads, and book meetings automatically.",
     icon: Phone,
     color: "text-teal-400",
     bg: "bg-teal-500/10",
     border: "border-teal-500/20",
+  },
+  {
+    title: "No Code Automation Workflows",
+    desc: "Custom no code workflows that connect your tools, automate tasks, and remove manual operations.",
+    icon: Zap,
+    color: "text-yellow-400",
+    bg: "bg-yellow-500/10",
+    border: "border-yellow-500/20",
+  },
+  {
+    title: "Channel Expansion On Demand",
+    desc: "Additional channels activated only when needed based on your audience and growth stage.",
+    icon: MessageSquare,
+    color: "text-cyan-400",
+    bg: "bg-cyan-500/10",
+    border: "border-cyan-500/20",
   },
 ];
 
@@ -129,7 +139,7 @@ export default function PricingToggle() {
               </h4>
 
               <a
-                href="https://cal.com/vamsivk/30min"
+                href="https://cal.com/lumoscale/30min"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-green-400 text-black font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 transition"
@@ -147,7 +157,7 @@ export default function PricingToggle() {
             Optional Add Ons
           </p>
           <h3 className="text-2xl font-bold text-white">
-            Extend The System When Needed
+            Scale The System Without Rebuilding Anything
           </h3>
         </div>
 

@@ -16,7 +16,7 @@ const messages = [
   { sender: "lead", text: "I'm interested, but I don't want it to sound like a generic bot. My brand is premium.", delay: 9500 },
   { sender: "ai", text: "Understood. We train the model on *your* specific tone and past successful chats. It feels 100% human. Want to see a live demo of how it handles objections?", delay: 12000 },
   { sender: "lead", text: "Yeah, let's see it.", delay: 14000 },
-  { sender: "ai", text: "Awesome. Here's the link to the private demo: https://cal.com/agency/demo. Let's get those 100 leads converted. 🚀", delay: 15500 }
+  { sender: "ai", text: "Awesome. Here's the link to the private demo: https://cal.com/lumoscale/30min. Let's get those 100 leads converted. 🚀", delay: 15500 }
 ];
 
 const checkpoints = [
@@ -162,7 +162,7 @@ const DMDemo = () => {
           {/* TABS */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             {[
-              { id: "dm", label: "Instagram DM", icon: MessageCircle },
+              { id: "dm", label: "DM Automation", icon: MessageCircle },
               { id: "booking", label: "Booking", icon: Calendar },
               { id: "slack", label: "Team Alert", icon: Bell },
               { id: "brief", label: "Pre-Call Brief", icon: FileText }

@@ -59,7 +59,7 @@ const FinalCTA = () => {
             )}
 
             <iframe
-              src="https://cal.com/vamsivk/30min?embed=1&theme=dark"
+              src="https://cal.com/lumoscale/30min?embed=1&theme=dark"
               className="w-full h-[740px] rounded-b-3xl"
               onLoad={() => setLoading(false)}
             />

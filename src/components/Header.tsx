@@ -52,7 +52,7 @@ const Header = () => {
               hover:scale-105 transition
             "
             onClick={() =>
-              window.open("https://cal.com/vamsivk/30min", "_blank")
+              window.open("https://cal.com/lumoscale/30min", "_blank")
             }
           >
             Get Started
@@ -110,7 +110,7 @@ const Header = () => {
                   "
                   onClick={() => {
                     setOpen(false);
-                    window.open("https://cal.com/vamsivk/30min", "_blank");
+                    window.open("https://cal.com/lumoscale/30min", "_blank");
                   }}
                 >
                   Get Started

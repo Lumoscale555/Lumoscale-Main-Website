@@ -125,7 +125,7 @@ const Hero = () => {
                 variant="outline"
                 className="px-8 py-6 text-lg border-primary/50 hover:bg-primary/10"
                 onClick={() =>
-                  window.open("https://cal.com/vamsivk/30min", "_blank")
+                  window.open("https://cal.com/lumoscale/30min", "_blank")
                 }
               >
                 Book Free Strategy Call
@@ -242,7 +242,7 @@ const Hero = () => {
                 className="w-full bg-gradient-to-r from-primary to-secondary text-black hover:scale-105 transition-all"
                 onClick={() => {
                   setShowVideoModal(false);
-                  window.open("https://cal.com/vamsivk/30min", "_blank");
+                  window.open("https://cal.com/lumoscale/30min", "_blank");
                 }}
               >
                 Book Your Strategy Call Now
@@ -301,7 +301,7 @@ const Hero = () => {
                 className="w-full bg-gradient-to-r from-primary to-secondary text-black text-lg py-6 hover:scale-105 transition-all"
                 onClick={() => {
                   setShowBetaPopup(false);
-                  window.open("https://cal.com/vamsivk/30min", "_blank");
+                  window.open("https://cal.com/lumoscale/30min", "_blank");
                 }}
               >
                 Book Strategy Call
