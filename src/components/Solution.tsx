@@ -13,7 +13,7 @@ const features = [
   },
   {
     icon: Mic,
-    title: "Real Estate & Healthcare Voice Cloning",
+    title: "Real Estate Voice Cloning",
     description: "Indistinguishable from reality. Your tone, your style, perfectly replicated.",
     highlight: "Trust automation that sounds exactly like you.",
     number: "02"

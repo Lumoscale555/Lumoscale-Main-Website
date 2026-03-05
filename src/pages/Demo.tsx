@@ -9,7 +9,7 @@ const Demo = () => {
     <div className="min-h-screen bg-black text-white">
       <Helmet>
         <title>Live AI Demo | Lumoscale</title>
-        <meta name="description" content="Try our AI Voice & Text Agents live. Experience real-time conversation handling for Med Spas & Salons." />
+        <meta name="description" content="Try our AI Voice & Text Agents live. Experience real-time conversation handling for Real Estate." />
       </Helmet>
       
       <Header />

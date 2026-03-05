@@ -11,7 +11,7 @@ const FAQS = [
     },
     {
         question: "Is this legal? Will my Instagram, WhatsApp, or phone number get banned?",
-        answer: "100% safe and compliant. We use official Meta API for Instagram and WhatsApp (verified business accounts). Fully HIPAA compliant for healthcare. Follow all telephony regulations. Zero risk of bans or flags.",
+        answer: "100% safe and compliant. We use official Meta API for Instagram and WhatsApp (verified business accounts). Follow all telephony regulations. Zero risk of bans or flags.",
         category: "Security"
     },
     {
