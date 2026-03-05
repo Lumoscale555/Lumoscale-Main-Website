@@ -60,7 +60,7 @@ const PainPoints = () => {
 
                 <div className="space-y-1">
                   <p className="text-base md:text-lg text-foreground font-semibold leading-snug">{point.text}</p>
-                  <p className="text-xs text-muted-foreground opacity-70 group-hover:opacity-100 transform translate-y-0 group-hover:translate-y-0 transition-all duration-300 mt-2">
+                  <p className="text-xs text-muted-foreground opacity-70 md:opacity-0 group-hover:opacity-100 transform translate-y-0 md:translate-y-1 group-hover:translate-y-0 transition-all duration-300 mt-2">
                     {index === 0 && "- 69% expect replies within 24 hours. Late replies = competitors steal your revenue."}
                     {index === 1 && "- Time is money. 80 hours/mo wasted = huge opportunity cost on low-leverage work."}
                     {index === 2 && "- No filtering system = wasted energy on basics instead of closing deals."}
