@@ -248,20 +248,8 @@ export default function PricingToggle() {
             </div>
         </div>
 
-        {/* 6. Guarantee / Trust */}
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center gap-8 text-xs text-slate-500 font-medium">
-            <span className="flex items-center gap-2 hover:text-green-400 transition-colors">
-                <Check className="w-4 h-4 text-green-500" />
-                30-Day Growth Guarantee
-            </span>
-            <span className="flex items-center gap-2 hover:text-green-400 transition-colors">
-                <Check className="w-4 h-4 text-green-500" />
-                No Long-Term Contracts
-            </span>
-          </div>
-        </div>
-
+        
+       
       </div>
     </section>
   );
