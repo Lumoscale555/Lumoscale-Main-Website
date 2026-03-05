@@ -2,9 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import PainPoints from "@/components/PainPoints";
 import Solution from "@/components/Solution";
-import MeetingAutomation from "@/components/MeetingAutomation";
 import DMDemo from "@/components/DMDemo";
-import Features from "@/components/Features";
 import BeforeAfter from "@/components/BeforeAfter";
 import Pricing from "@/components/Pricing";
 import FinalCTA from "@/components/FinalCTA";
@@ -16,9 +14,7 @@ const Index = () => {
       <Hero />
       <PainPoints />
       <Solution />
-      <MeetingAutomation />
       <DMDemo />
-      <Features />
       <BeforeAfter />
       <Pricing />
       <FinalCTA />
