@@ -1,14 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, Phone, Calendar, Slack, FileText, Check, Mic, User, Bot, Signal, Wifi, Battery, Video, CheckCircle2, Bell } from "lucide-react";
+import { useIsMobile } from "../hooks/use-mobile";
 
 // Premium Phone Mockup Component with 3D Tilt and Glass Reflections
 const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { children: React.ReactNode, time?: string, accentColor?: "emerald" | "blue" | "purple" }) => {
     const [rotateX, setRotateX] = useState(0);
     const [rotateY, setRotateY] = useState(0);
+    const isMobile = useIsMobile();
 
+    useEffect(() => {
+        if (!isMobile) return;
+
+        let animationFrameId: number;
+        let startTime = Date.now();
+
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            // Gentle figure-8 sway
+            setRotateX(Math.sin(elapsed * 0.001) * 3); // Slightly reduced range for phone
+            setRotateY(Math.cos(elapsed * 0.0015) * 3);
+            animationFrameId = requestAnimationFrame(animate);
+        };
+
+        animate();
+        return () => cancelAnimationFrame(animationFrameId);
+    }, [isMobile]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isMobile) return;
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
@@ -22,6 +42,7 @@ const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { ch
     };
 
     const handleMouseLeave = () => {
+        if (isMobile) return;
         setRotateX(0);
         setRotateY(0);
     };
@@ -31,12 +52,10 @@ const PhoneMockup = ({ children, time = "10:24", accentColor = "emerald" }: { ch
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             animate={{ rotateX, rotateY }}
-            transition={{ type: "spring", stiffness: 100, damping: 20, mass: 0.5 }}
+            transition={isMobile ? { duration: 0 } : { type: "spring", stiffness: 100, damping: 20, mass: 0.5 }}
             style={{ perspective: 1000 }}
             className="relative mx-auto w-full max-w-[450px] h-[750px] bg-gradient-to-b from-zinc-900 via-black to-zinc-900 rounded-[3.5rem] border-[6px] border-zinc-800/50 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8),0_0_60px_-10px_rgba(99,102,241,0.15)] overflow-hidden ring-2 ring-white/5 ml-0 lg:mx-auto group/phone"
         >
-
-
             {/* Dynamic Island / Notch Area */}
             <div className="absolute top-0 inset-x-0 h-14 z-50 px-7 flex items-end justify-between pb-2 text-white">
                 <span className="text-[14px] font-bold w-14">{time}</span>

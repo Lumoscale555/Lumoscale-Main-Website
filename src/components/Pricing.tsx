@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import {
   Check,
@@ -10,6 +10,7 @@ import {
   Zap
 } from "lucide-react";
 import { useAuditModal } from "../context/AuditModalContext";
+import { useIsMobile } from "../hooks/use-mobile";
 
 /* ---------- TEXT AGENT FEATURES ---------- */
 const TEXT_FEATURES = [
@@ -55,7 +56,7 @@ const cardVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 100,
       damping: 15
     }
@@ -63,7 +64,7 @@ const cardVariants = {
 };
 
 export default function Pricing() {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+
 
   return (
     <section id="pricing" className="relative w-full bg-black py-24 px-6 overflow-hidden">
@@ -108,43 +109,7 @@ export default function Pricing() {
             Select the perfect engine for your business. No hidden fees. No surprises.
           </motion.p>
 
-          {/* Billing Toggle (Visual) */}
-          <div className="flex justify-center items-center gap-4 mb-2">
-            <div className="p-1 rounded-full bg-white/5 border border-white/10 inline-flex relative">
-              <motion.div
-                className="absolute inset-y-1 rounded-full bg-white/10"
-                layoutId="billingCycle"
-                initial={false}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                style={{
-                  left: billingCycle === 'monthly' ? '4px' : '50%',
-                  width: 'calc(50% - 4px)',
-                  right: billingCycle === 'monthly' ? '50%' : '4px'
-                }}
-              />
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`relative z-10 px-6 py-2 text-sm font-medium transition-colors ${billingCycle === 'monthly' ? 'text-white' : 'text-zinc-400'}`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle('yearly')}
-                className={`relative z-10 px-6 py-2 text-sm font-medium transition-colors ${billingCycle === 'yearly' ? 'text-white' : 'text-zinc-400'}`}
-              >
-                Yearly
-              </button>
-            </div>
-            {billingCycle === 'yearly' && (
-              <motion.span
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-emerald-400 text-xs font-bold uppercase tracking-wide bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20"
-              >
-                Save 20%
-              </motion.span>
-            )}
-          </div>
+
         </div>
 
         {/* PRICING GRID */}
@@ -197,6 +162,9 @@ export default function Pricing() {
   );
 }
 
+
+
+
 function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular = false, gradient, glowColor, borderGradient }: any) {
   const { openModal } = useAuditModal();
   const mouseX = useMotionValue(0);
@@ -205,8 +173,42 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
   // 3D Tilt Values
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
+  const isMobile = useIsMobile();
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    let animationFrameId: number;
+    let startTime = Date.now();
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      // Simulate mouse movement in a figure-8 or circle
+      // Center is roughly 200, 200 depending on card size.
+      // Let's assume a generic center.
+      const cx = 150;
+      const cy = 200;
+
+      const x = cx + Math.sin(elapsed * 0.001) * 100;
+      const y = cy + Math.cos(elapsed * 0.001) * 100;
+
+      mouseX.set(x);
+      mouseY.set(y);
+
+      // Tilt
+      rotateX.set(((y - cy) / cy) * -2.5);
+      rotateY.set(((x - cx) / cx) * 2.5);
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isMobile, mouseX, mouseY, rotateX, rotateY]);
 
   function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    if (isMobile) return;
     const { left, top, width, height } = currentTarget.getBoundingClientRect();
     const x = clientX - left;
     const y = clientY - top;
@@ -224,6 +226,7 @@ function PricingCard({ title, subtitle, price, features, icon: Icon, isPopular =
   }
 
   function onMouseLeave() {
+    if (isMobile) return;
     rotateX.set(0);
     rotateY.set(0);
     mouseX.set(0);

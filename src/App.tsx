@@ -24,6 +24,7 @@ const App = () => (
     <HelmetProvider>
       <AuditModalProvider>
         <TooltipProvider>
+          <h1 style={{ color: 'white', position: 'fixed', top: 0, left: 0, zIndex: 9999 }}>RENDER TEST</h1>
           <Toaster />
           <Sonner />
           <AuditModal /> {/* Add Global Modal */}
