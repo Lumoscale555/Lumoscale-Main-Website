@@ -2,8 +2,6 @@
 #  Git Push with Account Selector
 # ============================================
 
-$repoUrl = "github.com/lumoscale555/Lumoscale-Main-Website-main.git"
-
 $accounts = @(
     @{ Name = "vamsi1465"; Email = "vamsikrishna2536@gmail.com" },
     @{ Name = "lumoscale555"; Email = "Lumoscale@gmail.com" }
@@ -36,11 +34,18 @@ Write-Host "-> Using account: $($selected.Name)" -ForegroundColor Green
 git config user.name  $selected.Name
 git config user.email $selected.Email
 
-# Update remote URL to use selected account
-$remoteUrl = "https://$($selected.Name)@$repoUrl"
-git remote set-url origin $remoteUrl
+# Dynamically get current remote URL and swap only the username part
+$currentUrl = git remote get-url origin
 
-Write-Host "-> Remote set to: $remoteUrl" -ForegroundColor Green
+# Strip any existing username@ from the URL (e.g. https://vamsi1465@github.com/... -> https://github.com/...)
+$cleanUrl = $currentUrl -replace "https://[^@]+@", "https://"
+
+# Re-insert the selected account username
+$newUrl = $cleanUrl -replace "https://", "https://$($selected.Name)@"
+
+git remote set-url origin $newUrl
+
+Write-Host "-> Remote set to: $newUrl" -ForegroundColor Green
 Write-Host ""
 
 # Push
