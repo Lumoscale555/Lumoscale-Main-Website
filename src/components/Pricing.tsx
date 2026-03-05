@@ -49,10 +49,10 @@ const ADDONS = [
 ];
 
 export default function PricingToggle() {
-  const [billing, setBilling] = useState("monthly"); // 'monthly' | 'quarterly'
+    const [billing, setBilling] = useState("monthly"); // 'monthly' | 'quarterly'
 
-  return (
-    <section className="relative w-full bg-[#050505] py-24 px-6 overflow-hidden font-sans flex flex-col items-center">
+    return (
+        <section id="pricing" className="relative w-full bg-[#050505] py-24 px-6 overflow-hidden font-sans flex flex-col items-center">
       
       {/* 1. Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">

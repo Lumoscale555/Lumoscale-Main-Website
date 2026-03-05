@@ -6,6 +6,7 @@ import DMDemo from "@/components/DMDemo";
 import BeforeAfter from "@/components/BeforeAfter";
 import Pricing from "@/components/Pricing";
 import FinalCTA from "@/components/FinalCTA";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -18,6 +19,7 @@ const Index = () => {
       <BeforeAfter />
       <Pricing />
       <FinalCTA />
+      <Footer />
     </div>
   );
 };

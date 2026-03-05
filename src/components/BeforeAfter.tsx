@@ -35,7 +35,7 @@ const itemVariants = {
 
 const BeforeAfter = () => {
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden bg-background">
+    <section id="beforeafter" className="py-24 md:py-32 relative overflow-hidden bg-background">
       {/* Ambient Background Lights */}
       <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[600px] h-[600px] bg-red-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[600px] h-[600px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none" />

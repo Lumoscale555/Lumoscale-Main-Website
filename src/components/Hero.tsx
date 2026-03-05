@@ -77,7 +77,7 @@ const Hero = () => {
 
   return (
     <>
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 py-20">
+      <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 py-20">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 animate-glow-pulse" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15),transparent_60%)]" />
 

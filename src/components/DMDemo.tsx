@@ -129,8 +129,8 @@ const DMDemo = () => {
     timerRef.current = window.setTimeout(() => setBriefReady(true), 1200);
   };
 
-  return (
-    <section ref={sectionRef} className="py-24 relative overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+    return (
+        <section id="demo" ref={sectionRef} className="py-24 relative overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent">
       <div className="container mx-auto px-6">
         <div className="max-w-7xl mx-auto">
 

@@ -70,7 +70,7 @@ const cardVariants: Variants = {
 
 export default function Solution() {
   return (
-    <section className="relative py-40 bg-[#050607]">
+    <section id="solution" className="relative py-40 bg-[#050607]">
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-[15%] w-[36rem] h-[36rem] bg-[#6AF2E1]/20 blur-[160px] rounded-full" />

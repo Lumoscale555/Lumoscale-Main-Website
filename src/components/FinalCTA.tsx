@@ -12,7 +12,7 @@ const FinalCTA = () => {
   const [loading, setLoading] = useState(true);
 
   return (
-    <section className="py-32 relative overflow-hidden">
+    <section id="finalcta" className="py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.15),transparent_70%)]" />
 
       <div className="container mx-auto px-6 relative z-10">
@@ -65,24 +65,7 @@ const FinalCTA = () => {
             />
           </div>
 
-          <div className="pt-16 border-t border-primary/20">
-            <p className="text-muted-foreground mb-4">Get in touch</p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <a
-                href="mailto:contact@lumoscale"
-                className="text-lg hover:text-primary"
-              >
-                Email: contact@lumoscale
-              </a>
-              <span className="hidden sm:block text-muted-foreground">•</span>
-              <a
-                href="https://wa.me/918919053970"
-                className="text-lg hover:text-secondary"
-              >
-                Mobile Number :+91 89190 53970
-              </a>
-            </div>
-          </div>
+
 
         </div>
       </div>
