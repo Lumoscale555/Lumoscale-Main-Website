@@ -141,61 +141,38 @@ const Hero = () => {
                 </p>
               </div>
 
-              <div
-                ref={(el) => (itemsRef.current[0] = el)}
-                className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 max-w-[85%] md:w-56 shadow-xl"
-              >
-                <div className="flex items-start gap-2">
+              {/* Floating cards */}
+              <div ref={(el) => (itemsRef.current[0] = el)} className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 md:w-56 shadow-xl">
+                <div className="flex gap-2">
                   <MessageSquare className="text-primary h-5 w-5 mt-1" />
                   <div>
-                    <p className="text-xs text-muted-foreground">
-                      AI Response
-                    </p>
-                    <p className="text-sm">
-                      Hey Mike, what type of business do you run?
-                    </p>
+                    <p className="text-xs text-muted-foreground">AI Response</p>
+                    <p className="text-sm">Hey Mike, what type of business do you run?</p>
                   </div>
                 </div>
               </div>
 
-              <div
-                ref={(el) => (itemsRef.current[1] = el)}
-                className="absolute left-1/2 top-1/2 bg-card border border-secondary/40 rounded-xl px-4 py-3 max-w-[80%] md:w-52 shadow-xl"
-              >
-                <div className="flex items-start gap-2">
+              <div ref={(el) => (itemsRef.current[1] = el)} className="absolute left-1/2 top-1/2 bg-card border border-secondary/40 rounded-xl px-4 py-3 md:w-52 shadow-xl">
+                <div className="flex gap-2">
                   <Calendar className="text-secondary h-5 w-5 mt-1" />
                   <div>
-                    <p className="text-xs text-muted-foreground">
-                      Booking Confirmed
-                    </p>
-                    <p className="text-sm font-semibold">
-                      Thu, 2:00 PM
-                    </p>
+                    <p className="text-xs text-muted-foreground">Booking Confirmed</p>
+                    <p className="text-sm font-semibold">Thu, 2:00 PM</p>
                   </div>
                 </div>
               </div>
 
-              <div
-                ref={(el) => (itemsRef.current[2] = el)}
-                className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 max-w-[90%] md:w-60 shadow-xl"
-              >
-                <div className="flex items-start gap-2">
+              <div ref={(el) => (itemsRef.current[2] = el)} className="absolute left-1/2 top-1/2 bg-card border border-primary/40 rounded-xl px-4 py-3 md:w-60 shadow-xl">
+                <div className="flex gap-2">
                   <Bell className="text-primary h-5 w-5 mt-1" />
                   <div>
-                    <p className="text-xs text-muted-foreground">
-                      Slack Alert
-                    </p>
-                    <p className="text-sm">
-                      New hot lead booked a call
-                    </p>
+                    <p className="text-xs text-muted-foreground">Slack Alert</p>
+                    <p className="text-sm">New hot lead booked a call</p>
                   </div>
                 </div>
               </div>
 
-              <div
-                ref={(el) => (itemsRef.current[3] = el)}
-                className="absolute left-1/2 top-1/2 bg-primary/20 text-primary px-4 py-2 rounded-full shadow"
-              >
+              <div ref={(el) => (itemsRef.current[3] = el)} className="absolute left-1/2 top-1/2 bg-primary/20 text-primary px-4 py-2 rounded-full shadow">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   <span className="text-sm">Mike Johnson</span>
@@ -209,7 +186,7 @@ const Hero = () => {
       {/* VIDEO MODAL */}
       {showVideoModal && (
         <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={() => setShowVideoModal(false)}
         >
           <div
@@ -218,7 +195,7 @@ const Hero = () => {
           >
             <button
               onClick={() => setShowVideoModal(false)}
-              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 rounded-full p-2 transition-colors"
+              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 rounded-full p-2"
             >
               <X className="w-6 h-6 text-white" />
             </button>
@@ -226,29 +203,28 @@ const Hero = () => {
             <div className="relative w-full pt-[56.25%]">
               <video
                 className="absolute inset-0 w-full h-full object-cover rounded-2xl"
-                src="/Demo.mp4"
                 controls
+                playsInline
+                preload="metadata"
                 autoPlay
                 muted
-              />
+              >
+                <source src="/Demo1.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
 
             <div className="p-6 bg-card">
-              <h3 className="text-2xl font-bold mb-2">
-                See How It Works
-              </h3>
+              <h3 className="text-2xl font-bold mb-2">See How It Works</h3>
               <p className="text-muted-foreground mb-4">
-                Watch how our system responds to DMs, qualifies leads, and books
-                consultations automatically.
+                Watch how our system responds to DMs, qualifies leads, and books consultations automatically.
               </p>
+
               <Button
                 className="w-full bg-gradient-to-r from-primary to-secondary text-black hover:scale-105 transition-all"
                 onClick={() => {
                   setShowVideoModal(false);
-                  window.open(
-                    "https://cal.com/lumoscale/30min",
-                    "_blank"
-                  );
+                  window.open("https://cal.com/lumoscale/30min", "_blank");
                 }}
               >
                 Book Your Strategy Call Now
