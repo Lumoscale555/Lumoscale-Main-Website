@@ -10,6 +10,17 @@ import {
   Play,
 } from "lucide-react";
 
+// Roles to cycle through with unique colors
+const ROLES = [
+  { text: "Sales Team,", color: "#00d4ff" },
+  { text: "Appointment Setter,", color: "#ff6b6b" },
+  { text: "Virtual Assistant,", color: "#a855f7" },
+  { text: "SDR,", color: "#facc15" },
+  { text: "Lead Manager,", color: "#3b82f6" },
+  { text: "Chat Support,", color: "#14b8a6" },
+  { text: "Follow-up System,", color: "#f472b6" },
+];
+
 const Hero = () => {
   const circleRef = useRef<HTMLDivElement | null>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -17,6 +28,21 @@ const Hero = () => {
   const positionsRef = useRef<{ x: number; y: number }[]>([]);
 
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Role cycling effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setCurrentRoleIndex((prev) => (prev + 1) % ROLES.length);
+        setIsAnimating(false);
+      }, 300);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const circle = circleRef.current;
@@ -87,43 +113,89 @@ const Hero = () => {
           <div className="flex flex-col justify-center space-y-8 mt-6 min-w-0">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full w-fit animate-fade-up">
               <span className="text-sm font-medium text-primary">
-                FOR B2B AND B2C BUSINESS OWNERS
+                For Coaches and Service Business Owners
               </span>
             </div>
 
-            <h1 className="hero-h1 text-5xl md:text-7xl font-black tracking-tight leading-tight gradient-text shimmer animate-fade-up pb-3">
-              Turn your DMs Into Booked Consultations While You Sleep
-            </h1>
+            <div className="animate-fade-up pb-3">
+              <h1
+                className="text-3xl md:text-5xl lg:text-6xl tracking-tight leading-[1.15]"
+                style={{ fontFamily: "'Inter', 'SF Pro Display', -apple-system, sans-serif" }}
+              >
+                <span className="block font-extrabold text-white mb-2">
+                  What If Your DMs Worked Like a
+                </span>
+                <span className="block min-h-[1.2em]">
+                  <span
+                    className={`inline-block font-black transition-all duration-300 ease-out ${isAnimating
+                      ? "opacity-0 translate-y-2"
+                      : "opacity-100 translate-y-0"
+                      }`}
+                    style={{
+                      color: ROLES[currentRoleIndex].color,
+                    }}
+                  >
+                    {ROLES[currentRoleIndex].text}
+                  </span>
+                </span>
+                <span className="block font-extrabold text-white mt-2">
+                  Not an Inbox?
+                </span>
+              </h1>
+            </div>
 
-            <p
-              className="text-xl md:text-2xl text-muted-foreground animate-fade-up"
+            {/* Premium Feature Container */}
+            <div
+              className="animate-fade-up relative p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 shadow-xl"
               style={{ animationDelay: "0.2s" }}
             >
-              AI responds in 60 seconds, qualifies every lead, and books
-              consultations automatically, so you never lose a client to slow
-              replies.
-            </p>
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5" />
+              <div className="relative z-10">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                      <MessageSquare className="w-5 h-5 text-primary" />
+                    </div>
+                    <span className="text-sm md:text-base text-white/90">Reply 24/7</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center shrink-0">
+                      <User className="w-5 h-5 text-secondary" />
+                    </div>
+                    <span className="text-sm md:text-base text-white/90">Qualify Every Lead</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                      <Bell className="w-5 h-5 text-primary" />
+                    </div>
+                    <span className="text-sm md:text-base text-white/90">Auto Follow-ups</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center shrink-0">
+                      <Calendar className="w-5 h-5 text-secondary" />
+                    </div>
+                    <span className="text-sm md:text-base text-white/90">Full Visibility</span>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm text-muted-foreground border-t border-white/10 pt-4">
+                  Focus on delivery and closing — we handle the rest.
+                </p>
+              </div>
+            </div>
 
             <div
-              className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-up"
+              className="flex flex-col sm:flex-row gap-4 pt-2 animate-fade-up"
               style={{ animationDelay: "0.4s" }}
             >
-              <Button
-                onClick={() => setShowVideoModal(true)}
-                className="px-8 py-6 text-lg bg-gradient-to-r from-primary to-secondary text-black hover:scale-105 transition-all flex items-center gap-2"
-              >
-                <Play className="w-5 h-5" />
-                See How It Works (Free Demo)
-              </Button>
 
               <Button
                 variant="outline"
-                className="px-8 py-6 text-lg border-primary/50 hover:bg-primary/10"
+                className="px-8 py-6 text-lg border-primary/50 hover:bg-white hover:text-cyan-600 hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300"
                 onClick={() =>
-                  window.open("https://cal.com/lumoscale/30min", "_blank")
+                  document.getElementById("finalcta")?.scrollIntoView({ behavior: "smooth" })
                 }
               >
-                Book Free Strategy Call
+                Get Free System Audit
               </Button>
             </div>
           </div>
@@ -147,7 +219,7 @@ const Hero = () => {
                   <MessageSquare className="text-primary h-5 w-5 mt-1" />
                   <div>
                     <p className="text-xs text-muted-foreground">AI Response</p>
-                    <p className="text-sm">Hey Mike, what type of business do you run?</p>
+                    <p className="text-sm">Hello, whats your pricing?</p>
                   </div>
                 </div>
               </div>
@@ -175,7 +247,7 @@ const Hero = () => {
               <div ref={(el) => (itemsRef.current[3] = el)} className="absolute left-1/2 top-1/2 bg-primary/20 text-primary px-4 py-2 rounded-full shadow">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  <span className="text-sm">Mike Johnson</span>
+                  <span className="text-sm">New Lead</span>
                 </div>
               </div>
             </div>

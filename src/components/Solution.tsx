@@ -1,187 +1,122 @@
-import { Clock, CheckCircle2, Calendar, MessageSquare, Bell } from "lucide-react";
-import { motion } from "framer-motion";
-import type { Variants } from "framer-motion";
+import { Zap, Target, RefreshCw, Brain, Smartphone, BarChart3, ArrowRight } from "lucide-react";
 
-// Benefit focused features
 const features = [
   {
-    icon: Clock,
-    title: "Responds to Every DM in 60 Seconds",
-    description:
-      'No more "Sorry for the late reply." AI engages instantly, even at 2 AM, so you never miss a hot lead while you sleep.',
-    metric: "< 60 sec response"
+    icon: Zap,
+    title: "Replies in Under 60 Seconds",
+    description: "Never lose a lead to slow responses. System works 24/7 - even at 2 AM.",
+    highlight: "Recover lost revenue from faster replies.",
+    number: "01"
   },
   {
-    icon: CheckCircle2,
-    title: "Qualifies Hot, Warm, Cold Automatically",
-    description:
-      "AI scores every lead based on urgency, pain level, and buying intent. You only talk to people ready to book.",
-    metric: "3X higher quality"
+    icon: Target,
+    title: "Qualifies Every Lead Automatically",
+    description: "Cold → nurtured. Warm → engaged. Hot → booking. You only talk to serious buyers.",
+    highlight: "No more unqualified calls wasting your time.",
+    number: "02"
   },
   {
-    icon: Calendar,
-    title: "Books Consultations While You Sleep",
-    description:
-      "AI sends your Cal.com link at the perfect moment in the conversation. You wake up to bookings already confirmed.",
-    metric: "24/7 booking"
+    icon: RefreshCw,
+    title: "Follows Up When Leads Go Silent",
+    description: "Automated re-engagement sequences. Never lose a conversation to silence.",
+    highlight: "Recover leads that would've been lost.",
+    number: "03"
   },
   {
-    icon: Bell,
-    title: "Sends 3  Reminders Automatically",
-    description:
-      "Reduces no shows from 40 percent to 5 percent. WhatsApp plus Email reminders keep your calendar full.",
-    metric: "60 to 80 percent fewer no shows"
+    icon: Brain,
+    title: "Pre-Call Intelligence Briefs",
+    description: "Their pain points, budget signals, objections = mapped before you say hello.",
+    highlight: "Walk in knowing exactly what to say.",
+    number: "04"
   },
   {
-    icon: MessageSquare,
-    title: "Briefs You Before Every Call",
-    description:
-      "Know their real problem, emotional state, and what to say before you say hello. Walk into every call confident.",
-    metric: "Full context"
+    icon: Smartphone,
+    title: "Multi-Channel Reminders",
+    description: "Email + WhatsApp + SMS at 24hr, 6hr, 1hr before attending calls.",
+    highlight: "Protect your calendar from no-shows.",
+    number: "05"
+  },
+  {
+    icon: BarChart3,
+    title: "Complete Performance Visibility",
+    description: "Live dashboard with full visibilty. See what converts, what fails using weekly and monthly reports.",
+    highlight: "Scale with data, not blind guessing.",
+    number: "06"
   }
 ];
 
-// Container animation
-const container: Variants = {
-  show: {
-    transition: {
-      staggerChildren: 0.15
-    }
-  }
-};
-
-// Card animation
-const cardVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 40,
-    scale: 0.96
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.7,
-      ease: [0.16, 1, 0.3, 1]
-    }
-  }
-};
-
 export default function Solution() {
   return (
-    <section id="solution" className="relative py-40 bg-[#050607]">
-      {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-[15%] w-[36rem] h-[36rem] bg-[#6AF2E1]/20 blur-[160px] rounded-full" />
-        <div className="absolute bottom-1/3 right-[15%] w-[26rem] h-[26rem] bg-[#9BFF9C]/20 blur-[160px] rounded-full" />
-      </div>
+    <section id="solution" className="relative py-32 bg-[#050505] overflow-hidden">
+      {/* Background Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+
+      {/* Glow Center */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-6">
-        {/* Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 35 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75 }}
-          viewport={{ once: true }}
-          className="text-center mb-28"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#6AF2E1]/10 border border-[#6AF2E1]/30 rounded-full mb-6">
-            <span className="text-sm font-semibold text-[#6AF2E1] uppercase tracking-wide">
-              The Solution
+        {/* Header */}
+        <div className="text-center mb-24">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
             </span>
+            <span className="text-xs font-medium text-white/80 uppercase tracking-widest">The Solution</span>
           </div>
 
-          <h2
-            className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.2]
-            bg-gradient-to-r from-[#6AF2E1] to-[#9BFF9C]
-            bg-clip-text text-transparent
-            drop-shadow-[0_0_25px_rgba(106,242,225,0.35)]
-            mx-auto max-w-[90%]"
-          >
-            How It Works, From DM's to Booked Call
+          <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 text-white tracking-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            Your DMs Now Run <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-300 to-blue-600">
+              Like a Revenue System
+            </span>
           </h2>
-
-          <p className="mt-6 text-lg text-[#A3B6B2] max-w-3xl mx-auto leading-relaxed">
-            Every step happens automatically, no manual work, no lost leads, no wasted time.
+          <p className="text-xl text-white/50 font-light max-w-2xl mx-auto">
+            The complete system that runs your DMs like a sales team.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Cards */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"
-        >
+        {/* Minimalist Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={cardVariants}
-              whileHover={{
-                y: -12,
-                scale: 1.02,
-                transition: { type: "spring", stiffness: 120, damping: 15 }
-              }}
-              className={`relative group rounded-3xl p-10
-                bg-[#0E1416]/85 backdrop-blur-xl border border-[#1C2A2B] overflow-hidden
-                ${index === 4 ? "md:col-span-2 md:max-w-2xl md:mx-auto" : ""}`}
+              className="group relative p-8 rounded-3xl bg-[#0a0a0a] border border-white/5 hover:border-white/20 transition-all duration-500 hover:shadow-[0_0_50px_-12px_rgba(74,222,128,0.1)] overflow-hidden"
             >
-              {/* Hover glow */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500
-                bg-gradient-to-br from-[#6AF2E1]/10 to-[#9BFF9C]/10"
-              />
+              {/* Green Bottom Highlight */}
+              <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#4ade80] to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
 
-              <div className="relative">
-                {/* Icon and metric */}
-                <div className="flex items-start justify-between mb-6">
-                  <div
-                    className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#6AF2E1]/20 to-[#9BFF9C]/20
-                    flex items-center justify-center shadow-[0_0_28px_rgba(106,242,225,0.4)]"
-                  >
-                    <feature.icon className="w-7 h-7 text-[#EFFFFA]" />
-                  </div>
+              {/* Hover Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none" />
 
-                  <div className="px-3 py-1 bg-[#6AF2E1]/10 border border-[#6AF2E1]/30 rounded-full">
-                    <span className="text-xs font-semibold text-[#6AF2E1]">
-                      {feature.metric}
-                    </span>
+              <div className="relative z-10">
+                {/* Header: Icon + Number */}
+                <div className="flex justify-between items-start mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500 group-hover:border-[#4ade80]/20">
+                    <feature.icon className="w-6 h-6 text-white/80 group-hover:text-[#4ade80] transition-colors" />
                   </div>
+                  <span className="text-4xl font-bold text-white/5 group-hover:text-white/10 transition-colors" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                    {feature.number}
+                  </span>
                 </div>
 
-                <h3 className="text-2xl font-semibold text-[#EFFFFA] mb-4 leading-snug">
+                {/* Content */}
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#4ade80] transition-colors duration-300">
                   {feature.title}
                 </h3>
-
-                <p className="text-[#A3B6B2] leading-relaxed">
+                <p className="text-white/50 text-sm leading-relaxed mb-8 h-10">
                   {feature.description}
                 </p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
 
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          viewport={{ once: true }}
-          className="text-center mt-16"
-        >
-          <button
-            onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
-            className="px-10 py-5 text-lg font-semibold rounded-full
-              bg-gradient-to-r from-[#6AF2E1] to-[#9BFF9C]
-              text-[#050607]
-              hover:scale-105 hover:shadow-[0_0_40px_rgba(106,242,225,0.6)]
-              transition-all duration-300"
-          >
-            See It In Action, Book Free Demo
-          </button>
-        </motion.div>
+                {/* Footer Highlight */}
+                <div className="pt-6 border-t border-white/5 flex items-center gap-3 text-white/80 group-hover:text-white transition-colors">
+                  <ArrowRight className="w-4 h-4 group-hover:text-[#4ade80]" />
+                  <span className="text-xs font-bold tracking-wide uppercase group-hover:text-[#4ade80]">{feature.highlight}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
