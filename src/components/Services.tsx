@@ -87,7 +87,7 @@ const Services = () => {
             className="mt-8 text-4xl md:text-6xl font-bold text-white tracking-tight"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-300 to-blue-600">
-              Your AI Front Desk
+              Your AI Growth Partners
             </span>
           </motion.h2>
 
