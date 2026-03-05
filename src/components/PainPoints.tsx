@@ -9,7 +9,7 @@ const painPoints = [
 
 const PainPoints = () => {
   return (
-    <section id="painpoints" className="py-16 relative overflow-hidden bg-background">
+    <section id="painpoints" className="py-8 relative overflow-hidden bg-background">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-destructive/5 to-transparent pointer-events-none" />
 
@@ -60,11 +60,11 @@ const PainPoints = () => {
 
                 <div className="space-y-1">
                   <p className="text-base md:text-lg text-foreground font-semibold leading-snug">{point.text}</p>
-                  <p className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 transition-all duration-300">
-                    {index === 0 && "- 69% expect replies within 24 hours. Late replies = competitors steal your revenue (lakhs of rupees monthly lost)."}
-                    {index === 1 && "- Time is money. 80 hours monthly = lakhs of opportunity cost wasted on low-leverage work."}
-                    {index === 2 && "- No filtering system = wasted energy on basics instead of closing high-ticket deals"}
-                    {index === 3 && "- No visibility = no optimization. Flying blind means leaving money on the table every launch."}
+                  <p className="text-xs text-muted-foreground opacity-70 group-hover:opacity-100 transform translate-y-0 group-hover:translate-y-0 transition-all duration-300 mt-2">
+                    {index === 0 && "- 69% expect replies within 24 hours. Late replies = competitors steal your revenue."}
+                    {index === 1 && "- Time is money. 80 hours/mo wasted = huge opportunity cost on low-leverage work."}
+                    {index === 2 && "- No filtering system = wasted energy on basics instead of closing deals."}
+                    {index === 3 && "- No visibility = no optimization. Flying blind means leaving money on the table."}
                   </p>
                 </div>
               </div>

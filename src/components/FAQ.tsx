@@ -62,7 +62,7 @@ const FAQ = () => {
     const isMobile = useIsMobile();
 
     return (
-        <section id="faq" className="relative py-24 bg-[#050505] overflow-hidden">
+        <section id="faq" className="relative py-10 bg-[#050505] overflow-hidden">
             {/* Background Elements */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none" />

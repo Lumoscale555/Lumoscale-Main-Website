@@ -5,7 +5,7 @@ import { useIsMobile } from "../hooks/use-mobile";
 const BeforeAfter = () => {
   const isMobile = useIsMobile();
   return (
-    <section id="beforeafter" className="py-28 relative overflow-hidden">
+    <section id="beforeafter" className="py-10 relative overflow-hidden">
       {/* Premium Background */}
       <div className="absolute inset-0 bg-[#09090b]" />
       <div className="absolute inset-0">

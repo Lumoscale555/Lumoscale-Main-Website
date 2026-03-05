@@ -179,7 +179,7 @@ const DMDemo = () => {
 
 
     return (
-        <section id="demo" ref={sectionRef} className="py-24 relative overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+        <section id="demo" ref={sectionRef} className="py-10 relative overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent">
             <div className="container mx-auto px-6">
                 <div className="max-w-7xl mx-auto">
 

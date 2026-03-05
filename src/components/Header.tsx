@@ -21,9 +21,19 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    let timeoutId: NodeJS.Timeout;
+    const handleScroll = () => {
+      if (timeoutId) return;
+      timeoutId = setTimeout(() => {
+        setScrolled(window.scrollY > 20);
+        timeoutId = undefined!;
+      }, 100);
+    };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const scrollToCTA = () => {
@@ -37,7 +47,7 @@ const Header = () => {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
-        className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
+        className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none will-change-transform"
       >
         <div
           className={`

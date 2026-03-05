@@ -86,7 +86,7 @@ export default function PricingToggle() {
   const isMobile = useIsMobile();
 
   return (
-    <section id="pricing" className="relative w-full bg-[#030303] py-32 px-6 overflow-hidden">
+    <section id="pricing" className="relative w-full bg-[#030303] py-10 px-6 overflow-hidden">
       {/* Background gradient orbs */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-[150px]" />
       <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[150px]" />

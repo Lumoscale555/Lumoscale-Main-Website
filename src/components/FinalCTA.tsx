@@ -98,7 +98,7 @@ export default function FinalCTA() {
   };
 
   return (
-    <section id="finalcta" className="relative py-32 px-6 overflow-hidden bg-[#030303]">
+    <section id="finalcta" className="relative py-12 px-6 overflow-hidden bg-[#030303]">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.05),transparent_70%)]" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-white/[0.03] rounded-full" />

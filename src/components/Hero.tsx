@@ -68,7 +68,27 @@ const Hero = () => {
     });
 
     let frameId: number;
+    let isIntersecting = false;
+
+    // Use IntersectionObserver to pause animation when offscreen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting) {
+          if (!frameId) frameId = requestAnimationFrame(animate);
+        } else {
+          cancelAnimationFrame(frameId);
+          frameId = 0;
+        }
+      },
+      { threshold: 0 }
+    );
+
+    if (circle) observer.observe(circle);
+
     const animate = () => {
+      if (!isIntersecting) return;
+
       items.forEach((item, index) => {
         const pos = positionsRef.current[index];
         const vel = velocitiesRef.current[index];
@@ -95,15 +115,21 @@ const Hero = () => {
       frameId = requestAnimationFrame(animate);
     };
 
-    frameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frameId);
+    // Initial start if visible (IntersectionObserver will handle subsequent toggles, 
+    // but we need to kick it off or let the observer callback handle it logic)
+    // Actually, the observer callback runs immediately on observe with initial state.
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      observer.disconnect();
+    };
   }, []);
 
   return (
     <>
       <section
         id="hero"
-        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 py-20"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-32 pb-8"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 animate-glow-pulse" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15),transparent_60%)]" />

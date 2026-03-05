@@ -50,7 +50,7 @@ const features = [
 export default function Solution() {
   const isMobile = useIsMobile();
   return (
-    <section id="solution" className="relative py-32 bg-[#050505] overflow-hidden">
+    <section id="solution" className="relative py-10 bg-[#050505] overflow-hidden">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
