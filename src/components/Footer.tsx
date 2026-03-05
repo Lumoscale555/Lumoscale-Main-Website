@@ -11,7 +11,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative py-20 overflow-hidden">
+    <footer id="footer" className="relative py-20 overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-black" />
 
@@ -60,7 +60,8 @@ const Footer = () => {
                   { label: "Features", href: "/#solution" },
                   { label: "Blogs", href: "/blog" },
                   { label: "Pricing", href: "/#pricing" },
-                  { label: "FAQ", href: "/#faq" }
+                  { label: "FAQ", href: "/#faq" },
+                  { label: "Privacy Policy", href: "/privacy-policy" }
                 ].map((link) => (
                   <li key={link.label}>
                     <a
@@ -133,9 +134,17 @@ const Footer = () => {
 
           {/* BOTTOM BAR */}
           <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-white/40 text-sm">
-              © {new Date().getFullYear()} Lumoscale. All rights reserved.
-            </p>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <p className="text-white/40 text-sm">
+                © {new Date().getFullYear()} Lumoscale. All rights reserved.
+              </p>
+              <a
+                href="/privacy-policy"
+                className="text-white/40 hover:text-white text-sm transition-colors"
+              >
+                Privacy Policy
+              </a>
+            </div>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="text-white/40 hover:text-white text-sm transition-colors"

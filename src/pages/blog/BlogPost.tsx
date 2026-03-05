@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { BlogPost } from '@/types/blog';
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,11 @@ import { motion } from 'framer-motion';
 
 const BlogPostPage = () => {
     const { slug } = useParams();
+    const location = useLocation();
     const [post, setPost] = useState<BlogPost | null>(null);
     const [loading, setLoading] = useState(true);
+
+
 
     useEffect(() => {
         if (slug) fetchPost(slug);
@@ -34,9 +37,7 @@ const BlogPostPage = () => {
     };
 
     if (loading) return (
-        <div className="min-h-screen bg-black flex items-center justify-center text-zinc-400">
-            <div className="animate-pulse">Loading article...</div>
-        </div>
+        <div className="min-h-screen bg-black"></div>
     );
 
     if (!post) return (
@@ -74,9 +75,7 @@ const BlogPostPage = () => {
             </Helmet>
 
             {/* Floating Back Button */}
-            <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+            <div
                 className="fixed top-24 left-4 z-50 md:left-8 hidden lg:block"
             >
                 <Button
@@ -84,27 +83,23 @@ const BlogPostPage = () => {
                     asChild
                     className="rounded-full bg-black/50 backdrop-blur-md border-white/10 text-white hover:bg-white/10 hover:text-emerald-400 group transition-all"
                 >
-                    <Link to="/blog">
-                        <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back
+                    <Link to="/blog" state={{ from: location.state?.from }}>
+                        <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Articles
                     </Link>
                 </Button>
-            </motion.div>
+            </div>
 
             {/* Mobile Back Button (inline) */}
             <div className="lg:hidden container mx-auto px-4 pt-24 pb-4 relative z-10">
-                <Link to="/blog" className="flex items-center text-sm text-zinc-400 hover:text-emerald-400 transition-colors">
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to Insights
+                <Link to="/blog" state={{ from: location.state?.from }} className="flex items-center text-sm text-zinc-400 hover:text-emerald-400 transition-colors">
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to Articles
                 </Link>
             </div>
 
             {/* Hero Header */}
             <div className="relative pt-10 pb-0 px-4">
                 <div className="container mx-auto max-w-4xl relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                    >
+                    <div>
                         <div className="flex items-center gap-4 text-sm text-emerald-400 font-medium mb-4">
                             <span className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
@@ -127,16 +122,13 @@ const BlogPostPage = () => {
                                 {post.excerpt}
                             </p>
                         )}
-                    </motion.div>
+                    </div>
                 </div>
             </div>
 
             {/* Featured Image */}
             {post.image_url && (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2 }}
+                <div
                     className="container mx-auto max-w-5xl px-4 mb-10"
                 >
                     <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
@@ -146,15 +138,12 @@ const BlogPostPage = () => {
                             className="object-cover w-full h-full"
                         />
                     </div>
-                </motion.div>
+                </div>
             )}
 
             {/* Content */}
             <article className="container mx-auto max-w-3xl px-4 pb-32">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
+                <div
                     className="premium-blog-content"
                     dangerouslySetInnerHTML={{ __html: post.content }}
                 />

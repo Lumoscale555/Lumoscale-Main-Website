@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, ScrollRestoration } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -14,6 +14,7 @@ import Editor from "./pages/admin/Editor";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import BlogIndex from "./pages/blog/BlogIndex";
 import BlogPostPage from "./pages/blog/BlogPost";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AuditModal from "./components/AuditModal"; // Import Modal
 import { AuditModalProvider } from "./context/AuditModalContext";
 
@@ -26,7 +27,7 @@ const App = () => (
         <AuditModalProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AuditModal />
             <Routes>
               <Route path="/" element={<Index />} />
@@ -39,6 +40,7 @@ const App = () => (
               </Route>
               <Route path="/blog" element={<BlogIndex />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

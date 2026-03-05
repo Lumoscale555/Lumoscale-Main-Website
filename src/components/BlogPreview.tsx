@@ -45,8 +45,8 @@ const FALLBACK_POSTS: BlogPost[] = [
 ];
 
 const BlogPreview = () => {
-    const [posts, setPosts] = useState<BlogPost[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [posts, setPosts] = useState<BlogPost[]>(FALLBACK_POSTS);
+    const [loading, setLoading] = useState(false);
     const [useFallback, setUseFallback] = useState(false);
 
     // Mobile automation
@@ -190,13 +190,7 @@ const BlogPreview = () => {
                     </motion.p>
                 </div>
 
-                {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-[400px] bg-white/5 rounded-3xl animate-pulse border border-white/5" />
-                        ))}
-                    </div>
-                ) : (
+                {loading ? null : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {posts.map((post, index) => (
                             <motion.article
@@ -208,7 +202,7 @@ const BlogPreview = () => {
                                 className="group relative flex flex-col h-full"
                                 data-active={isMobile && index === activePostIndex ? "true" : undefined}
                             >
-                                <Link to={`/blog/${post.slug}`} className="absolute inset-0 z-20" />
+                                <Link to={`/blog/${post.slug}`} className="absolute inset-0 z-20" state={{ from: 'insights' }} />
 
                                 <div className="relative h-full flex flex-col bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 group-hover:border-green-500/50 group-hover:shadow-[0_0_50px_-15px_rgba(34,197,94,0.2)] group-data-[active=true]:border-green-500/50 group-data-[active=true]:shadow-[0_0_50px_-15px_rgba(34,197,94,0.2)]">
                                     {/* Image Container */}
@@ -228,7 +222,7 @@ const BlogPreview = () => {
 
                                         <div className="absolute top-4 left-4 z-20">
                                             <span className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-full text-xs font-medium text-white group-hover:bg-green-500/10 group-hover:border-green-500/30 group-hover:text-green-400 group-data-[active=true]:bg-green-500/10 group-data-[active=true]:border-green-500/30 group-data-[active=true]:text-green-400 transition-colors">
-                                                Article
+                                                {post.tags?.[0] || 'Article'}
                                             </span>
                                         </div>
                                     </div>
@@ -270,7 +264,7 @@ const BlogPreview = () => {
                         asChild
                         className="bg-white text-black hover:bg-emerald-400 hover:text-black hover:border-emerald-500 rounded-full px-8 py-6 text-lg font-medium transition-all hover:scale-105"
                     >
-                        <Link to="/blog">
+                        <Link to="/blog" state={{ from: 'insights' }}>
                             View All Articles <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
                     </Button>
