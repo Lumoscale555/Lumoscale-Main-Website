@@ -178,7 +178,7 @@ export default function PricingToggle() {
                                         {billing === "monthly" ? "$797" : "$2,397"}
                                     </span>
                                     <span className="text-6xl font-bold text-white tracking-tight">
-                                        {billing === "monthly" ? "$497" : "$1,299"}
+                                        {billing === "monthly" ? "$399" : "$999"}
                                     </span>
                                 </div>
 
@@ -192,7 +192,7 @@ export default function PricingToggle() {
 
                                 <div className="flex flex-col gap-1.5">
                                     <div className="flex items-center gap-2 text-sm text-slate-400">
-                                        <span>Setup Fee:</span>
+                                        <span>Retainer:</span>
                                         <span className="line-through decoration-slate-600 text-slate-600">$1,497</span>
                                         <span className="text-green-400 font-bold">$749</span>
                                     </div>
