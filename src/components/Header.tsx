@@ -111,10 +111,10 @@ const Header = () => {
             <div className="w-px h-4 bg-white/10 mx-2" />
 
             <button
-              onClick={handleAuditClick}
+              onClick={() => window.open("https://cal.com/lumoscale/30min", "_blank")}
               className="group relative inline-flex items-center gap-2 px-5 py-2.5 bg-white text-black rounded-full font-bold text-xs uppercase tracking-wide hover:bg-zinc-200 transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]"
             >
-              <span>Free Audit</span>
+              <span>Book a Call</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </nav>
@@ -205,10 +205,13 @@ const Header = () => {
 
               <div className="mt-8 pt-6 border-t border-white/10">
                 <button
-                  onClick={handleAuditClick}
+                  onClick={() => {
+                    setOpen(false);
+                    window.open("https://cal.com/lumoscale/30min", "_blank");
+                  }}
                   className="w-full py-4 bg-white text-black rounded-xl font-bold uppercase tracking-wide hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 shadow-lg"
                 >
-                  <span>Get Started</span>
+                  <span>Book a Call</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
