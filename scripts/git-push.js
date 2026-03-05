@@ -36,9 +36,9 @@ const accounts = {
   },
   2: {
     label: "lumoscale555 (Company)",
-    username: "lumoscale555",
+    username: "Lumoscale555",
     token: env.GITHUB_TOKEN_2,
-    repoName: "Lumoscale-Main-Website-main"
+    repoName: "Lumoscale-Main-Website"
   }
 };
 
