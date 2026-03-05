@@ -60,8 +60,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Helmet>
-        <title>Lumoscale | AI Agents for Med Spas & Salons</title>
-        <meta name="description" content="24/7 AI receptionists and sales agents for med spas, salons, and wellness businesses. Never miss a booking again." />
+        <title>Lumoscale | AI Agents for Real Estate & Healthcare</title>
+        <meta name="description" content="AI Receptionist answers calls 24/7, AI Voice SDR follows up with leads instantly, and AI Text Agents handle social media messages. Complete automation for Real Estate & Healthcare businesses." />
       </Helmet>
       
       <Header />
