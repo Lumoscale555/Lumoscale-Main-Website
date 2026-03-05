@@ -189,16 +189,19 @@ export default function ChatWidget() {
                                             ))}
 
                                             {isTyping && (
-                                                <div className="flex gap-3 items-center">
+                                                <div className="flex gap-3 items-start">
                                                     <div className="w-7 h-7 rounded-full overflow-hidden border border-white/10 shrink-0 flex items-center justify-center bg-zinc-900 mt-1">
                                                          <Bot className="w-3.5 h-3.5 text-blue-400" />
                                                     </div>
-                                                    <div className="bg-white/5 px-3 py-2.5 rounded-2xl rounded-tl-sm border border-white/5 backdrop-blur-sm">
-                                                        <div className="flex gap-1 opacity-60">
-                                                            <span className="w-1 h-1 bg-zinc-400 rounded-full animate-bounce" />
-                                                            <span className="w-1 h-1 bg-zinc-400 rounded-full animate-bounce delay-75" />
-                                                            <span className="w-1 h-1 bg-zinc-400 rounded-full animate-bounce delay-150" />
+                                                    <div className="flex flex-col gap-1">
+                                                        <div className="bg-white/5 px-3 py-2.5 rounded-2xl rounded-tl-sm border border-white/5 backdrop-blur-sm">
+                                                            <div className="flex gap-1 opacity-60">
+                                                                <span className="w-1 h-1 bg-zinc-400 rounded-full animate-bounce" />
+                                                                <span className="w-1 h-1 bg-zinc-400 rounded-full animate-bounce delay-75" />
+                                                                <span className="w-1 h-1 bg-zinc-400 rounded-full animate-bounce delay-150" />
+                                                            </div>
                                                         </div>
+                                                        <span className="text-[10px] text-zinc-500 px-1 italic">AI is typing...</span>
                                                     </div>
                                                 </div>
                                             )}
