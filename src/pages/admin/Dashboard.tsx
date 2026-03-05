@@ -15,10 +15,35 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Dashboard = () => {
     const [posts, setPosts] = useState<BlogPost[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+
+    useEffect(() => {
+        // Prevent accidental back navigation
+        window.history.pushState(null, '', window.location.href);
+        const handlePopState = (e: PopStateEvent) => {
+            window.history.pushState(null, '', window.location.href);
+            setShowLogoutDialog(true);
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, []);
 
     useEffect(() => {
         fetchPosts();
@@ -38,17 +63,18 @@ const Dashboard = () => {
         setLoading(false);
     };
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm('Are you sure you want to delete this post?')) return;
+    const confirmDelete = async () => {
+        if (!deleteId) return;
 
-        const { error } = await supabase.from('posts').delete().eq('id', id);
+        const { error } = await supabase.from('posts').delete().eq('id', deleteId);
 
         if (error) {
             toast.error('Error deleting post');
         } else {
             toast.success('Post deleted');
-            setPosts(posts.filter((post) => post.id !== id));
+            setPosts(posts.filter((post) => post.id !== deleteId));
         }
+        setDeleteId(null);
     };
 
     const handleLogout = async () => {
@@ -72,10 +98,26 @@ const Dashboard = () => {
                     </div>
 
                     <div className="flex gap-4">
-                        <Button variant="ghost" className="text-zinc-400 hover:text-white" onClick={handleLogout}>
-                            <LogOut className="mr-2 h-4 w-4" /> Logout
-                        </Button>
-                        <Button asChild className="bg-blue-600 hover:bg-blue-500 text-white border-none rounded-full px-6">
+                        <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="ghost" className="text-zinc-400 hover:text-red-400 hover:bg-red-400/10">
+                                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-zinc-400">
+                                        You will be signed out of your admin session.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel className="bg-zinc-800 text-white hover:bg-zinc-700 border-none">No</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleLogout} className="bg-red-600 text-white hover:bg-red-700 border-none">Yes</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                        <Button asChild className="!bg-white !text-black hover:!bg-zinc-100 hover:!text-black border-none rounded-full px-6 font-bold transition-all shadow-lg hover:scale-105 active:scale-95">
                             <Link to="/admin/editor">
                                 <PlusCircle className="mr-2 h-4 w-4" />
                                 Create New Post
@@ -95,7 +137,7 @@ const Dashboard = () => {
                         ) : posts.length === 0 ? (
                             <div className="p-20 text-center text-zinc-500 space-y-4">
                                 <p>No posts found.</p>
-                                <Button variant="outline" asChild className="border-white/10 text-white hover:bg-white/5">
+                                <Button variant="outline" asChild className="border-white/10 text-black !bg-white hover:!bg-zinc-100 font-bold transition-all hover:scale-105 active:scale-95">
                                     <Link to="/admin/editor">Create your first post</Link>
                                 </Button>
                             </div>
@@ -118,14 +160,15 @@ const Dashboard = () => {
                                             transition={{ delay: i * 0.05 }}
                                             className="border-white/5 hover:bg-white/5 transition-colors group"
                                         >
-                                            <TableCell className="font-medium text-white">{post.title}</TableCell>
+                                            <TableCell className="font-bold text-white text-base py-6">{post.title}</TableCell>
                                             <TableCell>
-                                                <span className={`px-3 py-1 rounded-full text-xs font-medium border ${post.published
-                                                    ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                                                    : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                                                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm ${post.published
+                                                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_-4px_rgba(16,185,129,0.3)]'
+                                                    : 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20 shadow-none'
                                                     }`}>
-                                                    {post.published ? 'Published' : 'Draft'}
-                                                </span>
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${post.published ? 'bg-emerald-400' : 'bg-zinc-500'}`} />
+                                                    {post.published ? 'Live on Website' : 'Draft (Hidden)'}
+                                                </div>
                                             </TableCell>
                                             <TableCell className="text-zinc-400">{new Date(post.created_at).toLocaleDateString()}</TableCell>
                                             <TableCell className="text-right">
@@ -135,7 +178,7 @@ const Dashboard = () => {
                                                             <Pencil className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" onClick={() => handleDelete(post.id)} className="hover:bg-red-500/20 hover:text-red-400 text-zinc-400">
+                                                    <Button variant="ghost" size="icon" onClick={() => setDeleteId(post.id)} className="hover:bg-red-500/20 hover:text-red-400 text-zinc-400">
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -147,6 +190,21 @@ const Dashboard = () => {
                         )}
                     </CardContent>
                 </Card>
+
+                <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete this post?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-zinc-400">
+                                This action cannot be undone. This will permanently delete the article.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-zinc-800 text-white hover:bg-zinc-700 border-none">Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 text-white hover:bg-red-700 border-none">Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </div>
     );

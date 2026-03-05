@@ -9,6 +9,17 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { ArrowLeft, Save, Upload, X, Code } from 'lucide-react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Editor = () => {
     const { id } = useParams();
@@ -16,7 +27,7 @@ const Editor = () => {
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(!!id);
     const [tagInput, setTagInput] = useState('');
-
+    const [isDirty, setIsDirty] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
         slug: '',
@@ -26,6 +37,11 @@ const Editor = () => {
         published: false,
         tags: [] as string[],
     });
+
+    const handleFormChange = (updates: Partial<typeof formData>) => {
+        setFormData(prev => ({ ...prev, ...updates }));
+        setIsDirty(true);
+    };
 
     useEffect(() => {
         if (id) {
@@ -53,6 +69,7 @@ const Editor = () => {
                 published: data.published,
                 tags: data.tags || [],
             });
+            setIsDirty(false);
         }
         setInitialLoading(false);
     };
@@ -132,10 +149,13 @@ const Editor = () => {
             toast.error(error.message);
         } else {
             toast.success(id ? 'Post updated' : 'Post created');
+            setIsDirty(false);
             navigate('/admin');
         }
         setLoading(false);
     };
+
+    const [showBackDialog, setShowBackDialog] = useState(false);
 
     if (initialLoading) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading editor...</div>;
 
@@ -143,23 +163,64 @@ const Editor = () => {
         <div className="min-h-screen bg-black text-white pb-20">
             {/* Top Bar */}
             <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10 px-6 py-4 flex items-center justify-between">
-                <Button variant="ghost" asChild className="text-zinc-400 hover:text-white">
-                    <Link to="/admin">
+                <AlertDialog open={showBackDialog} onOpenChange={setShowBackDialog}>
+                    <Button
+                        variant="ghost"
+                        onClick={() => isDirty ? setShowBackDialog(true) : navigate('/admin')}
+                        className="text-zinc-400 hover:text-emerald-400 hover:bg-emerald-400/10"
+                    >
                         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
-                    </Link>
-                </Button>
+                    </Button>
+                    <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>You have unsaved changes</AlertDialogTitle>
+                            <AlertDialogDescription className="text-zinc-400">
+                                Are you sure you want to leave? Your progress will be lost.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-zinc-800 text-white hover:bg-zinc-700 border-none">No, stay</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => navigate('/admin')} className="bg-emerald-600 text-white hover:bg-emerald-700 border-none">Yes, leave</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center space-x-2">
-                        <Label htmlFor="published" className="text-sm font-medium text-zinc-400">
-                            {formData.published ? 'Public' : 'Draft'}
-                        </Label>
-                        <Switch
-                            id="published"
-                            checked={formData.published}
-                            onCheckedChange={(checked) => setFormData({ ...formData, published: checked })}
-                        />
+                    <div className="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-full border border-white/10 select-none">
+                        <span
+                            className={`text-sm font-bold uppercase tracking-wide cursor-pointer transition-colors ${!formData.published ? 'text-white' : 'text-zinc-600 hover:text-zinc-400'}`}
+                            onClick={() => handleFormChange({ published: false })}
+                        >
+                            Draft
+                        </span>
+
+                        <div
+                            className={`relative w-14 h-7 rounded-full p-1 cursor-pointer transition-colors duration-300 border ${formData.published
+                                ? 'bg-emerald-500/20 border-emerald-500/50'
+                                : 'bg-zinc-600/20 border-zinc-500/30'
+                                }`}
+                            onClick={() => handleFormChange({ published: !formData.published })}
+                        >
+                            <div className={`w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center ${formData.published
+                                ? 'translate-x-7 bg-emerald-500'
+                                : 'translate-x-0 bg-zinc-400'
+                                }`}>
+                                <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                            </div>
+                        </div>
+
+                        <span
+                            className={`text-sm font-bold uppercase tracking-wide cursor-pointer transition-colors ${formData.published ? 'text-emerald-400' : 'text-zinc-600 hover:text-zinc-400'}`}
+                            onClick={() => handleFormChange({ published: true })}
+                        >
+                            Published
+                        </span>
                     </div>
-                    <Button onClick={handleSubmit} disabled={loading} className="bg-blue-600 hover:bg-blue-500 rounded-full px-6">
+
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        className="!bg-white !text-black hover:!bg-zinc-100 border-none rounded-full px-8 font-bold shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all"
+                    >
                         {loading ? 'Saving...' : (
                             <>
                                 <Save className="mr-2 h-4 w-4" /> Save Post
@@ -169,16 +230,16 @@ const Editor = () => {
                 </div>
             </div>
 
-            <div className="container mx-auto max-w-5xl p-6 mt-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="container mx-auto max-w-7xl p-6 mt-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     {/* Main Content */}
-                    <div className="lg:col-span-2 space-y-6">
+                    <div className="lg:col-span-2 space-y-8">
                         <div className="space-y-4">
                             <Input
                                 placeholder="Post Title"
-                                className="text-4xl font-bold bg-transparent border-none p-0 h-auto placeholder:text-zinc-700 focus-visible:ring-0 text-white"
+                                className="text-6xl font-bold bg-transparent border-none p-0 h-auto placeholder:text-zinc-800 focus-visible:ring-0 text-white leading-tight"
                                 value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: generateSlug(e.target.value) })}
+                                onChange={(e) => handleFormChange({ title: e.target.value, slug: generateSlug(e.target.value) })}
                             />
                         </div>
 
@@ -195,7 +256,7 @@ const Editor = () => {
                             <CardContent className="p-0 flex-grow relative">
                                 <Textarea
                                     value={formData.content}
-                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                    onChange={(e) => handleFormChange({ content: e.target.value })}
                                     className="w-full h-[600px] bg-black text-zinc-300 font-mono text-sm p-4 border-none focus-visible:ring-0 resize-none leading-relaxed"
                                     placeholder="Paste your raw HTML body content here... (<div>...</div>)"
                                     spellCheck={false}
@@ -212,9 +273,9 @@ const Editor = () => {
                             <div className="space-y-2">
                                 <Label className="text-zinc-400">Excerpt (SEO Description)</Label>
                                 <Textarea
-                                    className="bg-black/50 border-white/10 text-white min-h-[100px]"
+                                    className="bg-black/50 border-white/10 text-white min-h-[160px] resize-none"
                                     value={formData.excerpt}
-                                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                                    onChange={(e) => handleFormChange({ excerpt: e.target.value })}
                                     placeholder="Short summary for SEO and blog preview cards..."
                                 />
                             </div>
@@ -254,12 +315,12 @@ const Editor = () => {
                                         <img
                                             src={formData.image_url}
                                             alt="Preview"
-                                            className="w-full h-40 object-cover rounded-lg mb-2"
+                                            className="w-full h-64 object-cover rounded-lg mb-2"
                                         />
                                     ) : (
-                                        <div className="flex flex-col items-center py-8 text-zinc-500">
-                                            <Upload className="w-8 h-8 mb-2" />
-                                            <span>Click to upload</span>
+                                        <div className="flex flex-col items-center py-12 text-zinc-500">
+                                            <Upload className="w-10 h-10 mb-3" />
+                                            <span>Click to upload featured image</span>
                                         </div>
                                     )}
                                 </label>
